@@ -17,7 +17,7 @@ var (
 	tlsPort       string
 	logLevel      string
 	dsn           string
-	apiKey        string
+	cors          bool
 )
 
 const (
@@ -26,6 +26,7 @@ const (
 	tlsPortEnv       = vvalletEnvPrefix + "TLS_PORT"
 	logLevelEnv      = vvalletEnvPrefix + "LOG_LEVEL"
 	dsnEnv           = vvalletEnvPrefix + "DSN"
+	corsEnv          = vvalletEnvPrefix + "CORS"
 )
 
 func main() {
@@ -35,6 +36,7 @@ func main() {
 	flag.StringVar(&tlsPort, "tlsPort", "", "local port to run the HTTPS server on")
 	flag.StringVar(&logLevel, "logLevel", "", "output logging level")
 	flag.StringVar(&dsn, "dsn", "", "postgres database dsn of the form 'host=localhost user=gorm password=gorm dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai'")
+	flag.BoolVar(&cors, "cors", false, "enable cors")
 	flag.Parse()
 
 	// fallback to environment variables check
@@ -52,6 +54,10 @@ func main() {
 
 	if dsn == "" {
 		dsn = os.Getenv(dsnEnv)
+	}
+
+	if os.Getenv(corsEnv) == "true" {
+		cors = true
 	}
 
 	// if these requirements aren't set now, halt execution
@@ -84,5 +90,5 @@ func main() {
 	}
 	zerolog.SetGlobalLevel(level)
 
-	internal.Run(plaintextPort, tlsPort, dsn)
+	internal.Run(plaintextPort, tlsPort, dsn, cors)
 }

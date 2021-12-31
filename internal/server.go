@@ -55,7 +55,7 @@ func grpcHttpHandler(grpcServer *grpc.Server, httpHandler http.Handler) http.Han
 }
 
 // Run the server on the specified port
-func Run(plaintextPort, tlsPort, dsn string) {
+func Run(plaintextPort, tlsPort, dsn string, cors bool) {
 	s, err := NewServer(dsn)
 	if err != nil {
 		log.Error().Stack().Err(err)
@@ -91,7 +91,7 @@ func Run(plaintextPort, tlsPort, dsn string) {
 		log.Warn().Msgf("starting plaintext server on localhost:%s, this should only be done for local development", plaintextPort)
 		plaintextServer := &http.Server{
 			Addr:    ":" + plaintextPort,
-			Handler: grpcHttpHandler(g, mux),
+			Handler: corsHandler(cors, grpcHttpHandler(g, mux)),
 		}
 		go func() {
 			log.Fatal().Stack().Err(plaintextServer.ListenAndServe())
@@ -100,7 +100,7 @@ func Run(plaintextPort, tlsPort, dsn string) {
 
 	tlsServer := &http.Server{
 		Addr:    ":" + tlsPort,
-		Handler: grpcHttpHandler(g, mux),
+		Handler: corsHandler(cors, grpcHttpHandler(g, mux)),
 	}
 
 	log.Printf("Serving TLS on %s", grpcAddr)
