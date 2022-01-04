@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
+declare_id!("CKpJLxvCJkjR7rFngDQm5MXiq1exBvDvcj94usqFJkZ3");
 
 #[program]
 pub mod vvallet {
