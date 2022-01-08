@@ -2,7 +2,7 @@ import * as anchor from '@project-serum/anchor';
 import { Program } from '@project-serum/anchor';
 import { Vvallet } from '../target/types/vvallet';
 import * as assert from "assert";
-import nacl from 'tweetnacl';
+import { createHash } from "crypto";
 
 describe('vvallet', () => {
 
@@ -118,38 +118,11 @@ describe('vvallet', () => {
   })
 })
 
-const seedLength = 32
-
 const createAliasKey = function (alias: string): anchor.web3.Keypair {
-  let aliasHash: number = cyrb53(alias)
+  // hash is generated to be 64 bits, cut it in half for seed
+  let hash = createHash("sha256").update(alias).digest('hex').slice(32)
 
-  let seedHash = aliasHash.toString()
-  for (let i = seedHash.length; i < seedLength; i++) {
-    seedHash += "0"
-  }
+  let enc = new TextEncoder()
 
-  var enc = new TextEncoder(); // always utf-8
-  var seed: Uint8Array = enc.encode(seedHash)
-
-  if (seed.byteLength != 32) {
-    throw 'unexpected alias seed hash byte length, expected 32, but was ' + seed.byteLength
-  }
-
-  return anchor.web3.Keypair.fromSeed(seed)
-}
-
-// TODO: move somewhere else
-const cyrb53 = function (str: string, seed: number = 0): number {
-  let h1: number = 0xdeadbeef ^ seed, h2: number = 0x41c6ce57 ^ seed
-
-  for (let i = 0, ch: number; i < str.length; i++) {
-    ch = str.charCodeAt(i)
-    h1 = Math.imul(h1 ^ ch, 2654435761)
-    h2 = Math.imul(h2 ^ ch, 1597334677)
-  }
-
-  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909)
-  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909)
-
-  return 4294967296 * (2097151 & h2) + (h1 >>> 0)
+  return anchor.web3.Keypair.fromSeed(enc.encode(hash))
 }
