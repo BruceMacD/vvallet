@@ -23,14 +23,10 @@ pub mod vvallet {
         if alias.chars().count() > 50 {
             return Err(ErrorCode::AliasTooLong.into())
         }
-
-        // TODO: check alias hash matches what is being registered
-
-        // TODO: check alias only contains [A-Za-z0-9-_]
         
         id.owner = *owner.key;
         id.alias = alias;
-        // TODO: profile picture URL
+        // TODO: IPFS hash
 
         Ok(())
     }
@@ -49,8 +45,8 @@ pub struct RegisterIdentity<'info> {
 #[account]
 pub struct Identity {
     pub owner: Pubkey,
-    pub alias: String, // max size 50 chars
-    // TODO: profile picture
+    pub alias: String, // max size 50 chars, should be validated client-side to match the correct hash
+    // TODO: IPFS hash
 }
 
 const DISCRIMINATOR_LENGTH: usize = 8;

@@ -116,13 +116,55 @@ describe('vvallet', () => {
 
     assert.fail('it should not be possible to register a duplicate alias')
   })
+
+  it('cannot register an empty alias', async () => {
+    try {
+      var alias = ""
+      var aliasKeys = createAliasKey(alias)
+
+      await program.rpc.register(alias, {
+        accounts: {
+          identity: aliasKeys.publicKey,
+          owner: program.provider.wallet.publicKey,
+          systemProgram: anchor.web3.SystemProgram.programId,
+        },
+        signers: [aliasKeys], // wallet is automatically added as a signer
+      })
+    } catch (err) {
+      console.log(err)
+      let ok = err.toString().includes('Alias is required')
+      assert.ok(ok, 'it should not allow an empty alias to be registered')
+      return
+    }
+
+    assert.fail('it should not be possible to register an empty')
+  })
+
+  it('cannot register an an alias that is greater than 50 characters', async () => {
+    try {
+      var alias = 'x'.repeat(51)
+      var aliasKeys = createAliasKey(alias)
+
+      await program.rpc.register(alias, {
+        accounts: {
+          identity: aliasKeys.publicKey,
+          owner: program.provider.wallet.publicKey,
+          systemProgram: anchor.web3.SystemProgram.programId,
+        },
+        signers: [aliasKeys], // wallet is automatically added as a signer
+      })
+    } catch (err) {
+      console.log(err)
+      let ok = err.toString().includes('Alias has a maximum length of 50 characters')
+      assert.ok(ok, 'it should not allow an alias to be greater than 50 characters')
+      return
+    }
+
+    assert.fail('it should not be possible to register an alias with greater than 50 characters')
+  })
 })
 
 const createAliasKey = function (alias: string): anchor.web3.Keypair {
-  // hash is generated to be 64 bits, cut it in half for seed
-  let hash = createHash("sha256").update(alias).digest('hex').slice(32)
-
-  let enc = new TextEncoder()
-
-  return anchor.web3.Keypair.fromSeed(enc.encode(hash))
+  let hash: Uint8Array = createHash("sha256").update(alias).digest()
+  return anchor.web3.Keypair.fromSeed(hash)
 }
