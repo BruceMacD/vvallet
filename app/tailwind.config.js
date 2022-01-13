@@ -28,10 +28,9 @@ module.exports = {
     styled: true,
     themes: [
       // first one will be the default theme
-      "dark",
       // uncomment to enable
-      // "light (default)",
       // "dark",
+      // "light (default)",
       // "cupcake",
       // "bumblebee",
       // "emerald",
@@ -48,7 +47,7 @@ module.exports = {
       // "pastel",
       // "fantasy",
       // "wireframe",
-      // "black",
+      "black",
       // "luxury",
       // "dracula",
     ],

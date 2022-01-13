@@ -32,17 +32,14 @@ export const HomeView: FC = ({}) => {
           <div className="hero min-h-16 py-4">
             <div className="text-center hero-content">
               <div className="max-w-lg">
-                <h1 className="mb-5 text-5xl font-bold">
-                  Hello Solana <SolanaLogo /> World!
+                <h1 className="mb-5 text-5xl">
+                  vvallet
                 </h1>
-                <p className="mb-5">
-                  This scaffold includes awesome tools for rapid development and
-                  deploy dapps to Solana: Next.JS, TypeScript, TailwindCSS,
-                  Daisy UI.
-                </p>
-                <p className="mb-5">
-                  Sollana wallet adapter is connected and ready to use.
-                </p>
+                <div className="hero-content">
+                  <video loop autoPlay muted>
+                    <source src="/placeholder.mp4" type="video/mp4" />
+                  </video>
+                </div>
                 <p>
                   {publicKey ? <>Your address: {publicKey.toBase58()}</> : null}
                 </p>
@@ -51,26 +48,12 @@ export const HomeView: FC = ({}) => {
           </div>
 
           <div className="max-w-4xl mx-auto">
-            <h1 className="mb-5 pb-8 text-5xl">Templates:</h1>
-            <ul className="text-left leading-10">
-              <li className="mb-5">
-                <Link href="/gallery">
-                  <a className="text-4xl font-bold hover:underline">
-                    🏞 -- NFT Gallery
-                  </a>
-                </Link>
-              </li>
-              <li className="mb-5">
-                <Link href="/mint">
-                  <a className="text-4xl font-bold hover:underline">
-                    🍬 -- Candy Machine Mint UI
-                  </a>
-                </Link>
-              </li>
+            <h1 className="mb-5 pb-8 text-5xl">Featured profiles:</h1>
+            <ul className="text-center leading-10">
               <li>
-                <Link href="/tweeter">
+                <Link href="/im/bruce">
                   <a className="mb-5 text-4xl font-bold hover:underline">
-                    🐦 -- Solana Tweeter
+                    👤 -- Bruce
                   </a>
                 </Link>
               </li>

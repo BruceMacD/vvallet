@@ -5,6 +5,8 @@ import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import { HomeIcon, UserIcon } from "@heroicons/react/outline";
 
 import { Loader, SelectAndConnectWalletButton } from "components";
+// import { generateAliasKey } from "utils/crypto";
+
 // import * as anchor from "@project-serum/anchor";
 
 import { SolanaLogo } from "components";
@@ -16,6 +18,10 @@ export const SolanaTweeterView: FC = ({}) => {
   const [isAirDropped, setIsAirDropped] = useState(false);
   const wallet = useAnchorWallet();
   const { connection } = useConnection();
+
+  // TODO: testing here
+  // console.log(alias)
+  // console.log(generateAliasKey(alias))
 
   const airdropToWallet = async () => {
     if (wallet) {
@@ -36,7 +42,7 @@ export const SolanaTweeterView: FC = ({}) => {
         <div className="navbar mb-2 shadow-lg bg-neutral text-neutral-content rounded-box">
           <div className="flex-none">
             <button className="btn btn-square btn-ghost">
-              <span className="text-4xl">🐦</span>
+              <span className="text-4xl">👤</span>
             </button>
           </div>
           <div className="flex-1 px-2 mx-2">
@@ -44,11 +50,11 @@ export const SolanaTweeterView: FC = ({}) => {
               <ul className="text-xl">
                 <li>
                   <Link href="/">
-                    <a>Templates</a>
+                    <a>Profiles</a>
                   </Link>
                 </li>
                 <li>
-                  <span className="opacity-40">Solana Twitter</span>
+                  <span className="opacity-40">Bruce</span>
                 </li>
               </ul>
             </div>
@@ -56,34 +62,6 @@ export const SolanaTweeterView: FC = ({}) => {
 
           <div className="flex-none">
             <WalletMultiButton className="btn btn-ghost" />
-          </div>
-        </div>
-
-        <div className="text-center pt-2">
-          <div className="hero min-h-16 pt-4">
-            <div className="text-center hero-content">
-              <div className="max-w-lg">
-                <h1 className="mb-5 text-5xl">
-                  Solana Twitter <SolanaLogo />
-                </h1>
-
-                <p className="mb-5">
-                  Here is simplified version of Twitter as a Solana dApp. <br />
-                  It aims to be Next.JS UI build for{" "}
-                  <a
-                    href="https://lorisleiva.com/create-a-solana-dapp-from-scratch"
-                    target="_blank"
-                    className="link font-bold"
-                    rel="noreferrer"
-                  >
-                    Create a Solana dApp from scratch
-                  </a>{" "}
-                  tutorial.
-                </p>
-
-                <p>UI connects to DEVNET network.</p>
-              </div>
-            </div>
           </div>
         </div>
 
