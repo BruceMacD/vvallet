@@ -1,15 +1,19 @@
-import Link from "next/link";
-import { FC } from "react";
-import { useWallet } from "@solana/wallet-adapter-react";
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import Link from "next/link"
+import { FC } from "react"
+import { AnchorWallet, useAnchorWallet } from "@solana/wallet-adapter-react"
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui"
+import { Connection } from '@solana/web3.js'
+import { Provider } from '@project-serum/anchor'
+import idl from '../../../../target/idl/vvallet.json' // TODO: this will only work locally
 
 import { SolanaLogo } from "components";
 import styles from "./index.module.css";
 
 export const HomeView: FC = ({ }) => {
-  const { publicKey } = useWallet();
 
-  const onClick = () => { };
+  const wallet: AnchorWallet = useAnchorWallet()!;
+  const connection = new Connection('http://127.0.0.1:8899')
+  const provider = new Provider(connection, wallet, Provider.defaultOptions())
 
   return (
     <div className="container mx-auto max-w-6xl p-8 2xl:px-0">
@@ -44,7 +48,7 @@ export const HomeView: FC = ({ }) => {
                   <WalletMultiButton className="btn btn-ghost" />
                 </div>
                 <p>
-                  {publicKey ? <>Your address: {publicKey.toBase58()}</> : null}
+                  {wallet?.publicKey ? <>Your address: {wallet.publicKey.toBase58()}</> : null}
                 </p>
               </div>
             </div>
