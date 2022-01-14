@@ -5,15 +5,16 @@ import { SolanaTweeterView } from "../../views";
 
 const Profile: NextPage = (props) => {
   const router = useRouter()
-  const { alias } = router.query
+  const query = router.query["alias"]
+  const alias: string = query as string
   
   return (
     <div>
       <Head>
-        <title>{alias}</title>
+        <title>{query}</title>
         <meta name="description" content="vvallet - decentralized proof of identity" />
       </Head>
-      <SolanaTweeterView />
+      <SolanaTweeterView alias={alias}/>
     </div>
   );
 };

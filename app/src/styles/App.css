@@ -10,6 +10,24 @@ body {
   width: 100vw;
 }
 
+.logo {
+  margin: 0;
+  font-family: "Quinlliyk", "Roboto", "Oxygen", "Ubuntu", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #F4D35E;
+}
+
+.fancy {
+  margin: 0;
+  font-family: "Quinlliyk", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+  "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+  sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #F4D35E;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;

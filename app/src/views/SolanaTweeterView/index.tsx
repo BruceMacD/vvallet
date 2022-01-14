@@ -14,14 +14,10 @@ import styles from "./index.module.css";
 import { getTweets, authorFilter, sendTweet } from "./tweets";
 import { useProgram } from "./useProgram";
 
-export const SolanaTweeterView: FC = ({}) => {
+export const SolanaTweeterView: FC<{ alias: string }> = ({ alias }) => {
   const [isAirDropped, setIsAirDropped] = useState(false);
   const wallet = useAnchorWallet();
   const { connection } = useConnection();
-
-  // TODO: testing here
-  // console.log(alias)
-  // console.log(generateAliasKey(alias))
 
   const airdropToWallet = async () => {
     if (wallet) {

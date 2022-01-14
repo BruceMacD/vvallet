@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+  font-family: "Quinlliyk";
+  src: url("/fonts/Quinlliyk/Quinlliyk.ttf");
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+}

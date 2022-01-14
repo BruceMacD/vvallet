@@ -5,6 +5,12 @@ import { HomeView } from "../views";
 const Home: NextPage = (props) => {
   return (
     <div>
+      <link
+        rel="preload"
+        href="/fonts/Quinlliyk/Quinlliyk.ttf"
+        as="font"
+        crossOrigin=""
+      />
       <Head>
         <title>vvallet</title>
         <meta
