@@ -2,8 +2,8 @@ import Link from "next/link"
 import { FC } from "react"
 import { AnchorWallet, useAnchorWallet } from "@solana/wallet-adapter-react"
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui"
-import { Connection } from '@solana/web3.js'
-import { Provider } from '@project-serum/anchor'
+import { Connection, PublicKey } from '@solana/web3.js'
+import { Provider, Program } from '@project-serum/anchor'
 import idl from '../../../../target/idl/vvallet.json' // TODO: this will only work locally
 
 import { SolanaLogo } from "components";
@@ -14,6 +14,8 @@ export const HomeView: FC = ({ }) => {
   const wallet: AnchorWallet = useAnchorWallet()!;
   const connection = new Connection('http://127.0.0.1:8899')
   const provider = new Provider(connection, wallet, Provider.defaultOptions())
+  const programID = new PublicKey(idl.metadata.address)
+  // const program = new Program(idl, programID, provider)
 
   return (
     <div className="container mx-auto max-w-6xl p-8 2xl:px-0">
