@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/dist/client/router";
 import Head from "next/head";
-import { SolanaTweeterView } from "../../views";
+import { ProfileView } from "../../views";
 
 const Profile: NextPage = (props) => {
   const router = useRouter()
@@ -14,7 +14,7 @@ const Profile: NextPage = (props) => {
         <title>{query}</title>
         <meta name="description" content="vvallet - decentralized proof of identity" />
       </Head>
-      <SolanaTweeterView alias={alias}/>
+      <ProfileView alias={alias}/>
     </div>
   );
 };

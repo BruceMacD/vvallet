@@ -72,7 +72,7 @@ export const HomeView: FC = ({ }) => {
         <div className="navbar mb-2 shadow-lg text-neutral-content rounded-box">
           <div className="flex-none">
             <button className="btn btn-square btn-ghost">
-            <span className="logo text-4xl">vvallet</span>
+              <span className="logo text-4xl">vvallet</span>
             </button>
           </div>
           <div className="flex-1 px-2 mx-2" />
@@ -96,7 +96,7 @@ export const HomeView: FC = ({ }) => {
                   </video>
                 </div>
                 <div className="hero-content pt-0">
-                  <WalletMultiButton className="btn btn-ghost" />
+                <WalletMultiButton className="btn btn-ghost">connect wallet</WalletMultiButton>
                 </div>
                 <p>
                   {wallet?.publicKey ? <>Your address: {wallet.publicKey.toBase58()}</> : null}

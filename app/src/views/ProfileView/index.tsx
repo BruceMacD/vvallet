@@ -14,7 +14,7 @@ import styles from "./index.module.css";
 import { getTweets, authorFilter, sendTweet } from "./tweets";
 import { useProgram } from "./useProgram";
 
-export const SolanaTweeterView: FC<{ alias: string }> = ({ alias }) => {
+export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
   const [isAirDropped, setIsAirDropped] = useState(false);
   const wallet = useAnchorWallet();
   const { connection } = useConnection();
@@ -35,32 +35,24 @@ export const SolanaTweeterView: FC<{ alias: string }> = ({ alias }) => {
   return (
     <div className="container mx-auto max-w-6xl p-8 2xl:px-0">
       <div className={styles.container}>
-        <div className="navbar mb-2 shadow-lg bg-neutral text-neutral-content rounded-box">
+        <div className="navbar mb-2 shadow-lg text-neutral-content rounded-box">
           <div className="flex-none">
-            <button className="btn btn-square btn-ghost">
-              <span className="text-4xl">👤</span>
-            </button>
+            <Link href="/">
+              <a className="logo text-4xl">
+                vvallet
+              </a>
+            </Link>
+            {/* <button className="btn btn-square btn-ghost">
+              <span className="logo text-4xl">vvallet</span>
+            </button> */}
           </div>
-          <div className="flex-1 px-2 mx-2">
-            <div className="text-sm breadcrumbs">
-              <ul className="text-xl">
-                <li>
-                  <Link href="/">
-                    <a>Profiles</a>
-                  </Link>
-                </li>
-                <li>
-                  <span className="opacity-40">Bruce</span>
-                </li>
-              </ul>
-            </div>
-          </div>
+          <div className="flex-1 px-2 mx-2" />
 
           <div className="flex-none">
-            <WalletMultiButton className="btn btn-ghost" />
+            <WalletMultiButton className="btn btn-ghost">connect wallet</WalletMultiButton>
           </div>
         </div>
-
+      
         <div className="flex mb-16">
           <div className="mr-4">Need some SOL on test wallet?</div>
           <div className="mr-4">
