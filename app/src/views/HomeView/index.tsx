@@ -3,11 +3,13 @@ import { FC } from "react"
 import { AnchorWallet, useAnchorWallet } from "@solana/wallet-adapter-react"
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui"
 import { Connection, PublicKey } from '@solana/web3.js'
-import { Provider, Program } from '@project-serum/anchor'
-import idl from '../../../../target/idl/vvallet.json' // TODO: this will only work locally
+import { Provider, Program, Idl, web3 } from '@project-serum/anchor'
+import idl  from '../../../../target/idl/vvallet.json' // TODO: this will only work locally
 
-import { SolanaLogo } from "components";
-import styles from "./index.module.css";
+import { generateAliasKey } from "utils/crypto"
+import { SolanaLogo } from "components"
+import styles from "./index.module.css"
+import bs58 from 'bs58'
 
 export const HomeView: FC = ({ }) => {
 
@@ -15,7 +17,54 @@ export const HomeView: FC = ({ }) => {
   const connection = new Connection('http://127.0.0.1:8899')
   const provider = new Provider(connection, wallet, Provider.defaultOptions())
   const programID = new PublicKey(idl.metadata.address)
-  // const program = new Program(idl, programID, provider)
+  // @ts-ignore
+  const program = new Program(idl, programID, provider)
+
+  const airdropToWallet = async () => {
+    if (wallet) {
+      const signature = await connection.requestAirdrop(
+        wallet.publicKey,
+        1000000000
+      );
+
+      const tx = await connection.confirmTransaction(signature)
+      console.log(tx)
+    }
+  }
+
+  const registerAccount = async () => {
+    if (wallet) {
+      let alias = "test"
+  
+      let aliasKeys = generateAliasKey(alias)
+  
+      await program.rpc.register(alias, {
+        accounts: {
+          identity: aliasKeys.publicKey,
+          owner: wallet.publicKey,
+          systemProgram: web3.SystemProgram.programId,
+        },
+        signers: [aliasKeys], // wallet is automatically added as a signer
+      })
+    }
+  }
+
+  const aliasFilter = (alias: string) => ({
+    memcmp: {
+        offset: 8 + // Discriminator
+          32 + // public key
+          4, // alias string prefix
+          bytes: bs58.encode(Buffer.from(alias))
+    }
+  })
+
+  const fetchIdentities = async () => {
+    let filters = [aliasFilter('test')]
+    if (wallet) {
+      const accounts = await program.account.identity.all(filters)
+      console.log(accounts)
+    }
+  }
 
   return (
     <div className="container mx-auto max-w-6xl p-8 2xl:px-0">
@@ -51,6 +100,9 @@ export const HomeView: FC = ({ }) => {
                 </div>
                 <p>
                   {wallet?.publicKey ? <>Your address: {wallet.publicKey.toBase58()}</> : null}
+                  <button className="btn" onClick={airdropToWallet}>air drop</button> 
+                  <button className="btn" onClick={registerAccount}>register "alias"</button> 
+                  <button className="btn" onClick={fetchIdentities}>get vvallet identities</button> 
                 </p>
               </div>
             </div>
