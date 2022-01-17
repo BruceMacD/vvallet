@@ -6,6 +6,7 @@ import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import styles from './index.module.css'
 import {
   airdropToWallet,
+  IdCard,
   fetchIdentities,
   isKeyRegistered,
   registerAccount,
@@ -89,6 +90,11 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
             </div>
           </div>
         </div>
+
+        <div className='flex mb-16'>
+          <IdCard />
+        </div>
+
       </div>
     </div>
   )

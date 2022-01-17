@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-import Router from 'next/router'
 import { AnchorWallet, useAnchorWallet } from '@solana/wallet-adapter-react'
 import { Connection, PublicKey } from '@solana/web3.js'
 import { Provider, Program, Idl, web3 } from '@project-serum/anchor'
