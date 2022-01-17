@@ -1,24 +1,24 @@
 /** @type {import('next').NextConfig} */
-const withPlugins = require("next-compose-plugins");
+const withPlugins = require('next-compose-plugins')
 
 /** eslint-disable @typescript-eslint/no-var-requires */
-const withTM = require("next-transpile-modules")([
-  "@solana/wallet-adapter-base",
+const withTM = require('next-transpile-modules')([
+  '@solana/wallet-adapter-base',
   // Uncomment wallets you want to use
   // "@solana/wallet-adapter-bitpie",
   // "@solana/wallet-adapter-coin98",
   // "@solana/wallet-adapter-ledger",
   // "@solana/wallet-adapter-mathwallet",
-  "@solana/wallet-adapter-phantom",
-  "@solana/wallet-adapter-react",
-  "@solana/wallet-adapter-solflare",
+  '@solana/wallet-adapter-phantom',
+  '@solana/wallet-adapter-react',
+  '@solana/wallet-adapter-solflare',
   // "@solana/wallet-adapter-sollet",
   // "@solana/wallet-adapter-solong",
   // "@solana/wallet-adapter-torus",
-  "@solana/wallet-adapter-wallets",
+  '@solana/wallet-adapter-wallets',
   // "@project-serum/sol-wallet-adapter",
   // "@solana/wallet-adapter-ant-design",
-]);
+])
 
 // add this if you need LESS
 // also install less and less-loader
@@ -38,17 +38,17 @@ const plugins = [
       reactStrictMode: true,
     },
   ],
-];
+]
 
 const nextConfig = {
-  distDir: "build",
+  distDir: 'build',
   swcMinify: true,
   webpack: (config, { isServer }) => {
     if (!isServer) {
-      config.resolve.fallback.fs = false;
+      config.resolve.fallback.fs = false
     }
-    return config;
+    return config
   },
-};
+}
 
-module.exports = withPlugins(plugins, nextConfig);
+module.exports = withPlugins(plugins, nextConfig)

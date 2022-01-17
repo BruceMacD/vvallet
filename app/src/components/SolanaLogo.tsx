@@ -1,18 +1,7 @@
 export const SolanaLogo = () => (
-  <svg
-    width="46"
-    height="35"
-    xmlns="http://www.w3.org/2000/svg"
-    className="inline"
-  >
+  <svg width="46" height="35" xmlns="http://www.w3.org/2000/svg" className="inline">
     <defs>
-      <linearGradient
-        x1="90.737%"
-        y1="34.776%"
-        x2="35.509%"
-        y2="55.415%"
-        id="a"
-      >
+      <linearGradient x1="90.737%" y1="34.776%" x2="35.509%" y2="55.415%" id="a">
         <stop stopColor="#00FFA3" offset="0%" />
         <stop stopColor="#DC1FFF" offset="100%" />
       </linearGradient>
@@ -20,13 +9,7 @@ export const SolanaLogo = () => (
         <stop stopColor="#00FFA3" offset="0%" />
         <stop stopColor="#DC1FFF" offset="100%" />
       </linearGradient>
-      <linearGradient
-        x1="78.586%"
-        y1="39.317%"
-        x2="23.358%"
-        y2="59.956%"
-        id="c"
-      >
+      <linearGradient x1="78.586%" y1="39.317%" x2="23.358%" y2="59.956%" id="c">
         <stop stopColor="#00FFA3" offset="0%" />
         <stop stopColor="#DC1FFF" offset="100%" />
       </linearGradient>
@@ -49,4 +32,4 @@ export const SolanaLogo = () => (
       />
     </g>
   </svg>
-);
+)

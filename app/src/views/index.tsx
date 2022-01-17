@@ -1,2 +1,2 @@
-export { HomeView } from "./HomeView";
-export { ProfileView } from "./ProfileView";
+export { HomeView } from './HomeView'
+export { ProfileView } from './ProfileView'

@@ -1,10 +1,10 @@
-import { FC } from "react";
+import { FC } from 'react'
 
 type Props = {
-  noText?: boolean;
-  text?: string;
-};
-export const Loader: FC<Props> = ({ text = "Loading...", noText = false }) => {
+  noText?: boolean
+  text?: string
+}
+export const Loader: FC<Props> = ({ text = 'Loading...', noText = false }) => {
   return (
     <div className="flex flex-col justify-center items-center text-xl font-light">
       <svg
@@ -26,8 +26,8 @@ export const Loader: FC<Props> = ({ text = "Loading...", noText = false }) => {
           fill="currentColor"
           d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
         ></path>
-      </svg>{" "}
+      </svg>{' '}
       {!noText ? <div className="opacity-50 mt-4">{text}</div> : null}
     </div>
-  );
-};
+  )
+}

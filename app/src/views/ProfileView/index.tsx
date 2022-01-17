@@ -1,36 +1,80 @@
-import Link from "next/link";
-import { FC, useEffect, useState } from "react";
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
-import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
-import { HomeIcon, UserIcon } from "@heroicons/react/outline";
+import Link from 'next/link'
+import Router from 'next/router'
+import { FC, useEffect, useMemo, useState } from 'react'
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
+import { AnchorWallet, useAnchorWallet } from '@solana/wallet-adapter-react'
+import { Connection, PublicKey } from '@solana/web3.js'
+import { Provider, Program, Idl, web3 } from '@project-serum/anchor'
+import bs58 from 'bs58'
 
-import { Loader, SelectAndConnectWalletButton } from "components";
-// import { generateAliasKey } from "utils/crypto";
-
-// import * as anchor from "@project-serum/anchor";
-
-import { SolanaLogo } from "components";
-import styles from "./index.module.css";
-import { getTweets, authorFilter, sendTweet } from "./tweets";
-import { useProgram } from "./useProgram";
+import idl from '../../../../target/idl/vvallet.json' // TODO: this will only work locally
+import { generateAliasKey } from 'utils/crypto'
+import styles from './index.module.css'
 
 export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
-  const [isAirDropped, setIsAirDropped] = useState(false);
-  const wallet = useAnchorWallet();
-  const { connection } = useConnection();
+  const [isWaiting, setIsWaiting] = useState(false)
+  const wallet: AnchorWallet = useAnchorWallet()!
+  const connection = new Connection('http://127.0.0.1:8899')
+  const provider = new Provider(connection, wallet, Provider.defaultOptions())
+  const programID = new PublicKey(idl.metadata.address)
+  // @ts-ignore
+  const program = new Program(idl, programID, provider)
+
+  const isRegistered = (pub: PublicKey): boolean => {
+    return false
+  }
+
+  useMemo(() => {
+    if (wallet?.publicKey && !isRegistered(wallet.publicKey)) {
+      console.log("redirect to registration")
+      // Router.push('/')
+    }
+  }, [wallet]);
 
   const airdropToWallet = async () => {
     if (wallet) {
-      setIsAirDropped(false);
-      const signature = await connection.requestAirdrop(
-        wallet.publicKey,
-        1000000000
-      );
+      setIsWaiting(true)
+      const signature = await connection.requestAirdrop(wallet.publicKey, 1000000000)
 
-      const tx = await connection.confirmTransaction(signature);
-      setIsAirDropped(true);
+      await connection.confirmTransaction(signature)
+      setIsWaiting(false)
     }
-  };
+  }
+
+  const registerAccount = async () => {
+    if (wallet) {
+      let alias = 'test'
+
+      let aliasKeys = generateAliasKey(alias)
+
+      await program.rpc.register(alias, {
+        accounts: {
+          identity: aliasKeys.publicKey,
+          owner: wallet.publicKey,
+          systemProgram: web3.SystemProgram.programId,
+        },
+        signers: [aliasKeys], // wallet is automatically added as a signer
+      })
+    }
+  }
+
+  const aliasFilter = (alias: string) => ({
+    memcmp: {
+      offset:
+        8 + // discriminator
+        32 + // public key
+        4, // alias string prefix
+      bytes: bs58.encode(Buffer.from(alias)),
+    },
+  })
+
+  const fetchIdentities = async () => {
+    let filters = [aliasFilter('test')]
+    if (wallet) {
+      const accounts = await program.account.identity.all(filters)
+      console.log(accounts)
+    }
+  }
 
   return (
     <div className="container mx-auto max-w-6xl p-8 2xl:px-0">
@@ -38,220 +82,42 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
         <div className="navbar mb-2 shadow-lg text-neutral-content rounded-box">
           <div className="flex-none">
             <Link href="/">
-              <a className="logo text-4xl">
-                vvallet
-              </a>
+              <a className="logo text-4xl">vvallet</a>
             </Link>
-            {/* <button className="btn btn-square btn-ghost">
-              <span className="logo text-4xl">vvallet</span>
-            </button> */}
           </div>
           <div className="flex-1 px-2 mx-2" />
 
           <div className="flex-none">
-            <WalletMultiButton className="btn btn-ghost">connect wallet</WalletMultiButton>
+            <WalletMultiButton className="btn btn-ghost" />
           </div>
         </div>
-      
+
         <div className="flex mb-16">
-          <div className="mr-4">Need some SOL on test wallet?</div>
           <div className="mr-4">
-            <button
-              className="btn btn-primary normal-case btn-xs"
-              onClick={airdropToWallet}
-            >
-              Airdrop 1 SOL
-            </button>
+            <div>
+              {wallet?.publicKey ? (
+                <>Your address: {wallet.publicKey.toBase58()}</>
+              ) : null}
+            </div>
+            <div>
+              <button className="btn" onClick={airdropToWallet}>
+                air drop
+              </button>
+              <button className="btn" onClick={registerAccount}>
+                register "alias"
+              </button>
+              <button className="btn" onClick={fetchIdentities}>
+                get vvallet identities
+              </button>
+              <div>
+                {isWaiting ? (
+                  <button className="btn btn-lg loading">loading</button>
+                ) : null}
+              </div>
+            </div>
           </div>
-          {isAirDropped ? <div className="opacity-50">Sent!</div> : null}
-        </div>
-
-        <div>
-          {!wallet ? (
-            <SelectAndConnectWalletButton onUseWalletClick={() => {}} />
-          ) : (
-            <TwitterScreen />
-          )}
         </div>
       </div>
     </div>
-  );
-};
-
-const TwitterScreen = () => {
-  const wallet: any = useAnchorWallet();
-  const [activeTab, setActiveTab] = useState(1);
-  const [tweets, setTweets] = useState<unknown[]>([]);
-  const [profileTweets, setProfileTweets] = useState<unknown[]>([]);
-  const { connection } = useConnection();
-  const { program } = useProgram({ connection, wallet });
-
-  useEffect(() => {
-    fetchTweets();
-    fetchProfileTweets();
-  }, [wallet]);
-
-  const fetchTweets = async () => {
-    if (wallet && program) {
-      try {
-        const tweets = await getTweets({
-          program,
-          // topicFilter('solana'),
-        });
-        setTweets(tweets);
-      } catch (error) {
-        // set error
-      }
-    }
-  };
-
-  const fetchProfileTweets = async () => {
-    if (wallet && program) {
-      try {
-        const tweets = await getTweets({
-          program,
-          // topicFilter('solana'),
-          filter: [authorFilter(wallet?.publicKey.toBase58())],
-        });
-        setProfileTweets(tweets);
-      } catch (error) {
-        // set error
-      }
-    }
-  };
-
-  return (
-    <div className="rounded-lg shadow flex">
-      <div className="border-r border-gray-500 mr-8">
-        <ul className="menu p-4 overflow-y-auto bg-base-100 text-base-content">
-          <li>
-            <a
-              className={activeTab === 0 ? "active" : ""}
-              onClick={() => setActiveTab(0)}
-            >
-              <HomeIcon className="h-8 w-8 text-white-500" />
-            </a>
-          </li>
-          <li>
-            <a
-              className={activeTab === 1 ? "active" : ""}
-              onClick={() => setActiveTab(1)}
-            >
-              <UserIcon className="h-8 w-8 text-white-500" />
-            </a>
-          </li>
-        </ul>
-      </div>
-      <div className="flex flex-col items-center justify-center">
-        {activeTab === 0 ? (
-          <div className="text-xs">
-            <NetTweet />
-            {tweets.map((t) => (
-              <Tweet key={(t as any).key} content={t} />
-            ))}
-          </div>
-        ) : (
-          <TwitterProfile tweets={profileTweets} wallet={wallet} />
-        )}
-      </div>
-    </div>
-  );
-};
-
-const NetTweet = () => {
-  const wallet: any = useAnchorWallet();
-  const { connection } = useConnection();
-  const { program } = useProgram({ connection, wallet });
-  const [content, setContent] = useState<string>("");
-
-  const onContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const { value } = e.target;
-    if (value) {
-      setContent(value);
-    }
-  };
-
-  const onTweetSendClick = async () => {
-    if (!content || !program) return;
-
-    const topic = "default";
-    const tweet = await sendTweet({
-      wallet,
-      program,
-      topic,
-      content,
-    });
-
-    console.log("added new tweet: ", tweet);
-    setContent("");
-  };
-
-  return (
-    <div className="mb-8 pb-4 border-b border-gray-500 flex ">
-      <div className="avatar placeholder mr-4">
-        <div className="mb-4 rounded-full bg-neutral-focus text-neutral-content w-14 h-14">
-          Me
-        </div>
-      </div>
-      <div className="form-control flex-1 mx-2">
-        <textarea
-          className="textarea h-24 w-full text-2xl"
-          placeholder="What's happening?"
-          value={content}
-          onChange={onContentChange}
-        ></textarea>
-      </div>
-      <div className="ml-auto">
-        <button
-          className="btn btn-primary rounded-full normal-case	px-16"
-          onClick={onTweetSendClick}
-        >
-          Tweet
-        </button>
-      </div>
-    </div>
-  );
-};
-
-const Tweet = ({ content }: any) => {
-  return (
-    <div className="mb-8 border-b border-gray-500 flex">
-      <div className="avatar placeholder mr-4">
-        <div className="mb-4 rounded-full bg-neutral-focus text-neutral-content w-14 h-14">
-          {content.authorDisplay.slice(0, 2)}
-        </div>
-      </div>
-      <div>
-        <div className="flex text-sm">
-          <div className="font-bold">{content.authorDisplay}</div>
-          <div className="mx-2 opacity-50">·</div>
-          <div className="opacity-50">{content.createdAgo}</div>
-        </div>
-        <div className="text-xl">{content.content}</div>
-        {content.topic ? (
-          <div className="text-pink-400 my-2">#{content.topic}</div>
-        ) : null}
-      </div>
-    </div>
-  );
-};
-
-const TwitterProfile = ({ tweets, wallet }: any) => {
-  return (
-    <div className="flex-1 text-left width-full">
-      <div>Profile</div>
-      <div>{wallet.publicKey.toString()}</div>
-
-      <div className="my-8">
-        {tweets.length === 0 ? (
-          <div className="text-3xl opacity-50 text-center">
-            You have no tweets
-          </div>
-        ) : null}
-        {tweets.map((t: any) => (
-          <Tweet key={t.key} content={t} />
-        ))}
-      </div>
-    </div>
-  );
-};
+  )
+}

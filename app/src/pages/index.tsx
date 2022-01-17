@@ -1,8 +1,8 @@
-import type { NextPage } from "next";
-import Head from "next/head";
-import { HomeView } from "../views";
+import type { NextPage } from 'next'
+import Head from 'next/head'
+import { HomeView } from '../views'
 
-const Home: NextPage = (props) => {
+const Home: NextPage = props => {
   return (
     <div>
       <link
@@ -13,14 +13,11 @@ const Home: NextPage = (props) => {
       />
       <Head>
         <title>vvallet</title>
-        <meta
-          name="description"
-          content="vvallet - decentralized proof of identity"
-        />
+        <meta name="description" content="vvallet - decentralized proof of identity" />
       </Head>
       <HomeView />
     </div>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home
