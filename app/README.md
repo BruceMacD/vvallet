@@ -2,39 +2,49 @@
 
 The vvallet browser app for storing and exploring identity proof assertions.
 
-## Getting Started
+## Getting Started Locally
 
-First, run the development server:
+First, create a `.env.local` file at the root of the `app` directory:
+
+```
+NEXT_PUBLIC_CLUSTER_URL=http://127.0.0.1:8899
+```
+
+Run the development server:
 
 ```bash
 yarn
 yarn run dev
 ```
 
-// TODO
-If you deploy new Candy Machine you can update UI config here: `./src/config/candy-machine.config.js`.
+The app will be served on localhost:3000.
 
-## Style
+## Deploying to Devnet
 
-[Tailwind CSS](https://tailwindcss.com/) or [daisyUI](https://daisyui.com/) are selected tools for rapid style development.
+First, create a `.env.devnet` file at the root of the `app` directory:
 
-You can quickly change theme changing `daisy.themes` within `./tailwind.config.js`.
-More info here: https://daisyui.com/docs/default-themes
+```
+NEXT_PUBLIC_CLUSTER_URL=https://api.devnet.solana.com
+```
 
-This app encourage you to use CSS Modules over other style technics (like SASS/LESS, Styled Components, usual CSS).
-It have modular nature and supports modern CSS. [Read more on Next.JS site](https://nextjs.org/docs/basic-features/built-in-css-support).
-Anyway, if you want to connect LESS there is example code in `./next.config.js`
+Build and deploy:
 
-## Deploy on Vercel
+```bash
+yarn build:devnet
+yarn start:devnet
+```
 
-Before push run localy `npm run build` to make sure app can be build succesffully on vercel .
+## Deploying to Mainnet
 
-Vercel will automatically create environment and deployment for you if you have vercel account connected to your GitHub account. Go to the vercel.com to connect it.
-Then any push to `main` branch will automatically rebuild and redploy app.
+First, create a `.env.mainnet` file at the root of the `app` directory:
 
-## Templates
+```
+NEXT_PUBLIC_CLUSTER_URL=https://api.mainnet-beta.solana.com
+```
 
-This boilerplate includes some templates you may find useful:
+Build and deploy:
 
-- NFT Gallery Template
-- Candy Machine Mint Website (based on [https://github.com/exiled-apes/candy-machine-mint](https://github.com/exiled-apes/candy-machine-mint))
+```bash
+yarn build:mainnet
+yarn start:mainnet
+```

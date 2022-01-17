@@ -6,7 +6,7 @@ import { Provider, Program, Idl, web3 } from '@project-serum/anchor'
 import bs58 from 'bs58'
 
 import { generateAliasKey } from 'utils/crypto'
-import idl from '../../../target/idl/vvallet.json' // TODO: this will only work locally
+import idl from 'idl/vvallet.json'
 
 // LocalWallet wraps the anchor wallet connection for interactions with vvallet on chain
 export interface LocalWallet {
@@ -15,14 +15,15 @@ export interface LocalWallet {
   provider: Provider
   programID: PublicKey
   program: Program
-
-  // signTransaction(transaction: Transaction): Promise<Transaction>;
-  // signAllTransactions(transactions: Transaction[]): Promise<Transaction[]>;
 }
 
 export function useLocalWallet(): LocalWallet | undefined {
+  const clusterURL: string = process.env.NEXT_PUBLIC_CLUSTER_URL
+    ? process.env.NEXT_PUBLIC_CLUSTER_URL
+    : 'http://127.0.0.1:8899' // default to local
+
   const local = useAnchorWallet()!
-  const connection = new Connection('http://127.0.0.1:8899')
+  const connection = new Connection(clusterURL)
   const provider = new Provider(connection, local, Provider.defaultOptions())
   const programID = new PublicKey(idl.metadata.address)
   // @ts-ignore
