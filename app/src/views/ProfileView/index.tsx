@@ -6,12 +6,12 @@ import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import styles from './index.module.css'
 import {
   airdropToWallet,
-  IdCard,
   fetchIdentities,
   isKeyRegistered,
   registerAccount,
   useLocalWallet,
 } from 'components'
+import { IdCard } from './IdCard'
 
 export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
   const [isWaiting, setIsWaiting] = useState(false)
