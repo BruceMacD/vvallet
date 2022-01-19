@@ -1,6 +1,4 @@
 import Link from 'next/link'
-import Router from 'next/router'
-import useSWR from 'swr'
 import { FC, useMemo, useState } from 'react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 
@@ -12,32 +10,26 @@ import {
   registerAccount,
   useVVallet,
 } from 'lib/VVallet'
-import { IdCard } from './IdCard'
 
-// TODO: move to utils
-const fetcher = (...args: Parameters<typeof fetch>) => fetch(...args).then(response => response.json());
-const useUser = (id: string) => {
-  const { data, error } = useSWR(`/api/im/${id}`, fetcher)
-
-  console.log(data)
-  console.log(error)
-
-  return {
-    user: data,
-    isLoading: !error && !data,
-    isError: error
-  }
-}
-
-export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
+export const RegistrationView: FC = () => {
   const [isWaiting, setIsWaiting] = useState(false)
   const wallet = useVVallet()
 
-  useMemo(() => {
-    if (wallet?.local?.publicKey && !isKeyRegistered(wallet.local.publicKey)) {
-      Router.push('/register')
+  const airdrop = async () => {
+    if (wallet) {
+      setIsWaiting(true)
+      await airdropToWallet(wallet)
+      setIsWaiting(false)
     }
-  }, [wallet])
+  }
+
+  const register = async () => {
+    if (wallet) {
+      setIsWaiting(true)
+      await registerAccount(wallet, 'someAlias')
+      setIsWaiting(false)
+    }
+  }
 
   const identities = async () => {
     if (wallet) {
@@ -71,6 +63,12 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
               ) : null}
             </div>
             <div>
+              <button className="btn" onClick={airdrop}>
+                air drop
+              </button>
+              <button className="btn" onClick={register}>
+                register "alias"
+              </button>
               <button className="btn" onClick={identities}>
                 get vvallet identities
               </button>
@@ -83,18 +81,7 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
           </div>
         </div>
 
-        <div className='flex mb-16 border-solid border-2'>
-          <Profile alias={alias} />
-          <IdCard />
-        </div>
-
       </div>
     </div>
   )
-}
-
-const Profile: FC<{ alias: string }> = ({ alias }) => {
-  const { user, isLoading } = useUser(alias)
-  if (isLoading) return <button className="btn btn-lg loading">loading</button>
-  return <h1>Welcome back, {user.name}</h1>
 }

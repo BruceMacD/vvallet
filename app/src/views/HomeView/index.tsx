@@ -1,10 +1,20 @@
 import Link from 'next/link'
-import { FC } from 'react'
+import Router from 'next/router'
+import { FC, useMemo } from 'react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 
 import styles from './index.module.css'
+import { isKeyRegistered, useVVallet } from 'lib/VVallet'
 
 export const HomeView: FC = ({}) => {
+  const wallet = useVVallet()
+  
+  useMemo(() => {
+    if (wallet?.local?.publicKey && !isKeyRegistered(wallet.local.publicKey)) {
+      Router.push('/register')
+    }
+  }, [wallet])
+
   return (
     <div className="container mx-auto max-w-6xl p-8 2xl:px-0">
       <div className={styles.container}>

@@ -1,14 +1,15 @@
 import { useMemo } from 'react'
 import { AnchorWallet, useAnchorWallet } from '@solana/wallet-adapter-react'
-import { Connection, PublicKey } from '@solana/web3.js'
-import { Provider, Program, Idl, web3 } from '@project-serum/anchor'
+import { Connection, Keypair, PublicKey } from '@solana/web3.js'
+import { Provider, Program, web3 } from '@project-serum/anchor'
 import bs58 from 'bs58'
 
 import { generateAliasKey } from 'utils/crypto'
 import idl from 'idl/vvallet.json'
+import ReadOnlyWallet from './ReadOnlyWallet'
 
-// LocalWallet wraps the anchor wallet connection for interactions with vvallet on chain
-export interface LocalWallet {
+// VVallet wraps the program connection for interactions with vvallet on chain
+export interface VVallet {
   local: AnchorWallet
   connection: Connection
   provider: Provider
@@ -16,7 +17,23 @@ export interface LocalWallet {
   program: Program
 }
 
-export function useLocalWallet(): LocalWallet | undefined {
+export function useReadOnlyVVallet(): VVallet {
+  const clusterURL: string = process.env.NEXT_PUBLIC_CLUSTER_URL
+    ? process.env.NEXT_PUBLIC_CLUSTER_URL
+    : 'http://127.0.0.1:8899' // default to local
+
+  const keypair = Keypair.generate()
+  const local = new ReadOnlyWallet(keypair)
+  const connection = new Connection(clusterURL)
+  const provider = new Provider(connection, local, Provider.defaultOptions())
+  const programID = new PublicKey(idl.metadata.address)
+  // @ts-ignore
+  const program = new Program(idl, programID, provider)
+
+  return { local, connection, provider, programID, program }
+}
+
+export function useVVallet(): VVallet | undefined {
   const clusterURL: string = process.env.NEXT_PUBLIC_CLUSTER_URL
     ? process.env.NEXT_PUBLIC_CLUSTER_URL
     : 'http://127.0.0.1:8899' // default to local
@@ -35,7 +52,7 @@ export function useLocalWallet(): LocalWallet | undefined {
 }
 
 // used for testing
-export const airdropToWallet = async (wallet: LocalWallet) => {
+export const airdropToWallet = async (wallet: VVallet) => {
   if (wallet.local) {
     const signature = await wallet.connection.requestAirdrop(
       wallet.local.publicKey,
@@ -48,7 +65,7 @@ export const airdropToWallet = async (wallet: LocalWallet) => {
   }
 }
 
-export const registerAccount = async (wallet: LocalWallet, alias: string) => {
+export const registerAccount = async (wallet: VVallet, alias: string) => {
   if (wallet.local) {
     let aliasKeys = generateAliasKey(alias)
 
@@ -73,17 +90,19 @@ const aliasFilter = (alias: string) => ({
   },
 })
 
-export const fetchIdentities = async (wallet: LocalWallet) => {
+export const fetchIdentities = async (wallet: VVallet) => {
   // TODO: set the alias
-  let filters = [aliasFilter('test')]
+  // let filters = [aliasFilter('test')]
   if (wallet.local) {
-    const accounts = await wallet.program.account.identity.all(filters)
+    // const accounts = await wallet.program.account.identity.all(filters)
+    const accounts = await wallet.program.account.identity.all()
+
     console.log(accounts)
   }
 }
 
 export const isAliasRegistered = async (
-  wallet: LocalWallet,
+  wallet: VVallet,
   alias: string,
 ): Promise<boolean> => {
   if (wallet.local) {
