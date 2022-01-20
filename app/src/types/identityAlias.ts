@@ -1,7 +1,7 @@
 import { PublicKey } from '@solana/web3.js'
 
 export type IdentityAlias = {
-  owner: PublicKey
+  owner: string // b58 encoded public key
   alias: string
 }
 

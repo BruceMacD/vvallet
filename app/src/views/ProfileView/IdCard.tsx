@@ -2,10 +2,6 @@ import { FC } from 'react'
 import { IdentityAlias } from 'types/identityAlias'
 
 export const IdCard: FC<{ identity: IdentityAlias }> = ({ identity }) => {
-  // const pubKey = identity.owner
-  console.log(identity.owner)
-  // CcpZp3cqRXdU9Gtv1Qj7ooxHT3C96ggoA6MH3Ey3Rynx
-
   return (
     <div className="flex flex-col justify-center items-center text-xl font-light">
       <div className="top">
@@ -18,9 +14,9 @@ export const IdCard: FC<{ identity: IdentityAlias }> = ({ identity }) => {
 
       <div className="banner">TODO</div>
 
-      {/* <div className='key'>
-        {pubKey}
-      </div> */}
+      <div className='key'>
+        {identity.owner}
+      </div>
 
       <div className="stats">TODO</div>
 

@@ -27,7 +27,6 @@
     "@solana/wallet-adapter-sollet": "^0.8.0",
     "@solana/wallet-adapter-wallets": "^0.11.3",
     "@tailwindcss/typography": "^0.4.1",
-    "bn.js": "^5.2.0",
     "bs58": "^4.0.1",
     "daisyui": "^1.16.2",
     "heroicons": "^1.0.5",

@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { AnchorWallet, useAnchorWallet } from '@solana/wallet-adapter-react'
 import { Connection, Keypair, PublicKey } from '@solana/web3.js'
-import { Provider, Program, web3, Idl } from '@project-serum/anchor'
+import { Provider, Program, web3 } from '@project-serum/anchor'
 import bs58 from 'bs58'
 
 import { generateAliasKeypair } from 'utils/crypto'
@@ -114,7 +114,7 @@ export const fetchIdentity = async (
   const resp = await wallet.program.account.identity.fetch(keypair.publicKey)
 
   const idAlias: IdentityAlias = {
-    owner: resp.owner,
+    owner: resp.owner.toBase58(),
     alias: resp.alias,
   }
 
