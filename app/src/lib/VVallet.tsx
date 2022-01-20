@@ -102,9 +102,12 @@ export const fetchIdentitiesByAlias = async (wallet: VVallet, alias: string) => 
   }
 }
 
-export const fetchIdentity = async (wallet: VVallet, alias: string): Promise<IdentityAlias> => {
-  if (!wallet.local) { 
-    Promise.reject("local wallet not defined")
+export const fetchIdentity = async (
+  wallet: VVallet,
+  alias: string,
+): Promise<IdentityAlias> => {
+  if (!wallet.local) {
+    Promise.reject('local wallet not defined')
   }
 
   let keypair = generateAliasKeypair(alias)
@@ -112,9 +115,9 @@ export const fetchIdentity = async (wallet: VVallet, alias: string): Promise<Ide
 
   const idAlias: IdentityAlias = {
     owner: resp.owner,
-    alias: resp.alias
+    alias: resp.alias,
   }
-    
+
   return idAlias
 }
 
@@ -125,7 +128,6 @@ export const fetchAllIdentities = async (wallet: VVallet) => {
     console.log(accounts)
   }
 }
-
 
 export const isAliasRegistered = async (
   wallet: VVallet,

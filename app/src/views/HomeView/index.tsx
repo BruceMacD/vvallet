@@ -8,7 +8,7 @@ import { isKeyRegistered, useVVallet } from 'lib/VVallet'
 
 export const HomeView: FC = ({}) => {
   const wallet = useVVallet()
-  
+
   useMemo(() => {
     if (wallet?.local?.publicKey && !isKeyRegistered(wallet.local.publicKey)) {
       Router.push('/register')

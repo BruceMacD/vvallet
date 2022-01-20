@@ -70,10 +70,9 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
           </div>
         </div>
 
-        <div className='flex mb-16 border-solid border-2'>
-          <IdCard identity={identity}/>
+        <div className="flex mb-16 border-solid border-2">
+          <IdCard identity={identity} />
         </div>
-
       </div>
     </div>
   )

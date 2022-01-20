@@ -1,4 +1,4 @@
-import { Keypair, PublicKey, Transaction } from "@solana/web3.js";
+import { Keypair, PublicKey, Transaction } from '@solana/web3.js'
 import { AnchorWallet } from '@solana/wallet-adapter-react'
 
 /**
@@ -18,6 +18,6 @@ export default class ReadOnlyWallet implements AnchorWallet {
   }
 
   get publicKey(): PublicKey {
-    return this.keypair.publicKey;
+    return this.keypair.publicKey
   }
 }

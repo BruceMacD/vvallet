@@ -5,7 +5,10 @@ import { IdentityAlias } from 'types/identityAlias'
 
 const connection = useReadOnlyVVallet()
 
-export default async function aliasHandler(req: NextApiRequest, res: NextApiResponse<IdentityAlias>) {
+export default async function aliasHandler(
+  req: NextApiRequest,
+  res: NextApiResponse<IdentityAlias>,
+) {
   const query = req.query['alias']
   const alias: string = query as string
 
