@@ -1,3 +1,6 @@
+import useSWR from 'swr'
+import { IdResponse } from 'types/identityAlias';
+
 export const fetcher = async (url: string): Promise<any> => {
   const res = await fetch(url)
 
@@ -15,4 +18,14 @@ export const fetcher = async (url: string): Promise<any> => {
   }
 
   return res.json()
+}
+
+export const useIdentity = (id: string): IdResponse => {
+  const { data, error } = useSWR(`/api/im/${id}`, fetcher)
+
+  return {
+    identity: data,
+    isLoading: !error && !data,
+    isError: error
+  }
 }

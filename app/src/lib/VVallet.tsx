@@ -1,12 +1,13 @@
 import { useMemo } from 'react'
 import { AnchorWallet, useAnchorWallet } from '@solana/wallet-adapter-react'
 import { Connection, Keypair, PublicKey } from '@solana/web3.js'
-import { Provider, Program, web3 } from '@project-serum/anchor'
+import { Provider, Program, web3, Idl } from '@project-serum/anchor'
 import bs58 from 'bs58'
 
-import { generateAliasKey } from 'utils/crypto'
+import { generateAliasKeypair } from 'utils/crypto'
 import idl from 'idl/vvallet.json'
 import ReadOnlyWallet from './ReadOnlyWallet'
+import { IdentityAlias } from 'types/identityAlias'
 
 // VVallet wraps the program connection for interactions with vvallet on chain
 export interface VVallet {
@@ -67,7 +68,9 @@ export const airdropToWallet = async (wallet: VVallet) => {
 
 export const registerAccount = async (wallet: VVallet, alias: string) => {
   if (wallet.local) {
-    let aliasKeys = generateAliasKey(alias)
+    let aliasKeys = generateAliasKeypair(alias)
+
+    console.log(wallet.local.publicKey.toString())
 
     await wallet.program.rpc.register(alias, {
       accounts: {
@@ -90,16 +93,39 @@ const aliasFilter = (alias: string) => ({
   },
 })
 
-export const fetchIdentities = async (wallet: VVallet) => {
-  // TODO: set the alias
-  // let filters = [aliasFilter('test')]
+export const fetchIdentitiesByAlias = async (wallet: VVallet, alias: string) => {
+  let filters = [aliasFilter(alias)]
   if (wallet.local) {
-    // const accounts = await wallet.program.account.identity.all(filters)
+    const accounts = await wallet.program.account.identity.all(filters)
+
+    console.log(accounts)
+  }
+}
+
+export const fetchIdentity = async (wallet: VVallet, alias: string): Promise<IdentityAlias> => {
+  if (!wallet.local) { 
+    Promise.reject("local wallet not defined")
+  }
+
+  let keypair = generateAliasKeypair(alias)
+  const resp = await wallet.program.account.identity.fetch(keypair.publicKey)
+
+  const idAlias: IdentityAlias = {
+    owner: resp.owner,
+    alias: resp.alias
+  }
+    
+  return idAlias
+}
+
+export const fetchAllIdentities = async (wallet: VVallet) => {
+  if (wallet.local) {
     const accounts = await wallet.program.account.identity.all()
 
     console.log(accounts)
   }
 }
+
 
 export const isAliasRegistered = async (
   wallet: VVallet,

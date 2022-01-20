@@ -1,27 +1,19 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { Connection, Keypair, PublicKey } from '@solana/web3.js'
-import { Provider, Program } from '@project-serum/anchor'
-import bs58 from 'bs58'
 
-import { fetchIdentities, useReadOnlyVVallet } from 'lib/VVallet'
-
-type Data = {
-  name: string
-}
+import { fetchIdentity, useReadOnlyVVallet } from 'lib/VVallet'
+import { IdentityAlias } from 'types/identityAlias'
 
 const connection = useReadOnlyVVallet()
 
-export default function aliasHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+export default async function aliasHandler(req: NextApiRequest, res: NextApiResponse<IdentityAlias>) {
   const query = req.query['alias']
   const alias: string = query as string
 
-  // TODO: testing here
-  fetchIdentities(connection)
+  const idAlias = await fetchIdentity(connection, alias)
 
   switch (req.method) {
     case 'GET':
-      res.status(200).json({ name: alias })
+      res.status(200).json(idAlias)
       break
     default:
       res.setHeader('Allow', ['GET'])

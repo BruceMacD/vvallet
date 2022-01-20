@@ -1,8 +1,8 @@
-import * as anchor from '@project-serum/anchor';
-import { Program } from '@project-serum/anchor';
-import { Vvallet } from '../target/types/vvallet';
-import * as assert from "assert";
-import { createHash } from "crypto";
+import * as anchor from '@project-serum/anchor'
+import { Program } from '@project-serum/anchor'
+import { Vvallet } from '../target/types/vvallet'
+import * as assert from "assert"
+import { createHash } from "crypto"
 
 describe('vvallet', () => {
 
@@ -12,8 +12,8 @@ describe('vvallet', () => {
   const program = anchor.workspace.Vvallet as Program<Vvallet>
 
   it('can register a new identity', async () => {
-    var alias = "new_alias"
-    var aliasKeys: anchor.web3.Keypair = createAliasKey(alias)
+    let alias = "new_alias"
+    let aliasKeys: anchor.web3.Keypair = createAliasKey(alias)
 
     await program.rpc.register(alias, {
       accounts: {
@@ -31,8 +31,8 @@ describe('vvallet', () => {
   })
 
   it('can register a new alias for a different key if signed by owner', async () => {
-    var alias = "register_by_diff_key_signed_alias"
-    var aliasKeys: anchor.web3.Keypair = createAliasKey(alias)
+    let alias = "register_by_diff_key_signed_alias"
+    let aliasKeys: anchor.web3.Keypair = createAliasKey(alias)
 
     const otherUser = anchor.web3.Keypair.generate()
     const signature = await program.provider.connection.requestAirdrop(otherUser.publicKey, 1000000000)
@@ -55,8 +55,8 @@ describe('vvallet', () => {
 
   it('cannot register a new alias for a different key if not signed by owner', async () => {
     try {
-      var alias = "register_by_diff_key_unsigned_alias"
-      var aliasKeys: anchor.web3.Keypair = createAliasKey(alias)
+      let alias = "register_by_diff_key_unsigned_alias"
+      let aliasKeys: anchor.web3.Keypair = createAliasKey(alias)
 
       const otherUser = anchor.web3.Keypair.generate()
       const signature = await program.provider.connection.requestAirdrop(otherUser.publicKey, 1000000000)
@@ -86,8 +86,8 @@ describe('vvallet', () => {
 
   it('cannot register an existing alias', async () => {
     try {
-      var alias = "existing_alias"
-      var aliasKeys = createAliasKey(alias)
+      let alias = "existing_alias"
+      let aliasKeys = createAliasKey(alias)
 
       await program.rpc.register(alias, {
         accounts: {
@@ -119,8 +119,8 @@ describe('vvallet', () => {
 
   it('cannot register an empty alias', async () => {
     try {
-      var alias = ""
-      var aliasKeys = createAliasKey(alias)
+      let alias = ""
+      let aliasKeys = createAliasKey(alias)
 
       await program.rpc.register(alias, {
         accounts: {
@@ -142,8 +142,8 @@ describe('vvallet', () => {
 
   it('cannot register an an alias that is greater than 50 characters', async () => {
     try {
-      var alias = 'x'.repeat(51)
-      var aliasKeys = createAliasKey(alias)
+      let alias = 'x'.repeat(51)
+      let aliasKeys = createAliasKey(alias)
 
       await program.rpc.register(alias, {
         accounts: {

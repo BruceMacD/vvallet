@@ -10,15 +10,11 @@ export default class ReadOnlyWallet implements AnchorWallet {
   constructor(readonly keypair: Keypair) {}
 
   async signTransaction(tx: Transaction): Promise<Transaction> {
-    tx.partialSign(this.keypair);
-    return tx;
+    throw new Error('Cannot sign transaction using read-only wallet')
   }
 
   async signAllTransactions(txs: Transaction[]): Promise<Transaction[]> {
-    return txs.map((t) => {
-      t.partialSign(this.keypair);
-      return t;
-    });
+    throw new Error('Cannot sign transactions using read-only wallet')
   }
 
   get publicKey(): PublicKey {

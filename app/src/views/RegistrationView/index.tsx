@@ -5,7 +5,7 @@ import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import styles from './index.module.css'
 import {
   airdropToWallet,
-  fetchIdentities,
+  fetchAllIdentities,
   isKeyRegistered,
   registerAccount,
   useVVallet,
@@ -26,7 +26,7 @@ export const RegistrationView: FC = () => {
   const register = async () => {
     if (wallet) {
       setIsWaiting(true)
-      await registerAccount(wallet, 'someAlias')
+      await registerAccount(wallet, 'bruce')
       setIsWaiting(false)
     }
   }
@@ -34,7 +34,7 @@ export const RegistrationView: FC = () => {
   const identities = async () => {
     if (wallet) {
       setIsWaiting(true)
-      await fetchIdentities(wallet)
+      await fetchAllIdentities(wallet)
       setIsWaiting(false)
     }
   }

@@ -1,35 +1,21 @@
 import Link from 'next/link'
 import Router from 'next/router'
-import useSWR from 'swr'
 import { FC, useMemo, useState } from 'react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 
 import styles from './index.module.css'
 import {
   airdropToWallet,
-  fetchIdentities,
+  fetchAllIdentities,
   isKeyRegistered,
   registerAccount,
   useVVallet,
 } from 'lib/VVallet'
 import { IdCard } from './IdCard'
-
-// TODO: move to utils
-const fetcher = (...args: Parameters<typeof fetch>) => fetch(...args).then(response => response.json());
-const useUser = (id: string) => {
-  const { data, error } = useSWR(`/api/im/${id}`, fetcher)
-
-  console.log(data)
-  console.log(error)
-
-  return {
-    user: data,
-    isLoading: !error && !data,
-    isError: error
-  }
-}
+import { useIdentity } from 'utils/fetcher'
 
 export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
+  const { identity, isLoading } = useIdentity(alias)
   const [isWaiting, setIsWaiting] = useState(false)
   const wallet = useVVallet()
 
@@ -42,11 +28,12 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
   const identities = async () => {
     if (wallet) {
       setIsWaiting(true)
-      await fetchIdentities(wallet)
+      await fetchAllIdentities(wallet)
       setIsWaiting(false)
     }
   }
 
+  if (isLoading) return <button className="btn btn-lg loading">loading</button>
   return (
     <div className="container mx-auto max-w-6xl p-8 2xl:px-0">
       <div className={styles.container}>
@@ -84,17 +71,10 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
         </div>
 
         <div className='flex mb-16 border-solid border-2'>
-          <Profile alias={alias} />
-          <IdCard />
+          <IdCard identity={identity}/>
         </div>
 
       </div>
     </div>
   )
-}
-
-const Profile: FC<{ alias: string }> = ({ alias }) => {
-  const { user, isLoading } = useUser(alias)
-  if (isLoading) return <button className="btn btn-lg loading">loading</button>
-  return <h1>Welcome back, {user.name}</h1>
 }
