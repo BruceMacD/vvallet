@@ -26,6 +26,6 @@ export const useIdentity = (id: string): IdResponse => {
   return {
     identity: data,
     isLoading: !error && !data,
-    isError: error,
+    error: error,
   }
 }

@@ -5,17 +5,15 @@ import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 
 import styles from './index.module.css'
 import {
-  airdropToWallet,
   fetchAllIdentities,
   isKeyRegistered,
-  registerAccount,
   useVVallet,
 } from 'lib/VVallet'
 import { IdCard } from './IdCard'
 import { useIdentity } from 'utils/fetcher'
 
 export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
-  const { identity, isLoading } = useIdentity(alias)
+  const { identity, isLoading, error } = useIdentity(alias)
   const [isWaiting, setIsWaiting] = useState(false)
   const wallet = useVVallet()
 
@@ -33,8 +31,70 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
     }
   }
 
-  if (isLoading) return <button className="btn btn-lg loading">loading</button>
-  return (
+  if (isLoading) return (
+    <div className="container mx-auto max-w-6xl p-8 2xl:px-0">
+      <div className={styles.container}>
+        <div className="navbar mb-2 shadow-lg text-neutral-content rounded-box">
+          <div className="flex-none">
+            <Link href="/">
+              <a className="logo text-4xl">vvallet</a>
+            </Link>
+          </div>
+          <div className="flex-1 px-2 mx-2" />
+
+          <div className="flex-none">
+            <WalletMultiButton className="btn btn-ghost" />
+          </div>
+        </div>
+
+        <div className="hero min-h-screen">
+          <div className="text-center hero-content">
+            <div className="max-w-md">
+              <h1 className="mb-5 text-5xl">
+                💽
+              </h1> 
+              {/* <h1 className="mb-5 text-3xl">
+                identity not found
+              </h1> */}
+              <button className="btn btn-lg loading">loading</button> 
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+  else if (error) return (
+    <div className="container mx-auto max-w-6xl p-8 2xl:px-0">
+      <div className={styles.container}>
+        <div className="navbar mb-2 shadow-lg text-neutral-content rounded-box">
+          <div className="flex-none">
+            <Link href="/">
+              <a className="logo text-4xl">vvallet</a>
+            </Link>
+          </div>
+          <div className="flex-1 px-2 mx-2" />
+
+          <div className="flex-none">
+            <WalletMultiButton className="btn btn-ghost" />
+          </div>
+        </div>
+
+        <div className="hero min-h-screen">
+          <div className="text-center hero-content">
+            <div className="max-w-md">
+              <h1 className="mb-5 text-5xl">
+                💽
+              </h1> 
+              <h1 className="mb-5 text-3xl">
+                identity not found
+              </h1>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+  else return (
     <div className="container mx-auto max-w-6xl p-8 2xl:px-0">
       <div className={styles.container}>
         <div className="navbar mb-2 shadow-lg text-neutral-content rounded-box">

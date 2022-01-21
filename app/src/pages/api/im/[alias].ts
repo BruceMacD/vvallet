@@ -16,6 +16,7 @@ export default async function aliasHandler(
 
   switch (req.method) {
     case 'GET':
+      // TODO: handle not found error here to return 404
       res.status(200).json(idAlias)
       break
     default:

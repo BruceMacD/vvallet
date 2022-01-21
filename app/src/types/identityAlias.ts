@@ -8,5 +8,5 @@ export type IdentityAlias = {
 export type IdResponse = {
   identity: IdentityAlias
   isLoading: boolean
-  isError: Error
+  error: Error
 }
