@@ -14,9 +14,7 @@ export const IdCard: FC<{ identity: IdentityAlias }> = ({ identity }) => {
 
       <div className="banner">TODO</div>
 
-      <div className='key'>
-        {identity.owner}
-      </div>
+      <div className="key">{identity.owner}</div>
 
       <div className="stats">TODO</div>
 
