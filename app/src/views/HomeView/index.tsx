@@ -20,9 +20,7 @@ export const HomeView: FC = ({}) => {
       <div className={styles.container}>
         <div className="navbar mb-2 shadow-lg text-neutral-content rounded-box">
           <div className="flex-none">
-            <button className="btn btn-square btn-ghost">
-              <span className="logo text-4xl">vvallet</span>
-            </button>
+            <span className="logo text-4xl">vvallet</span>
           </div>
           <div className="flex-1 px-2 mx-2" />
 

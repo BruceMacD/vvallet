@@ -3,9 +3,15 @@ use anchor_lang::solana_program::system_program;
 
 declare_id!("CKpJLxvCJkjR7rFngDQm5MXiq1exBvDvcj94usqFJkZ3");
 
+const MAX_ALIAS_LENGTH: usize = 50; // 50 chars * 4 bytes each
+const MAX_PROOF_KIND_LENGTH: usize = 50; // 50 chars * 4 bytes each
+const MAX_PROOF_LENGTH: usize = 200; // 200 chars * 4 bytes each
+
 #[program]
 pub mod vvallet {
     use super::*;
+
+    // register adds an alias for a specified owner
     pub fn register(ctx: Context<RegisterIdentity>, alias: String) -> ProgramResult {
         let id: &mut Account<Identity> = &mut ctx.accounts.identity;
 
@@ -14,15 +20,17 @@ pub mod vvallet {
             return Err(ErrorCode::AliasNotAvailable.into())
         }
 
-        let owner: &Signer = &ctx.accounts.owner;
+        let alias = alias.trim().to_string();
 
         if alias.chars().count() == 0 {
             return Err(ErrorCode::AliasRequired.into())
         }
 
-        if alias.chars().count() > 50 {
+        if alias.chars().count() > MAX_ALIAS_LENGTH {
             return Err(ErrorCode::AliasTooLong.into())
         }
+
+        let owner: &Signer = &ctx.accounts.owner;
         
         id.owner = *owner.key;
         id.alias = alias;
@@ -30,7 +38,46 @@ pub mod vvallet {
 
         Ok(())
     }
+
+    // addProof creates a proof that can be validated by a client to show account ownership
+    pub fn add_proof(ctx: Context<RegisterProof>, kind: String, proof: String) -> ProgramResult {
+        let new_proof: &mut Account<Proof> = &mut ctx.accounts.proof;
+
+        let kind = kind.trim().to_string();
+        let proof = proof.trim().to_string();
+
+        if kind.chars().count() == 0 {
+            return Err(ErrorCode::ProofKindRequired.into())
+        }
+
+        if kind.chars().count() > MAX_PROOF_KIND_LENGTH {
+            return Err(ErrorCode::ProofKindTooLong.into())
+        }
+
+        if proof.chars().count() == 0 {
+            return Err(ErrorCode::ProofRequired.into())
+        }
+
+        if proof.chars().count() > MAX_PROOF_LENGTH {
+            return Err(ErrorCode::ProofTooLong.into())
+        }
+
+        let owner: &Signer = &ctx.accounts.owner;
+        
+        new_proof.owner = *owner.key;
+        new_proof.kind = kind;
+        new_proof.proof = proof;
+
+        Ok(())
+    }
 }
+
+const DISCRIMINATOR_SIZE: usize = 8;
+const PUBLIC_KEY_SIZE: usize = 32; // the owner of the account/proof
+const STRING_LENGTH_PREFIX: usize = 4; // stores the size of the string
+const MAX_ALIAS_SIZE: usize = MAX_ALIAS_LENGTH * 4; // max characters * 4 bytes each
+const MAX_PROOF_KIND_SIZE: usize = MAX_PROOF_KIND_LENGTH * 4; // max characters * 4 bytes each
+const MAX_PROOF_SIZE: usize = MAX_PROOF_LENGTH * 4; // max characters * 4 bytes each
 
 #[derive(Accounts)]
 pub struct RegisterIdentity<'info> {
@@ -49,15 +96,34 @@ pub struct Identity {
     // TODO: IPFS hash
 }
 
-const DISCRIMINATOR_LENGTH: usize = 8;
-const PUBLIC_KEY_LENGTH: usize = 32;
-const STRING_LENGTH_PREFIX: usize = 4; // Stores the size of the string
-const MAX_ALIAS_LENGTH: usize = 50 * 4; // 50 chars * 4 bytes each
-
 impl Identity {
-    const LEN: usize = DISCRIMINATOR_LENGTH
-        + PUBLIC_KEY_LENGTH
-        + STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH; // alias
+    const LEN: usize = DISCRIMINATOR_SIZE
+        + PUBLIC_KEY_SIZE // owner
+        + STRING_LENGTH_PREFIX + MAX_ALIAS_SIZE; // alias
+}
+
+#[derive(Accounts)]
+pub struct RegisterProof<'info> {
+    #[account(init, payer = owner, space = Proof::LEN)]
+    pub proof: Account<'info, Proof>,
+    #[account(mut)]
+    pub owner: Signer<'info>,
+    #[account(address = system_program::ID)]
+    pub system_program: AccountInfo<'info>,
+}
+
+#[account]
+pub struct Proof {
+    pub owner: Pubkey,
+    pub kind: String, // max size 50 chars, used by client to validate proof
+    pub proof: String, // max size 200 chars, a link to the proof
+}
+
+impl Proof {
+    const LEN: usize = DISCRIMINATOR_SIZE
+        + PUBLIC_KEY_SIZE // owner
+        + STRING_LENGTH_PREFIX + MAX_PROOF_KIND_SIZE // kind
+        + STRING_LENGTH_PREFIX + MAX_PROOF_SIZE; // proof
 }
 
 #[error]
@@ -68,4 +134,12 @@ pub enum ErrorCode {
     AliasRequired,
     #[msg("Alias has a maximum length of 50 characters")]
     AliasTooLong,
+    #[msg("Proof kind is required")]
+    ProofKindRequired,
+    #[msg("Proof kind has a maximum length of 50 characters")]
+    ProofKindTooLong,
+    #[msg("Proof is required")]
+    ProofRequired,
+    #[msg("Proof has a maximum length of 200 characters")]
+    ProofTooLong,
 }
