@@ -4,7 +4,12 @@ import { FC, useMemo, useState } from 'react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 
 import styles from './index.module.css'
-import { fetchAllIdentities, isKeyRegistered, useVVallet } from 'lib/VVallet'
+import {
+  fetchProofsByOwner,
+  isKeyRegistered,
+  registerProof,
+  useVVallet,
+} from 'lib/VVallet'
 import { IdCard } from './IdCard'
 import { useIdentity } from 'utils/fetcher'
 
@@ -19,10 +24,11 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
     }
   }, [wallet])
 
-  const identities = async () => {
+  const addProof = async () => {
     if (wallet) {
       setIsWaiting(true)
-      await fetchAllIdentities(wallet)
+      // TODO: set these from input
+      await registerProof(wallet, 'twitter', 'twitter.com/brucewmacdonald/123456')
       setIsWaiting(false)
     }
   }
@@ -48,9 +54,6 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
             <div className="text-center hero-content">
               <div className="max-w-md">
                 <h1 className="mb-5 text-5xl">💽</h1>
-                {/* <h1 className="mb-5 text-3xl">
-                identity not found
-              </h1> */}
                 <button className="btn btn-lg loading">loading</button>
               </div>
             </div>
@@ -111,8 +114,8 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
                 ) : null}
               </div>
               <div>
-                <button className="btn" onClick={identities}>
-                  get vvallet identities
+                <button className="btn" onClick={addProof}>
+                  register a mock twitter proof
                 </button>
                 <div>
                   {isWaiting ? (

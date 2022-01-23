@@ -1,6 +1,7 @@
 import * as anchor from '@project-serum/anchor'
 import { Program } from '@project-serum/anchor'
 import * as assert from 'assert'
+import bs58 from 'bs58'
 
 import { generateAliasKeypair } from '../app/src/utils/crypto'
 import { Vvallet } from '../target/types/vvallet'
@@ -53,6 +54,75 @@ describe('vvallet', () => {
 
     assert.equal(createdIdentity.owner.toBase58(), otherUser.publicKey.toBase58())
     assert.equal(createdIdentity.alias, alias)
+  })
+
+  it('can look up identity by alias', async () => {
+    let alias = "id_by_alias"
+    let aliasKeys: anchor.web3.Keypair = generateAliasKeypair(alias)
+
+    const ownerKeys = anchor.web3.Keypair.generate()
+    const signature = await program.provider.connection.requestAirdrop(ownerKeys.publicKey, 1000000000)
+    await program.provider.connection.confirmTransaction(signature)
+
+    await program.rpc.register(alias, {
+      accounts: {
+        identity: aliasKeys.publicKey,
+        owner: ownerKeys.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      },
+      signers: [aliasKeys, ownerKeys], // wallet is automatically added as a signer
+    })
+
+    const lookupByAlias = await program.account.identity.all([
+      {
+        // offset comparator for owner alias
+        memcmp: {
+          offset:
+            8 + // discriminator
+            32 + // owner public key
+            4, // alias string prefix
+          bytes: bs58.encode(Buffer.from(alias)),
+        },
+      }
+    ]);
+
+    assert.equal(lookupByAlias.length, 1)
+
+    assert.equal(lookupByAlias[0].account.owner.toBase58(), ownerKeys.publicKey.toBase58())
+    assert.equal(lookupByAlias[0].account.alias, alias)
+  })
+
+  it('can look up identity by owner', async () => {
+    let alias = "id_by_owner"
+    let aliasKeys: anchor.web3.Keypair = generateAliasKeypair(alias)
+
+    const ownerKeys = anchor.web3.Keypair.generate()
+    const signature = await program.provider.connection.requestAirdrop(ownerKeys.publicKey, 1000000000)
+    await program.provider.connection.confirmTransaction(signature)
+
+    await program.rpc.register(alias, {
+      accounts: {
+        identity: aliasKeys.publicKey,
+        owner: ownerKeys.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      },
+      signers: [aliasKeys, ownerKeys], // wallet is automatically added as a signer
+    })
+
+    const lookupByOwner = await program.account.identity.all([
+      {
+        // offset comparator for owner alias
+        memcmp: {
+          offset: 8, // discriminator
+          bytes: ownerKeys.publicKey.toBase58(),
+        },
+      }
+    ]);
+
+    assert.equal(lookupByOwner.length, 1)
+
+    assert.equal(lookupByOwner[0].account.owner.toBase58(), ownerKeys.publicKey.toBase58())
+    assert.equal(lookupByOwner[0].account.alias, alias)
   })
 
   it('cannot register a new alias for a different key if not signed by owner', async () => {
@@ -231,6 +301,41 @@ describe('vvallet', () => {
     assert.equal(createdProof.proof, proof)
   })
 
+  it('can filter proofs by owner', async () => {
+    let kind = "github"
+    let proof = "https://gist.github.com/BruceMacD/1234567abcdef"
+    let proofKeys: anchor.web3.Keypair = anchor.web3.Keypair.generate()
+
+    // this key needs to be unique for look up purposes in this test
+    let ownerKeys: anchor.web3.Keypair = anchor.web3.Keypair.generate()
+    const signature = await program.provider.connection.requestAirdrop(ownerKeys.publicKey, 1000000000)
+    await program.provider.connection.confirmTransaction(signature)
+
+    await program.rpc.addProof(kind, proof, {
+      accounts: {
+        proof: proofKeys.publicKey,
+        owner: ownerKeys.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      },
+      signers: [proofKeys, ownerKeys],
+    })
+
+    const matchingProofs = await program.account.proof.all([
+      {
+        // offset comparator for owner key
+        memcmp: {
+          offset: 8, // discriminator
+          bytes: ownerKeys.publicKey.toBase58(),
+        }
+      }
+    ]);
+
+    assert.equal(matchingProofs.length, 1)
+    assert.equal(matchingProofs[0].account.owner.toBase58(), ownerKeys.publicKey.toBase58())
+    assert.equal(matchingProofs[0].account.kind, kind)
+    assert.equal(matchingProofs[0].account.proof, proof)
+  })
+
   it('cannot add a new proof for a different key if not signed by owner', async () => {
     try {
       let kind = "github"
@@ -278,7 +383,7 @@ describe('vvallet', () => {
         signers: [proofKeys],
       })
   
-      const createdProof = await program.account.proof.fetch(proofKeys.publicKey)
+      await program.account.proof.fetch(proofKeys.publicKey)
   
       // attempt to re-create
       await program.rpc.addProof(kind, proof, {

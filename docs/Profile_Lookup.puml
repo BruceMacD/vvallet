@@ -1,0 +1,17 @@
+@startuml VVallet - Profile UI Lookup Flow
+== Web Profile Lookup ==
+browser -> web: show me the profile for vvallet.me/{alias}
+web -> browser: here is a profile page for {alias}
+browser -> api: is there an identity associated with {alias}?
+api -> solana: generate a keypair from the requested alias and look up if exists
+solana -> api: registered identity (public key) for alias
+api -> browser: here is the information associated with that alias
+
+== Web Proof Lookup ==
+browser -> api: what are the proofs owned by this public key?
+api -> solana: look up proofs owned by this public key
+api -> browser: here are the unconfirmed proofs for this owner
+browser -> browser: validate proofs that can be validated locally
+browser -> api: validate these proofs that need to be validated by proxy
+browser -> browser: display results
+@enduml

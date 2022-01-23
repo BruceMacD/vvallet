@@ -70,8 +70,6 @@ export const registerAccount = async (wallet: VVallet, alias: string) => {
   if (wallet.local) {
     let aliasKeys = generateAliasKeypair(alias)
 
-    console.log(wallet.local.publicKey.toString())
-
     await wallet.program.rpc.register(alias, {
       accounts: {
         identity: aliasKeys.publicKey,
@@ -83,19 +81,19 @@ export const registerAccount = async (wallet: VVallet, alias: string) => {
   }
 }
 
-const aliasFilter = (alias: string) => ({
+const identityAliasFilter = (alias: string) => ({
   memcmp: {
     offset:
       8 + // discriminator
-      32 + // public key
+      32 + // owner public key
       4, // alias string prefix
     bytes: bs58.encode(Buffer.from(alias)),
   },
 })
 
 export const fetchIdentitiesByAlias = async (wallet: VVallet, alias: string) => {
-  let filters = [aliasFilter(alias)]
   if (wallet.local) {
+    let filters = [identityAliasFilter(alias)]
     const accounts = await wallet.program.account.identity.all(filters)
 
     console.log(accounts)
@@ -143,4 +141,38 @@ export const isAliasRegistered = async (
 export const isKeyRegistered = (pub: PublicKey): boolean => {
   // TODO
   return false
+}
+
+export const registerProof = async (wallet: VVallet, kind: string, proof: string) => {
+  if (wallet.local) {
+    // we don't need to regenerate this, so random is fine
+    const keypair = web3.Keypair.generate()
+
+    await wallet.program.rpc.addProof(kind, proof, {
+      accounts: {
+        proof: keypair.publicKey,
+        owner: wallet.local.publicKey,
+        systemProgram: web3.SystemProgram.programId,
+      },
+      signers: [keypair], // wallet (owner) is automatically added as a signer
+    })
+
+    console.log('added proof')
+  }
+}
+
+const proofOwnerFilter = (owner: PublicKey) => ({
+  memcmp: {
+    offset: 8, // discriminator
+    bytes: owner.toBase58(),
+  },
+})
+
+export const fetchProofsByOwner = async (wallet: VVallet, owner: PublicKey) => {
+  if (wallet.local) {
+    let filters = [proofOwnerFilter(owner)]
+    const proofs = await wallet.program.account.proof.all(filters)
+
+    console.log(proofs)
+  }
 }
