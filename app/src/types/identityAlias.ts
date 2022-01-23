@@ -8,15 +8,3 @@ export type IdResponse = {
   isLoading: boolean
   error: Error
 }
-
-export type OwnerProof = {
-  owner: string // b58 encoded public key
-  kind: string
-  proof: string
-}
-
-export type ProofResponse = {
-  proofs: OwnerProof[]
-  isLoading: boolean
-  error: Error
-}

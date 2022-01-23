@@ -8,6 +8,7 @@ import { generateAliasKeypair } from 'utils/crypto'
 import idl from 'idl/vvallet.json'
 import ReadOnlyWallet from './ReadOnlyWallet'
 import { IdentityAlias } from 'types/identityAlias'
+import { OwnerProof } from 'types/ownerProof'
 
 // VVallet wraps the program connection for interactions with vvallet on chain
 export interface VVallet {
@@ -161,18 +162,32 @@ export const registerProof = async (wallet: VVallet, kind: string, proof: string
   }
 }
 
-const proofOwnerFilter = (owner: PublicKey) => ({
+const proofOwnerFilter = (owner: string) => ({
   memcmp: {
     offset: 8, // discriminator
-    bytes: owner.toBase58(),
+    bytes: owner,
   },
 })
 
-export const fetchProofsByOwner = async (wallet: VVallet, owner: PublicKey) => {
+export const fetchProofsByOwner = async (
+  wallet: VVallet,
+  owner: string,
+): Promise<OwnerProof[]> => {
+  const ownerProofs: OwnerProof[] = []
+
   if (wallet.local) {
     let filters = [proofOwnerFilter(owner)]
     const proofs = await wallet.program.account.proof.all(filters)
 
-    console.log(proofs)
+    proofs.every(proof => {
+      let ownerProof: OwnerProof = {
+        owner: proof.account.owner.toBase58(),
+        kind: proof.account.kind,
+        proof: proof.account.proof,
+      }
+      ownerProofs.push(ownerProof)
+    })
   }
+
+  return ownerProofs
 }

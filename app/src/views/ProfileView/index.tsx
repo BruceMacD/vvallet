@@ -4,14 +4,10 @@ import { FC, useMemo, useState } from 'react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 
 import styles from './index.module.css'
-import {
-  fetchProofsByOwner,
-  isKeyRegistered,
-  registerProof,
-  useVVallet,
-} from 'lib/VVallet'
+import { isKeyRegistered, registerProof, useVVallet } from 'lib/VVallet'
 import { IdCard } from './IdCard'
 import { useIdentity } from 'utils/fetcher'
+import { Proofs } from './proofs'
 
 export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
   const { identity, isLoading, error } = useIdentity(alias)
@@ -128,6 +124,7 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
 
           <div className="flex mb-16 border-solid border-2">
             <IdCard identity={identity} />
+            <Proofs identity={identity} />
           </div>
         </div>
       </div>
