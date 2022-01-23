@@ -54,7 +54,7 @@ export const RegistrationView: FC = () => {
     if (wallet) {
       setIsWaiting(true)
       // TODO: set these from input
-      await fetchProofsByOwner(wallet, wallet.local.publicKey)
+      await fetchProofsByOwner(wallet, wallet.local.publicKey.toBase58())
       setIsWaiting(false)
     }
   }

@@ -1,10 +1,15 @@
 import { FC, useState } from 'react'
 import { IdentityAlias } from 'types/identityAlias'
 import { useProofs } from 'utils/fetcher'
+import { Proof } from './proof'
 
 // The proofs view gets all proofs for an identity then validates them
 export const Proofs: FC<{ identity: IdentityAlias }> = ({ identity }) => {
   const { proofs, isLoading, error } = useProofs(identity.owner)
+
+  const proofsDisplay: JSX.Element[] = proofs?.map((proof) => 
+    <Proof proof={proof} key={proof.proof} />
+  )
 
   if (isLoading)
     return (
@@ -28,12 +33,8 @@ export const Proofs: FC<{ identity: IdentityAlias }> = ({ identity }) => {
     )
   else
     return (
-      <div className="hero min-h-screen">
-        <div className="text-center hero-content">
-          <div className="max-w-md">
-            <h1 className="mb-5 text-5xl">{proofs[0].proof}</h1>
-          </div>
-        </div>
+      <div>
+        {proofsDisplay}
       </div>
     )
 }
