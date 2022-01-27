@@ -181,6 +181,7 @@ export const fetchProofsByOwner = async (
 
     proofs.every(proof => {
       let ownerProof: OwnerProof = {
+        id: proof.publicKey.toBase58(),
         owner: proof.account.owner.toBase58(),
         kind: proof.account.kind,
         proof: proof.account.proof,

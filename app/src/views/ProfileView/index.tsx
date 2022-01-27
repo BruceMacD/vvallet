@@ -106,7 +106,12 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
             <div className="mr-4">
               <div>
                 {wallet?.local?.publicKey ? (
-                  <>Your address: {wallet.local.publicKey.toBase58()}</>
+                  <div>
+                    <>Your address: {wallet.local.publicKey.toBase58()}</>
+                    <button className="btn" onClick={addProof}>
+                      register twitter proof
+                    </button>
+                  </div>
                 ) : null}
               </div>
               <div>

@@ -41,15 +41,6 @@ export const RegistrationView: FC = () => {
     }
   }
 
-  const addProof = async () => {
-    if (wallet) {
-      setIsWaiting(true)
-      // TODO: set these from input
-      await registerProof(wallet, 'twitter', 'twitter.com/brucewmacdonald/123456')
-      setIsWaiting(false)
-    }
-  }
-
   const getProof = async () => {
     if (wallet) {
       setIsWaiting(true)
@@ -91,9 +82,6 @@ export const RegistrationView: FC = () => {
               </button>
               <button className="btn" onClick={identities}>
                 get vvallet identities
-              </button>
-              <button className="btn" onClick={addProof}>
-                register twitter proof
               </button>
               <button className="btn" onClick={getProof}>
                 get proofs for wallet

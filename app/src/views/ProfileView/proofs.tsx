@@ -7,9 +7,11 @@ import { Proof } from './proof'
 export const Proofs: FC<{ identity: IdentityAlias }> = ({ identity }) => {
   const { proofs, isLoading, error } = useProofs(identity.owner)
 
-  const proofsDisplay: JSX.Element[] = proofs?.map((proof) => 
-    <Proof proof={proof} key={proof.proof} />
-  )
+  console.log(proofs)
+
+  const proofsDisplay: JSX.Element[] = proofs?.map(proof => (
+    <Proof proof={proof} key={proof.id} />
+  ))
 
   if (isLoading)
     return (
@@ -31,10 +33,5 @@ export const Proofs: FC<{ identity: IdentityAlias }> = ({ identity }) => {
         </div>
       </div>
     )
-  else
-    return (
-      <div>
-        {proofsDisplay}
-      </div>
-    )
+  else return <div>{proofsDisplay}</div>
 }

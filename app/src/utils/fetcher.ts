@@ -1,6 +1,6 @@
 import useSWR from 'swr'
 import { IdResponse } from 'types/identityAlias'
-import { ProofsResponse } from 'types/ownerProof'
+import { ProofsResponse, ProofValidationResponse, ValidateProofRequest } from 'types/ownerProof'
 
 export const fetcher = async (url: string): Promise<any> => {
   const res = await fetch(url)
@@ -32,10 +32,20 @@ export const useIdentity = (id: string): IdResponse => {
 }
 
 export const useProofs = (owner: string): ProofsResponse => {
-  const { data, error } = useSWR(`/api/proof/${owner}`, fetcher)
+  const { data, error } = useSWR(`/api/proofs/${owner}`, fetcher)
 
   return {
     proofs: data,
+    isLoading: !error && !data,
+    error: error,
+  }
+}
+
+export const useProofValidator = (req: ValidateProofRequest): ProofValidationResponse => {
+  const { data, error } = useSWR(`/api/${req.id}/valid`, fetcher)
+
+  return {
+    proofValidation: data,
     isLoading: !error && !data,
     error: error,
   }

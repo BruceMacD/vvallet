@@ -1,0 +1,42 @@
+@startuml Proof of Identity Through Bidirectional Linking
+title Proof of Identity Through Bidirectional Linking
+participant service
+participant browser
+participant vvallet
+participant solana_wallet
+participant solana
+== Register a keypair/alias as a vvallet.me identity ==
+browser -> solana_wallet: Add a vvallet identity that links this alias to this public key as the owner
+solana_wallet -> solana_wallet: Sign the transaction with private key, confirming I am performing this action
+solana_wallet -> solana: submit new signed account
+solana -> solana: Use the public key presented to validate the signature, add this identity on chain
+== Looking up a the public key for an alias (using the vvallet service) ==
+browser -> vvallet: What is the public key associated with ${ALIAS}?
+vvallet -> vvallet: Create a hash of the alias and use to generate a keypair that identifies the account
+vvallet -> solana_wallet: Look up vvallet identity for this ${generated_alias_public_key}
+solana_wallet -> solana: Fetch by key
+solana -> solana_wallet: {owner, alias}
+solana_wallet -> vvallet: {owner, alias}
+vvallet -> browser: {owner, alias}
+== Link the owned identity to the vvallet.me identity ==
+browser -> service: Create this public post that claims I am on vvallet.me and links to `vvallet.me/im/${ALIAS}`
+browser -> solana_wallet: Add a proof object on chain that contains a link to this public post
+solana_wallet -> solana_wallet: Sign the transaction with same keypair the vvallet identity was created with,\n confirming I am performing this action
+solana_wallet -> solana: Add this proof entity on chain
+solana -> solana: Use the public key presented to validate the signature, add this proof on chain
+== Look up proofs ==
+browser -> vvallet: What are the proofs for ${owner_public_key}?
+vvallet -> solana_wallet: Get all proofs where the owner is ${owner_public_key}
+solana_wallet -> solana: Read all proofs and match ${owner_public_key} to proof owner
+solana_wallet -> vvallet: ${list_of_proofs}
+vvallet -> browser: ${list_of_proofs}
+== Verify a proof (locally) ==
+browser -> service: Get ${proof.proof}, the proof is a link to a public post
+browser -> browser: Verify the alias in the link matches the alias of the owner I expect
+== Verify a proof (by proxy) ==
+browser -> vvallet: Verify ${proof.proof} for ${alias}, the proof is a link to a public post
+vvallet -> service: Here is my API key, what does ${proof.proof} contain?
+service -> vvallet: ${proof.proof} = "verifying vvallet.me/${alias}"
+vvallet -> vvallet: verify the proof matches the expected format, parse the alias from the proof
+vvallet -> browser: result of proof.alias == expected.alias
+@enduml
