@@ -101,6 +101,31 @@ export const fetchIdentitiesByAlias = async (wallet: VVallet, alias: string) => 
   }
 }
 
+const identityOwnerFilter = (owner: string) => ({
+  memcmp: {
+    offset: 8, // discriminator
+    bytes: owner,
+  },
+})
+
+export const fetchIdentitiesByOwner = async (wallet: VVallet, owner: string): Promise<IdentityAlias[]> => {
+  const ownerIdentities: IdentityAlias[] = []
+  if (wallet.local) {
+    let filters = [identityOwnerFilter(owner)]
+    const identities = await wallet.program.account.identity.all(filters)
+
+    identities.every(identity => {
+      const ownerIdentity: IdentityAlias = {
+        owner: identity.account.owner.toBase58(),
+        alias: identity.account.alias,
+      }
+      ownerIdentities.push(ownerIdentity)
+    })
+  }
+
+  return ownerIdentities
+}
+
 export const fetchIdentity = async (
   wallet: VVallet,
   alias: string,
@@ -191,4 +216,21 @@ export const fetchProofsByOwner = async (
   }
 
   return ownerProofs
+}
+
+export const fetchProof = async (
+  wallet: VVallet,
+  publicKey: string, // the public key of the proof account, not the owner
+): Promise<OwnerProof> => {
+  if (!wallet.local) {
+    Promise.reject('local wallet not defined')
+  }
+  const proof = await wallet.program.account.proof.fetch(publicKey)
+
+  return {
+    id: publicKey,
+    owner: proof.owner.toBase58(),
+    kind: proof.kind,
+    proof: proof.proof,
+  }
 }

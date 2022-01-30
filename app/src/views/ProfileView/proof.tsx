@@ -5,6 +5,7 @@ import { useProofValidator } from 'utils/fetcher'
 export const Proof: FC<{ proof: OwnerProof }> = ({ proof }) => {
   const { proofValidation, isLoading, error } = useProofValidator(proof)
 
+  console.log(proofValidation)
   // TODO: confirm validated proof owner matches expected
   return (
     <button className="btn btn-accent">

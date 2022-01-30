@@ -14,7 +14,7 @@ export default async function ownerProofsHandler(
 
   switch (req.method) {
     case 'GET':
-      const resp = await fetchProofsByOwner(connection, owner)
+      const resp: OwnerProof[] = await fetchProofsByOwner(connection, owner)
       // TODO: handle not found error here to return 404
       res.status(200).json(resp)
       break
