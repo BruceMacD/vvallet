@@ -17,7 +17,7 @@ solana-test-validator
 # Deploy the program
 anchor deploy
 ...
-Program Id: CKpJLxvCJkjR7rFngDQm5MXiq1exBvDvcj94usqFJkZ3
+Program Id: 5EwrjHSsAiQjLmepCocQCEXuCe2wUZVjTaWM4jAim3Fo
 
 # set the programs.localnet property in Anchor.toml to the output program ID 
 # set the declared_id in `programs/vvallet/src/lib.rs` to the output program ID 

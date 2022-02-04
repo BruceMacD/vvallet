@@ -36,12 +36,30 @@ const parseFetcherResponse = async (res: Response, url: string): Promise<any> =>
   return res.json()
 }
 
+// external API fetchers
+
+// https://twitter.com/${username}/status/${tweet_id}
+const TWEET_URL_REGEX = '(.*twitter.com\/)(.*)(\/status\/)([0-9]*)'
+const TWEET_URL_GROUPS = 5
+
 export const fetchTweet = async (url: string): Promise<Tweet> => {
+  const groups = url.match(TWEET_URL_REGEX)
+
+  let tweetId = ""
+  if (groups !== null && groups.length == TWEET_URL_GROUPS) {
+    tweetId = groups[4]
+  } else {
+    throw 'unexpected twitter proof URL format'
+  }
+
+  const apiUrl = 'https://api.twitter.com/2/tweets/' + tweetId + '?expansions=author_id'
+
   const token = process.env.TWITTER_BEARER_TOKEN
   if (token === undefined) {
     throw 'server twitter api token not configured'
   }
-  const resp = await authorizedFetcher(url, token)
+
+  const resp = await authorizedFetcher(apiUrl, token)
 
   return {
     authorId: resp.data.author_id,
@@ -49,6 +67,8 @@ export const fetchTweet = async (url: string): Promise<Tweet> => {
     text: resp.data.text
   }
 }
+
+// vvallet API fetchers
 
 export const useIdentity = (id: string): IdResponse => {
   const { data, error } = useSWR(`/api/im/${id}`, fetcher)

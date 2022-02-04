@@ -166,7 +166,7 @@ export const isAliasRegistered = async (
 
 export const isKeyRegistered = (pub: PublicKey): boolean => {
   // TODO
-  return false
+  return true
 }
 
 export const registerProof = async (wallet: VVallet, kind: string, proof: string) => {

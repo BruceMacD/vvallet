@@ -2,7 +2,9 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 
 import { fetchIdentitiesByOwner, fetchIdentity, fetchProof, fetchProofsByOwner, useReadOnlyVVallet } from 'lib/VVallet'
 import { OwnerProof, ProofValidation } from 'types/ownerProof'
-import { authorizedFetcher, fetchTweet } from 'utils/fetcher'
+import { fetchTweet } from 'utils/fetcher'
+import { IdentityAlias } from 'types/identityAlias'
+import { validateTweet } from 'utils/validator'
 
 const connection = useReadOnlyVVallet()
 
@@ -17,11 +19,18 @@ export default async function ownerProofsHandler(
     case 'GET':
       // get proof for specifed ID
       const toValidate = await fetchProof(connection, proof)
-      // TODO: need to specify alias in path
-      const expectedOwner = await fetchIdentitiesByOwner(connection, toValidate.owner)
-      // validate the proof
-      const result: ProofValidation = await validate(toValidate)
+      
+      const expectedOwners = await fetchIdentitiesByOwner(connection, toValidate.owner)
+      if (expectedOwners.length == 0) {
+        res.status(404).end(`Owner for ${proof} not found`)
+      }
+      if (expectedOwners.length == 0) {
+        res.status(500).end(`Multiple identities found for ${proof} owner`)
+      }
+
+      const result: ProofValidation = await validate(toValidate, expectedOwners[0])
       // TODO: handle not found error here to return 404
+
       res.status(200).json(result)
       break
     default:
@@ -30,20 +39,18 @@ export default async function ownerProofsHandler(
   }
 }
 
-const validate = async (proof: OwnerProof): Promise<ProofValidation> => {
+const validate = async (proof: OwnerProof, expectedOwner: IdentityAlias): Promise<ProofValidation> => {
   const result: ProofValidation = {
     owner: proof.owner,
     proof: proof.proof,
     valid: false, // assume not valid until proven otherwise
-    byProxy: true // always true if validating the proof using the API
+    byProxy: true, // always true if validating the proof using the API
   }
-
-  console.log(proof)
 
   switch (proof.kind) {
     case 'twitter':
-      const tweet = await fetchTweet("https://api.twitter.com/2/tweets/20?expansions=author_id")
-      console.log(tweet)
+      const tweet = await fetchTweet(proof.proof)
+      result.valid = await validateTweet(tweet, expectedOwner)
       break
   }
 

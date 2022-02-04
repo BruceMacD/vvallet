@@ -24,7 +24,7 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
     if (wallet) {
       setIsWaiting(true)
       // TODO: set these from input
-      await registerProof(wallet, 'twitter', 'twitter.com/brucewmacdonald/123456')
+      await registerProof(wallet, 'twitter', 'https://twitter.com/vvalletdotme/status/1488510691359268870')
       setIsWaiting(false)
     }
   }
@@ -109,27 +109,27 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
                   <div>
                     <>Your address: {wallet.local.publicKey.toBase58()}</>
                     <button className="btn" onClick={addProof}>
-                      register twitter proof
+                      + add a proof
                     </button>
+                    <div>
+                      {isWaiting ? (
+                        <button className="btn btn-lg loading">loading</button>
+                      ) : null}
+                    </div>
                   </div>
                 ) : null}
-              </div>
-              <div>
-                <button className="btn" onClick={addProof}>
-                  register a mock twitter proof
-                </button>
-                <div>
-                  {isWaiting ? (
-                    <button className="btn btn-lg loading">loading</button>
-                  ) : null}
-                </div>
               </div>
             </div>
           </div>
 
-          <div className="flex mb-16 border-solid border-2">
-            <IdCard identity={identity} />
-            <Proofs identity={identity} />
+          <div className="columns-2">
+            <div className="w-full mb-16 border-solid border-2">
+              <IdCard identity={identity} />
+            </div>
+
+            <div className="w-full mb-2">
+              <Proofs identity={identity} />
+            </div>
           </div>
         </div>
       </div>

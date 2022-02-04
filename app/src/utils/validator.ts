@@ -1,16 +1,18 @@
-const TWEET_REGEX = '(Verifying my decentralized identity: vvallet\.me\/im\/)(.*)'
-const TWEET_BODY = 'Verifying my decentralized identity: vvallet\.me\/im'
-const TWEET_GROUPS = 3 // full match, group 1, and group 2
+import { IdentityAlias } from "types/identityAlias"
+import { Tweet } from "types/tweet"
 
-export const validateTweet = async (tweet: string): Promise<boolean> => {
-    const groups = tweet.match(TWEET_REGEX)
+const TWEET_REGEX = '(Verifying my @vvalletdotme alias is )(.*)(: )'
+const TWEET_GROUPS = 4
 
-    if (groups !== null && groups.length == TWEET_GROUPS) {
-        if (groups[1] !== TWEET_BODY) {
-            return false
+export const validateTweet = async (tweet: Tweet, expectedOwner: IdentityAlias): Promise<boolean> => {
+    const groups = tweet.text.match(TWEET_REGEX)
+
+    if (groups !== null && groups.length === TWEET_GROUPS) {
+        const claimedAlias = groups[2]
+        
+        if (claimedAlias === expectedOwner.alias) {
+            return true
         }
-        const aliasKey = groups[2];
-        // TODO: compare to owner claimed in proof
     }
     return false
 }

@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_lang::solana_program::system_program;
 
-declare_id!("CKpJLxvCJkjR7rFngDQm5MXiq1exBvDvcj94usqFJkZ3");
+declare_id!("5EwrjHSsAiQjLmepCocQCEXuCe2wUZVjTaWM4jAim3Fo");
 
 const MAX_ALIAS_LENGTH: usize = 50; // 50 chars * 4 bytes each
 const MAX_PROOF_KIND_LENGTH: usize = 50; // 50 chars * 4 bytes each
