@@ -72,7 +72,6 @@ body {
 }
 
 .fancy {
-  margin: 0;
   font-family: 'Quinlliyk', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
     'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
@@ -83,4 +82,24 @@ body {
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+.id-card {
+  border-radius: 1rem;
+  position: relative;
+  background: linear-gradient(to top right, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.35));
+  backdrop-filter: blur(5px);
+}
+
+.card-font {
+  font-family: 'JetBrainsMono', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+    'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #e1e1e1;
+}
+
+.card-stripe {
+  background: linear-gradient(to top right, rgba(244, 211, 94, 0.2), rgba(244, 211, 94, 0.5));
 }

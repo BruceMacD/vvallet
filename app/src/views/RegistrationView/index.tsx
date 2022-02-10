@@ -74,11 +74,17 @@ export const RegistrationView: FC = () => {
     return (
       <div className="container mx-auto max-w-6xl p-8 2xl:px-0">
         <div className={styles.container}>
-          <div className="navbar mb-2 shadow-lg text-neutral-content rounded-box">
-            <div className="flex-none">
-              <WalletDisconnectButton />
+          <div className="text-center">
+            <div className="hero min-h-16">
+              <div className="text-center hero-content">
+                <div className="max-w-lg">
+                  <span className="logo text-7xl">vvallet</span>
+                  <div className="hero-content pt-10">
+                    <WalletDisconnectButton />
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="flex-1 px-2 mx-2" />
           </div>
   
           <div className="flex mb-16">

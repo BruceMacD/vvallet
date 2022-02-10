@@ -5,7 +5,7 @@ import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 
 import styles from './index.module.css'
 import { isKeyRegistered, registerProof, useVVallet } from 'lib/VVallet'
-import { IdCard } from './IdCard'
+import { IdCard } from './idCard'
 import { useIdentity } from 'utils/fetcher'
 import { Proofs } from './proofs'
 
@@ -122,12 +122,12 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
             </div>
           </div>
 
-          <div className="columns-2">
-            <div className="w-full mb-16 border-solid border-2">
+          <div className="flex flex-row">
+            <div className="basis-1/2">
               <IdCard identity={identity} />
             </div>
 
-            <div className="w-full mb-2">
+            <div className="basis-1/2 ml-4">
               <Proofs identity={identity} />
             </div>
           </div>
