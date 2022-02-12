@@ -17,3 +17,11 @@
   font-weight: 1000;
   font-display: swap;
 }
+
+@font-face {
+  font-family: 'JetBrainsMono-SemiBold';
+  src: url('/fonts/JetBrainsMono/JetBrainsMonoNL-SemiBold.ttf');
+  font-style: normal;
+  font-weight: 1000;
+  font-display: swap;
+}

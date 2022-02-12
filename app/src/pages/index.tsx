@@ -17,6 +17,12 @@ const Home: NextPage = props => {
         as="font"
         crossOrigin=""
       />
+      <link
+        rel="preload"
+        href="/fonts/JetBrainsMono/JetBrainsMonoNL-SemiBold.ttf"
+        as="font"
+        crossOrigin=""
+      />
       <Head>
         <title>vvallet</title>
         <meta name="description" content="vvallet - decentralized proof of identity" />
