@@ -8,6 +8,7 @@ import { isKeyRegistered, registerProof, useVVallet } from 'lib/VVallet'
 import { IdCard } from './idCard'
 import { useIdentity } from 'utils/fetcher'
 import { Proofs } from './proofs'
+import { Loader } from 'components'
 
 export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
   const { identity, isLoading, error } = useIdentity(alias)
@@ -48,10 +49,7 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
 
           <div className="hero min-h-screen">
             <div className="text-center hero-content">
-              <div className="max-w-md">
-                <h1 className="mb-5 text-5xl">💽</h1>
-                <button className="btn btn-lg loading">loading</button>
-              </div>
+              <Loader />
             </div>
           </div>
         </div>
@@ -104,12 +102,7 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
             </div>
           </div>
 
-          <div className="flex mb-16">
-            <div className="mr-4">
-            </div>
-          </div>
-
-          <div className="flex flex-row">
+          <div className="flex flex-row mt-16">
             <div className="basis-1/2">
               <IdCard identity={identity} />
             </div>

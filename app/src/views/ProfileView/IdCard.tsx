@@ -1,3 +1,4 @@
+import { SolanaLogo } from 'components'
 import { FC } from 'react'
 import { IdentityAlias } from 'types/identityAlias'
 
@@ -43,6 +44,9 @@ export const IdCard: FC<{ identity: IdentityAlias }> = ({ identity }) => {
           </div>
           <div className={memberAliasStyling()}>
               {identity.alias}
+          </div>
+          <div className='absolute left-5 bottom-5 w-4 h-4'>
+            <SolanaLogo />
           </div>
           <div className="card-stripe card-key-font	h-16 rounded-tr-2xl absolute ml-80 left-0 bottom-0 origin-bottom-left -rotate-90">
             <div className="badge h-6 ml-12 mr-12 mt-5">
