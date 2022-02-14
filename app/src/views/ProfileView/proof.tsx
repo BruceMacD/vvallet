@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { FC } from 'react'
 import { OwnerProof } from 'types/ownerProof'
 import { useProofValidator } from 'utils/fetcher'
-import { parseUsername } from 'utils/parser'
+import { parseProfileLink, parseUsername } from 'utils/parser'
 
 export const Proof: FC<{ proof: OwnerProof }> = ({ proof }) => {
   const { proofValidation, isLoading, error } = useProofValidator(proof)
@@ -46,19 +46,27 @@ export const Proof: FC<{ proof: OwnerProof }> = ({ proof }) => {
     )
   }
   
+  const username = parseUsername(proof.kind, proof.proof)
+  const profileLink = parseProfileLink(proof.kind, proof.proof)
+
   return (
-    <div className="collapse w-96 border rounded-box border-base-300 collapse-arrow">
+    <div className="mt-3 collapse w-96 border rounded-box border-base-300 collapse-arrow">
       <input type="checkbox" />
       <div className="collapse-title text-sm font-medium">
         {getIcon(proof.kind)}
         {proof.kind}
         <div className='text-lg mt-5'>
-          {parseUsername(proof.kind, proof.proof)}
+          {username}
           {displayValidity()}
         </div>
       </div>
       <div className="collapse-content">
         <div>
+          <Link href={profileLink}>
+            <a className="text-base link link-primary">{profileLink}</a>
+          </Link>
+        </div>
+        <div className='mt-3'>
           <p className='font-bold'>Proof:</p>
           <Link href={proof.proof}>
             <a className="text-sm link link-primary">link</a>

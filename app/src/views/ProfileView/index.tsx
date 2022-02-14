@@ -57,7 +57,8 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
         </div>
       </div>
     )
-  else if (error)
+  else if (error) {
+    console.log(error)
     return (
       <div className="container mx-auto max-w-6xl p-8 2xl:px-0">
         <div className={styles.container}>
@@ -85,6 +86,7 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
         </div>
       </div>
     )
+  }
   else
     return (
       <div className="container mx-auto max-w-6xl p-8 2xl:px-0">
@@ -104,21 +106,6 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
 
           <div className="flex mb-16">
             <div className="mr-4">
-              <div>
-                {wallet?.local?.publicKey ? (
-                  <div>
-                    <>Your address: {wallet.local.publicKey.toBase58()}</>
-                    <button className="btn" onClick={addProof}>
-                      + add a proof
-                    </button>
-                    <div>
-                      {isWaiting ? (
-                        <button className="btn btn-lg loading">loading</button>
-                      ) : null}
-                    </div>
-                  </div>
-                ) : null}
-              </div>
             </div>
           </div>
 
@@ -128,6 +115,18 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
             </div>
 
             <div className="basis-1/2 ml-4">
+              {wallet?.local?.publicKey && identity.owner == wallet.local.publicKey.toBase58() ? (
+                  <div>
+                    <button className="btn btn-outline btn-accent border-base-300 w-96" onClick={addProof}>
+                      + add a proof
+                    </button>
+                    <div>
+                      {isWaiting ? (
+                        <button className="btn btn-lg loading">loading</button>
+                      ) : null}
+                    </div>
+                  </div>
+                ) : null}
               <Proofs identity={identity} />
             </div>
           </div>

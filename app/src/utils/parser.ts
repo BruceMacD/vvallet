@@ -1,11 +1,11 @@
 // get a root link to a profile from a given proof
-export const parseProfileLink = (kind: string, proof: string): string | undefined => {
+export const parseProfileLink = (kind: string, proof: string): string => {
   switch (kind) {
     case 'twitter':
       return twitterProfileFromProof(proof)
   }
 
-  return undefined
+  return ''
 }
 
 const twitterProfileFromProof = (proof: string): string => {
