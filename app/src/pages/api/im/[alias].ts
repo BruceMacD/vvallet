@@ -12,12 +12,19 @@ export default async function aliasHandler(
   const query = req.query['alias']
   const alias: string = query as string
 
-  const idAlias = await fetchIdentity(connection, alias)
-
   switch (req.method) {
     case 'GET':
-      // TODO: handle not found error here to return 404
-      res.status(200).json(idAlias)
+      fetchIdentity(connection, alias)
+        .then((idAlias: IdentityAlias) => {
+          res.status(200).json(idAlias)
+        })
+        .catch((err: Error) => {
+          if (err.message.includes("Account does not exist")) {
+            res.status(404).end(err.message)
+          } else {
+            res.status(500).end(err.message)
+          }
+        })
       break
     default:
       res.setHeader('Allow', ['GET'])

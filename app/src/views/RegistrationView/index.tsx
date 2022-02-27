@@ -6,13 +6,17 @@ import {
 } from '@solana/wallet-adapter-react-ui'
 
 import styles from './index.module.css'
-import { registerAccount, useVVallet } from 'contexts/VVallet'
-import { abbreviated } from 'utils/crypto'
+import { fetchIdentitiesByOwner, isAliasRegistered, isKeyRegistered, registerAccount, useVVallet } from 'contexts/VVallet'
 import { SolanaLogo } from 'components'
+import { IdentityAlias } from 'types/identityAlias'
 
 export const RegistrationView: FC = () => {
   const [isWaiting, setIsWaiting] = useState(false)
   const [alias, setAlias] = useState('')
+  const [disableRegistration, setDisableRegistration] = useState(true)
+  const [disableAliasInput, setDisableAliasInput] = useState(false)
+  const [aliasMessage, setAliasMessage] = useState('Please enter an alias')
+  const [aliasPlaceholder, setAliasPlaceholder] = useState('alias')
   const app = useVVallet()
 
   const register = async () => {
@@ -23,11 +27,42 @@ export const RegistrationView: FC = () => {
     }
   }
 
+  const updateAliasValidation = async (inputAlias: string) => {
+    if (inputAlias === '') {
+      setAliasMessage('Please enter an alias')
+      setDisableRegistration(true)
+      return
+    }
+
+    if (inputAlias.length > 50) {
+      setAliasMessage('Alias must be less than 50 characters')
+      setDisableRegistration(true)
+      return
+    }
+
+    if (app) {
+      isAliasRegistered(app, inputAlias).then((registered: boolean) => {
+        if (registered) {
+          setAliasMessage('This alias is already claimed')
+          setDisableRegistration(true)
+          return
+        }
+      })
+
+      setAliasMessage('This alias is available')
+      setDisableRegistration(false)
+      return
+    }
+
+    setAliasMessage('Please select an alias')
+    setDisableRegistration(true)
+  }
+
   const validateAndSetAlias = (e: React.FormEvent<HTMLInputElement>) => {
-    const inputAlias = e.currentTarget.value
+    const inputAlias = e.currentTarget.value.trim()
     setAlias(inputAlias)
     console.log(inputAlias)
-    // TODO: validate
+    updateAliasValidation(inputAlias)
   }
 
   if (!app) {
@@ -51,7 +86,23 @@ export const RegistrationView: FC = () => {
       </div>
     )
   } else {
-    const abbreviatedKey = abbreviated(app.connectedWallet.publicKey)
+    if (app) {
+      // check if this wallet is already registered
+      // if they are don't let them register again
+      isKeyRegistered(app, app.connectedWallet.publicKey).then((registered: boolean) => {
+        if (registered) {
+          fetchIdentitiesByOwner(app, app.connectedWallet.publicKey.toBase58())
+            .then((identities: IdentityAlias[]) => {
+              // assume they only have one alias registed in this case
+              let id = identities[0]
+              setAliasPlaceholder(id.alias)
+              setAliasMessage("You're already registered")
+              setDisableAliasInput(true)
+              setDisableRegistration(true)
+            })
+        }
+      })
+    }
 
     return (
       <div className="container mx-auto max-w-6xl p-8 2xl:px-0">
@@ -81,12 +132,13 @@ export const RegistrationView: FC = () => {
                       <div className="form-control ml-3">
                         <input
                           type="text"
-                          placeholder="alias"
+                          placeholder={aliasPlaceholder}
                           className="input input-info input-bordered w-56 mt-3"
+                          disabled={disableAliasInput}
                           onChange={validateAndSetAlias}
                         />
                         <label className="label">
-                          <span className="label-text-alt">Please enter an alias</span>
+                          <span className="label-text-alt">{aliasMessage}</span>
                         </label>
                       </div>
                       <div className="absolute left-2 bottom-4 w-4 h-4 opacity-75">
@@ -119,6 +171,7 @@ export const RegistrationView: FC = () => {
                     ) : (
                       <button
                         className="btn btn-primary btn-accent border-base-300 mt-3"
+                        disabled={disableRegistration}
                         onClick={register}
                       >
                         register now

@@ -8,8 +8,3 @@ export const generateAliasKeypair = (alias: string): anchor.web3.Keypair => {
   let hash: Uint8Array = createHash('sha256').update(alias).digest()
   return anchor.web3.Keypair.fromSeed(hash)
 }
-
-export const abbreviated = (pub: PublicKey): string => {
-  const key = pub.toBase58()
-  return key.slice(0, 16) + '...' + key.slice(-16)
-}

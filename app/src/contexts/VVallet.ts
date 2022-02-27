@@ -74,45 +74,6 @@ export const registerAccount = async (app: VVallet, alias: string) => {
     },
     signers: [aliasKeys], // wallet is automatically added as a signer
   })
-
-  console.log('registered')
-
-  await app.program.account.identity.fetch(aliasKeys.publicKey)
-}
-
-const identityAliasFilter = (alias: string) => ({
-  memcmp: {
-    offset:
-      8 + // discriminator
-      32 + // owner public key
-      4, // alias string prefix
-    bytes: bs58.encode(Buffer.from(alias)),
-  },
-})
-
-export const fetchIdentitiesByAlias = async (
-  app: VVallet,
-  alias: string,
-): Promise<IdentityAlias[]> => {
-  if (!app.connectedWallet) {
-    Promise.reject('no wallet connected')
-  }
-
-  let filters = [identityAliasFilter(alias)]
-
-  const identities = await app.program.account.identity.all(filters)
-
-  const ownerIdentities: IdentityAlias[] = []
-
-  for (let identity of identities) {
-    const ownerIdentity: IdentityAlias = {
-      owner: identity.account.owner.toBase58(),
-      alias: identity.account.alias,
-    }
-    ownerIdentities.push(ownerIdentity)
-  }
-
-  return ownerIdentities
 }
 
 const identityOwnerFilter = (owner: string) => ({
@@ -175,9 +136,15 @@ export const isAliasRegistered = async (
     Promise.reject('no wallet connected')
   }
 
-  const registered = await fetchIdentitiesByAlias(app, alias)
+  try {
+    await fetchIdentity(app, alias)
+  } catch (err: any) {
+    console.log(err)
+    return false
+  }
 
-  return registered.length > 0
+  // the look-up was a success, so this is registered
+  return true
 }
 
 export const isKeyRegistered = async (app: VVallet, pub: PublicKey): Promise<boolean> => {
