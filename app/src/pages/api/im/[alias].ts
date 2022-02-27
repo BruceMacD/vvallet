@@ -14,17 +14,16 @@ export default async function aliasHandler(
 
   switch (req.method) {
     case 'GET':
-      fetchIdentity(connection, alias)
-        .then((idAlias: IdentityAlias) => {
-          res.status(200).json(idAlias)
-        })
-        .catch((err: Error) => {
-          if (err.message.includes("Account does not exist")) {
-            res.status(404).end(err.message)
-          } else {
-            res.status(500).end(err.message)
-          }
-        })
+      try {
+        const idAlias = await fetchIdentity(connection, alias)
+        res.status(200).json(idAlias)
+      } catch (err: any) {
+        if (err.message.includes("Account does not exist")) {
+          res.status(404).end(err.message)
+        } else {
+          res.status(500).end(err.message)
+        }
+      }
       break
     default:
       res.setHeader('Allow', ['GET'])
