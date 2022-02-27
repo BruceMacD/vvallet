@@ -2,7 +2,7 @@ import { Keypair, PublicKey, Transaction } from '@solana/web3.js'
 import { AnchorWallet } from '@solana/wallet-adapter-react'
 
 /**
- * ReadOnlyWallet for querying the vvallet chain
+ * ReadOnlyWallet for querying the vvallet chain from the API
  * Does not store funds or commit transactions
  * This stub is needed for use with Anchor
  */

@@ -4,16 +4,20 @@ import { FC, useMemo } from 'react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 
 import styles from './index.module.css'
-import { isKeyRegistered, useVVallet } from 'lib/VVallet'
+import { isKeyRegistered, useVVallet } from 'contexts/VVallet'
 
 export const HomeView: FC = ({}) => {
-  const wallet = useVVallet()
+  const app = useVVallet()
 
   useMemo(() => {
-    if (wallet?.local?.publicKey && !isKeyRegistered(wallet.local.publicKey)) {
-      Router.push('/register')
+    if (app?.connectedWallet?.publicKey) {
+      isKeyRegistered(app, app.connectedWallet.publicKey).then((registered: boolean) => {
+        if (!registered) {
+          Router.push('/register')
+        }
+      })
     }
-  }, [wallet])
+  }, [app])
 
   return (
     <div className="container mx-auto max-w-6xl p-8 2xl:px-0">

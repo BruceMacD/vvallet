@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import { fetchIdentity, useReadOnlyVVallet } from 'lib/VVallet'
+import { fetchIdentity, useReadOnlyVVallet } from 'contexts/VVallet'
 import { IdentityAlias } from 'types/identityAlias'
 
 const connection = useReadOnlyVVallet()

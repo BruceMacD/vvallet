@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import { fetchIdentitiesByOwner, fetchIdentity, fetchProof, fetchProofsByOwner, useReadOnlyVVallet } from 'lib/VVallet'
+import { fetchIdentitiesByOwner, fetchProof, useReadOnlyVVallet } from 'contexts/VVallet'
 import { OwnerProof, ProofValidation } from 'types/ownerProof'
 import { fetchTweet } from 'utils/fetcher'
 import { IdentityAlias } from 'types/identityAlias'
@@ -19,12 +19,14 @@ export default async function ownerProofsHandler(
     case 'GET':
       // get proof for specifed ID
       const toValidate = await fetchProof(connection, proof)
-      
+
       const expectedOwners = await fetchIdentitiesByOwner(connection, toValidate.owner)
+
       if (expectedOwners.length == 0) {
         res.status(404).end(`Owner for ${proof} not found`)
       }
-      if (expectedOwners.length == 0) {
+
+      if (expectedOwners.length > 1) {
         res.status(500).end(`Multiple identities found for ${proof} owner`)
       }
 
@@ -39,7 +41,10 @@ export default async function ownerProofsHandler(
   }
 }
 
-const validate = async (proof: OwnerProof, expectedOwner: IdentityAlias): Promise<ProofValidation> => {
+const validate = async (
+  proof: OwnerProof,
+  expectedOwner: IdentityAlias,
+): Promise<ProofValidation> => {
   const result: ProofValidation = {
     owner: proof.owner,
     proof: proof.proof,

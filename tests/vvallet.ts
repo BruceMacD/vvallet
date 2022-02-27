@@ -92,7 +92,7 @@ describe('vvallet', () => {
     assert.equal(lookupByAlias[0].account.alias, alias)
   })
 
-  it('can look up identity by owner', async () => {
+  it('can look up identity by owner public key', async () => {
     let alias = "id_by_owner"
     let aliasKeys: anchor.web3.Keypair = generateAliasKeypair(alias)
 

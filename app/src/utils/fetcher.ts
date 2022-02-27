@@ -1,6 +1,10 @@
 import useSWR from 'swr'
 import { IdResponse } from 'types/identityAlias'
-import { ProofsResponse, ProofValidationResponse, ValidateProofRequest } from 'types/ownerProof'
+import {
+  ProofsResponse,
+  ProofValidationResponse,
+  ValidateProofRequest,
+} from 'types/ownerProof'
 import { Tweet } from 'types/tweet'
 
 export const fetcher = async (url: string): Promise<any> => {
@@ -12,8 +16,8 @@ export const fetcher = async (url: string): Promise<any> => {
 export const authorizedFetcher = async (url: string, token: string): Promise<any> => {
   const res = await fetch(url, {
     headers: new Headers({
-      'Authorization': 'Bearer '+ token, 
-    })
+      Authorization: 'Bearer ' + token,
+    }),
   })
 
   return parseFetcherResponse(res, url)
@@ -39,13 +43,13 @@ const parseFetcherResponse = async (res: Response, url: string): Promise<any> =>
 // external API fetchers
 
 // https://twitter.com/${username}/status/${tweet_id}
-const TWEET_URL_REGEX = '(.*twitter.com\/)(.*)(\/status\/)([0-9]*)'
+const TWEET_URL_REGEX = '(.*twitter.com/)(.*)(/status/)([0-9]*)'
 const TWEET_URL_GROUPS = 5
 
 export const fetchTweet = async (url: string): Promise<Tweet> => {
   const groups = url.match(TWEET_URL_REGEX)
 
-  let tweetId = ""
+  let tweetId = ''
   if (groups !== null && groups.length == TWEET_URL_GROUPS) {
     tweetId = groups[4]
   } else {
@@ -64,7 +68,7 @@ export const fetchTweet = async (url: string): Promise<Tweet> => {
   return {
     authorId: resp.data.author_id,
     tweetId: resp.data.id,
-    text: resp.data.text
+    text: resp.data.text,
   }
 }
 

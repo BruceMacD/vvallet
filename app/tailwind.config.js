@@ -26,18 +26,18 @@ module.exports = {
       },
       keyframes: {
         linger: {
-          '0%, 100%': { 
+          '0%, 100%': {
             transform: 'translateY(-1%)',
             filter: 'brightness(1.1)',
-            opacity: 0.99
+            opacity: 0.99,
           },
-          '50%': { 
+          '50%': {
             transform: 'translateY(1%)',
             filter: 'brightness(0.9)',
-            opacity: 0.92
+            opacity: 0.92,
           },
-        }
-      }
+        },
+      },
     },
   },
   variants: {

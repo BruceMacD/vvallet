@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import { fetchProofsByOwner, useReadOnlyVVallet } from 'lib/VVallet'
+import { fetchProofsByOwner, useReadOnlyVVallet } from 'contexts/VVallet'
 import { OwnerProof } from 'types/ownerProof'
 
 const connection = useReadOnlyVVallet()

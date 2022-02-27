@@ -1,5 +1,11 @@
 export const SolanaLogo = () => (
-  <svg width="46" height="35" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" className="inline">
+  <svg
+    width="46"
+    height="35"
+    viewBox="0 0 60 60"
+    xmlns="http://www.w3.org/2000/svg"
+    className="inline"
+  >
     <defs>
       <linearGradient x1="90.737%" y1="34.776%" x2="35.509%" y2="55.415%" id="a">
         <stop stopColor="#00FFA3" offset="0%" />

@@ -23,14 +23,14 @@ export const parseUsername = (kind: string, proof: string): string => {
   return ''
 }
 
-const TWITTER_USERNAME_REGEX = '(.*twitter.com)\/(.*)\/(status)'
+const TWITTER_USERNAME_REGEX = '(.*twitter.com)/(.*)/(status)'
 
 const twitterUsernameFromProof = (proof: string): string => {
   const groups = proof.match(TWITTER_USERNAME_REGEX)
 
-    if (groups !== null && groups.length >= 3) {
-        return groups[2]
-    }
+  if (groups !== null && groups.length >= 3) {
+    return groups[2]
+  }
 
-    return ''
+  return ''
 }

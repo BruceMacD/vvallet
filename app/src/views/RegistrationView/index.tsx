@@ -1,56 +1,36 @@
 import Link from 'next/link'
 import { FC, useMemo, useState } from 'react'
-import { WalletDisconnectButton, WalletMultiButton } from '@solana/wallet-adapter-react-ui'
+import {
+  WalletDisconnectButton,
+  WalletMultiButton,
+} from '@solana/wallet-adapter-react-ui'
 
 import styles from './index.module.css'
-import {
-  airdropToWallet,
-  fetchAllIdentities,
-  fetchProofsByOwner,
-  isKeyRegistered,
-  registerAccount,
-  registerProof,
-  useVVallet,
-} from 'lib/VVallet'
+import { registerAccount, useVVallet } from 'contexts/VVallet'
+import { abbreviated } from 'utils/crypto'
+import { SolanaLogo } from 'components'
 
 export const RegistrationView: FC = () => {
   const [isWaiting, setIsWaiting] = useState(false)
-  const wallet = useVVallet()
-
-  const airdrop = async () => {
-    if (wallet) {
-      setIsWaiting(true)
-      await airdropToWallet(wallet)
-      setIsWaiting(false)
-    }
-  }
+  const [alias, setAlias] = useState('')
+  const app = useVVallet()
 
   const register = async () => {
-    if (wallet) {
+    if (app) {
       setIsWaiting(true)
-      await registerAccount(wallet, 'bruce')
+      await registerAccount(app, alias)
       setIsWaiting(false)
     }
   }
 
-  const identities = async () => {
-    if (wallet) {
-      setIsWaiting(true)
-      await fetchAllIdentities(wallet)
-      setIsWaiting(false)
-    }
+  const validateAndSetAlias = (e: React.FormEvent<HTMLInputElement>) => {
+    const inputAlias = e.currentTarget.value
+    setAlias(inputAlias)
+    console.log(inputAlias)
+    // TODO: validate
   }
 
-  const getProof = async () => {
-    if (wallet) {
-      setIsWaiting(true)
-      // TODO: set these from input
-      await fetchProofsByOwner(wallet, wallet.local.publicKey.toBase58())
-      setIsWaiting(false)
-    }
-  }
-
-  if (!wallet) {
+  if (!app) {
     return (
       <div className="container mx-auto max-w-6xl p-8 2xl:px-0">
         <div className={styles.container}></div>
@@ -71,46 +51,80 @@ export const RegistrationView: FC = () => {
       </div>
     )
   } else {
+    const abbreviatedKey = abbreviated(app.connectedWallet.publicKey)
+
     return (
       <div className="container mx-auto max-w-6xl p-8 2xl:px-0">
         <div className={styles.container}>
           <div className="text-center">
             <div className="hero min-h-16">
-              <div className="text-center hero-content">
+              <div className="hero-content">
                 <div className="max-w-lg">
                   <span className="logo text-7xl">vvallet</span>
                   <div className="hero-content pt-10">
                     <WalletDisconnectButton />
                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
-  
-          <div className="flex mb-16">
-            <div className="mr-4">
-              <div>
-                {wallet?.local?.publicKey ? (
-                  <>Your address: {wallet.local.publicKey.toBase58()}</>
-                ) : null}
-              </div>
-              <div>
-                <button className="btn" onClick={airdrop}>
-                  air drop
-                </button>
-                <button className="btn" onClick={register}>
-                  register alias "bruce"
-                </button>
-                <button className="btn" onClick={identities}>
-                  get vvallet identities
-                </button>
-                <button className="btn" onClick={getProof}>
-                  get proofs for wallet
-                </button>
-                <div>
-                  {isWaiting ? (
-                    <button className="btn btn-lg loading">loading</button>
-                  ) : null}
+                  <div className="flex w-auto space-x-10 flex-nowrap">
+                    <div className="artboard phone-1 id-card overflow-hidden">
+                      <div className="m-4 mt-8 text-5xl text-left">
+                        <span className="fancy">vvallet</span>
+                      </div>
+                      <div className="w-64 h-64">
+                        <img src="/placeholder_card_background.png" />
+                      </div>
+                      <div className="w-32 h-32 ml-16 -mt-48">
+                        <img src="/qr-code.png" />
+                      </div>
+                      <div className="mt-16 ml-4 pb-1 underline card-body text-left">
+                        member
+                      </div>
+                      <div className="form-control ml-3">
+                        <input
+                          type="text"
+                          placeholder="alias"
+                          className="input input-info input-bordered w-56 mt-3"
+                          onChange={validateAndSetAlias}
+                        />
+                        <label className="label">
+                          <span className="label-text-alt">Please enter an alias</span>
+                        </label>
+                      </div>
+                      <div className="absolute left-2 bottom-4 w-4 h-4 opacity-75">
+                        <SolanaLogo />
+                      </div>
+                      <div className="card-stripe card-key-font	h-16 rounded-tr-2xl absolute ml-80 left-0 bottom-0 origin-bottom-left -rotate-90">
+                        <div className="badge h-6 ml-12 mr-12 mt-5">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-6 w-6 mr-3"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="1"
+                              d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"
+                            />
+                          </svg>
+                          {app.connectedWallet.publicKey.toBase58()}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    {isWaiting ? (
+                      <button className="btn btn-primary btn-accent border-base-300 mt-3 loading" />
+                    ) : (
+                      <button
+                        className="btn btn-primary btn-accent border-base-300 mt-3"
+                        onClick={register}
+                      >
+                        register now
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

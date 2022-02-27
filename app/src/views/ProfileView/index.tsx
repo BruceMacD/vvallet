@@ -4,31 +4,26 @@ import { FC, useMemo, useState } from 'react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 
 import styles from './index.module.css'
-import { isKeyRegistered, registerProof, useVVallet } from 'lib/VVallet'
+import { isKeyRegistered, registerProof, useVVallet } from 'contexts/VVallet'
 import { IdCard } from './idCard'
 import { useIdentity } from 'utils/fetcher'
 import { Proofs } from './proofs'
 import { Loader } from 'components'
+import { AddProof } from './addProof'
 
 export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
   const { identity, isLoading, error } = useIdentity(alias)
-  const [isWaiting, setIsWaiting] = useState(false)
-  const wallet = useVVallet()
+  const app = useVVallet()
 
   useMemo(() => {
-    if (wallet?.local?.publicKey && !isKeyRegistered(wallet.local.publicKey)) {
-      Router.push('/register')
+    if (app?.connectedWallet?.publicKey) {
+      isKeyRegistered(app, app.connectedWallet.publicKey).then((registered: boolean) => {
+        if (!registered) {
+          Router.push('/register')
+        }
+      })
     }
-  }, [wallet])
-
-  const addProof = async () => {
-    if (wallet) {
-      setIsWaiting(true)
-      // TODO: set these from input
-      await registerProof(wallet, 'twitter', 'https://twitter.com/vvalletdotme/status/1488510691359268870')
-      setIsWaiting(false)
-    }
-  }
+  }, [app])
 
   if (isLoading)
     return (
@@ -84,8 +79,7 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
         </div>
       </div>
     )
-  }
-  else
+  } else
     return (
       <div className="container mx-auto max-w-6xl p-8 2xl:px-0">
         <div className={styles.container}>
@@ -108,18 +102,10 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
             </div>
 
             <div className="basis-1/2 ml-4">
-              {wallet?.local?.publicKey && identity.owner == wallet.local.publicKey.toBase58() ? (
-                  <div>
-                    <button className="btn btn-outline btn-accent border-base-300 w-96" onClick={addProof}>
-                      + add a proof
-                    </button>
-                    <div>
-                      {isWaiting ? (
-                        <button className="btn btn-lg loading">loading</button>
-                      ) : null}
-                    </div>
-                  </div>
-                ) : null}
+              {app?.connectedWallet?.publicKey &&
+              identity.owner == app.connectedWallet.publicKey.toBase58() ? (
+                <AddProof app={app} identity={identity} />
+              ) : null}
               <Proofs identity={identity} />
             </div>
           </div>
