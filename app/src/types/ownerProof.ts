@@ -12,7 +12,7 @@ export type ProofsResponse = {
 }
 
 export type ValidateProofRequest = {
-  id: string // public key of the proof account
+  id: string // b58 public key of the proof account
 }
 
 export type ProofValidation = {
@@ -20,10 +20,11 @@ export type ProofValidation = {
   proof: string
   valid: boolean
   byProxy: boolean
+  error: string // set if the proof validation fails
 }
 
 export type ProofValidationResponse = {
   proofValidation: ProofValidation
   isLoading: boolean
-  error: Error
+  error: Error // server error, not validation error
 }

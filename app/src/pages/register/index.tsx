@@ -6,7 +6,7 @@ const Register: NextPage = props => {
   return (
     <div>
       <Head>
-        <title>vvallet</title>
+        <title>Register | vvallet.me</title>
         <meta name="description" content="vvallet - decentralized proof of identity" />
       </Head>
       <RegistrationView />

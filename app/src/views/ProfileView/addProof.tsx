@@ -36,7 +36,6 @@ export const AddProof: FC<{ app: VVallet; identity: IdentityAlias }> = ({
   const setProofInput = (e: React.FormEvent<HTMLInputElement>) => {
     const inputProof = e.currentTarget.value
     setProof(inputProof)
-    console.log(inputProof)
   }
 
   const addProof = async () => {

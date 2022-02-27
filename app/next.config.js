@@ -20,17 +20,7 @@ const withTM = require('next-transpile-modules')([
   // "@solana/wallet-adapter-ant-design",
 ])
 
-// add this if you need LESS
-// also install less and less-loader
-// const withLess = require("next-with-less");
-
 const plugins = [
-  // add this if you need LESS
-  // [withLess, {
-  //   lessLoaderOptions: {
-  //     /* ... */
-  //   },
-  // }],
   [
     withTM,
     {

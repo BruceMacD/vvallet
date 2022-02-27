@@ -10,7 +10,6 @@ export const parseProfileLink = (kind: string, proof: string): string => {
 
 const twitterProfileFromProof = (proof: string): string => {
   const parts = proof.split('/status/')
-  console.log(parts)
   return parts[0]
 }
 

@@ -8,9 +8,6 @@ import { parseProfileLink, parseUsername } from 'utils/parser'
 export const Proof: FC<{ proof: OwnerProof }> = ({ proof }) => {
   const { proofValidation, isLoading, error } = useProofValidator(proof)
 
-  console.log(proofValidation)
-  console.log(error)
-
   const displayValidity = (): JSX.Element => {
     if (isLoading) {
       return (
@@ -62,6 +59,14 @@ export const Proof: FC<{ proof: OwnerProof }> = ({ proof }) => {
     }
 
     // not valid
+    if (proofValidation && proofValidation.error != '') {
+      console.log("Proof validation for " + proofValidation.proof + " failed: " + proofValidation.error)
+    }
+
+    if (error) {
+      console.log(error)
+    }
+
     return (
       <div className="badge badge-error">
         <svg

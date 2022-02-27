@@ -1,4 +1,4 @@
-import { FC, useState } from 'react'
+import { FC } from 'react'
 import { IdentityAlias } from 'types/identityAlias'
 import { useProofs } from 'utils/fetcher'
 import { Proof } from './proof'
@@ -6,8 +6,6 @@ import { Proof } from './proof'
 // The proofs view gets all proofs for an identity then validates them
 export const Proofs: FC<{ identity: IdentityAlias }> = ({ identity }) => {
   const { proofs, isLoading, error } = useProofs(identity.owner)
-
-  console.log(proofs)
 
   const proofsDisplay: JSX.Element[] = proofs?.map(proof => (
     <Proof proof={proof} key={proof.id} />

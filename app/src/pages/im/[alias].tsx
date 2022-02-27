@@ -11,8 +11,8 @@ const Profile: NextPage = props => {
   return (
     <div>
       <Head>
-        <title>{query}</title>
-        <meta name="description" content="vvallet - decentralized proof of identity" />
+        <title>{query} | vvallet.me</title>
+        <meta name="description" content="vvallet.me - decentralized proof of identity" />
       </Head>
       <ProfileView alias={alias} />
     </div>

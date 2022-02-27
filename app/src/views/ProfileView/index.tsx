@@ -1,10 +1,10 @@
 import Link from 'next/link'
 import Router from 'next/router'
-import { FC, useMemo, useState } from 'react'
+import { FC, useMemo } from 'react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 
 import styles from './index.module.css'
-import { isKeyRegistered, registerProof, useVVallet } from 'contexts/VVallet'
+import { isKeyRegistered, useVVallet } from 'contexts/VVallet'
 import { IdCard } from './idCard'
 import { useIdentity } from 'utils/fetcher'
 import { Proofs } from './proofs'

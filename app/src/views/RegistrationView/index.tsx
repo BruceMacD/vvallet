@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { FC, useMemo, useState } from 'react'
+import { FC, useState } from 'react'
 import {
   WalletDisconnectButton,
   WalletMultiButton,

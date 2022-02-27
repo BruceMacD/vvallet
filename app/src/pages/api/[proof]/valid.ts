@@ -30,10 +30,20 @@ export default async function ownerProofsHandler(
         res.status(500).end(`Multiple identities found for ${proof} owner`)
       }
 
-      const result: ProofValidation = await validate(toValidate, expectedOwners[0])
-      // TODO: handle not found error here to return 404
+      try {
+        const result: ProofValidation = await validate(toValidate, expectedOwners[0])
+        res.status(200).json(result)
+      } catch (err: any) {
+        const result: ProofValidation = {
+          owner: toValidate.owner,
+          proof: toValidate.proof,
+          valid: false, // assume not valid until proven otherwise
+          byProxy: true, // always true if validating the proof using the API
+          error: err.message
+        }
+        res.status(200).json(result)
+      }
 
-      res.status(200).json(result)
       break
     default:
       res.setHeader('Allow', ['GET'])
@@ -50,12 +60,18 @@ const validate = async (
     proof: proof.proof,
     valid: false, // assume not valid until proven otherwise
     byProxy: true, // always true if validating the proof using the API
+    error: ''
   }
 
   switch (proof.kind) {
     case 'twitter':
       const tweet = await fetchTweet(proof.proof)
       result.valid = await validateTweet(tweet, expectedOwner)
+      
+      if (!result.valid) {
+        result.error = 'proof tweet did not match the expected format'
+      }
+      
       break
   }
 

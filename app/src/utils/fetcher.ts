@@ -9,7 +9,6 @@ import { Tweet } from 'types/tweet'
 
 export const fetcher = async (url: string): Promise<any> => {
   const res = await fetch(url)
-
   return parseFetcherResponse(res, url)
 }
 
@@ -53,14 +52,14 @@ export const fetchTweet = async (url: string): Promise<Tweet> => {
   if (groups !== null && groups.length == TWEET_URL_GROUPS) {
     tweetId = groups[4]
   } else {
-    throw 'unexpected twitter proof URL format'
+    throw new Error('unexpected twitter proof URL format')
   }
 
   const apiUrl = 'https://api.twitter.com/2/tweets/' + tweetId + '?expansions=author_id'
 
   const token = process.env.TWITTER_BEARER_TOKEN
   if (token === undefined) {
-    throw 'server twitter api token not configured'
+    throw new Error('server twitter api token not configured')
   }
 
   const resp = await authorizedFetcher(apiUrl, token)

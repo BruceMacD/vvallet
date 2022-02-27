@@ -51,12 +51,12 @@ export const HomeView: FC = ({}) => {
             </div>
           </div>
 
-          <div className="max-w-4xl mx-auto">
-            <h1 className="fancy mb-5 pb-8 text-4xl pt-24">featured</h1>
+          <div className="max-w-4xl mx-auto mt-24">
+            <h1 className="fancy pb-8 text-4xl ">featured</h1>
             <ul className="text-center leading-10">
               <li>
                 <Link href="/im/bruce">
-                  <a className="mb-5 text-2xl font-bold hover:underline">👤 Bruce</a>
+                  <a className="mb-5 text-2xl font-bold hover:underline">🛅 Bruce</a>
                 </Link>
               </li>
             </ul>

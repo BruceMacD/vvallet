@@ -24,7 +24,7 @@ const Home: NextPage = props => {
         crossOrigin=""
       />
       <Head>
-        <title>vvallet</title>
+        <title>vvallet.me</title>
         <meta name="description" content="vvallet - decentralized proof of identity" />
       </Head>
       <HomeView />
