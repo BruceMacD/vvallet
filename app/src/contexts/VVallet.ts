@@ -104,13 +104,13 @@ export const fetchIdentitiesByAlias = async (
 
   const ownerIdentities: IdentityAlias[] = []
 
-  identities.every(identity => {
+  for (let identity of identities) {
     const ownerIdentity: IdentityAlias = {
       owner: identity.account.owner.toBase58(),
       alias: identity.account.alias,
     }
     ownerIdentities.push(ownerIdentity)
-  })
+  }
 
   return ownerIdentities
 }
@@ -137,13 +137,13 @@ export const fetchIdentitiesByOwner = async (
 
   const ownerIdentities: IdentityAlias[] = []
 
-  identities.every(identity => {
+  for (let identity of identities) {
     const ownerIdentity: IdentityAlias = {
       owner: identity.account.owner.toBase58(),
       alias: identity.account.alias,
     }
     ownerIdentities.push(ownerIdentity)
-  })
+  }
 
   return ownerIdentities
 }
@@ -207,8 +207,6 @@ export const registerProof = async (app: VVallet, kind: string, proof: string) =
     },
     signers: [keypair], // wallet (owner) is automatically added as a signer
   })
-
-  await app.program.account.proof.fetch(keypair.publicKey)
 }
 
 const proofOwnerFilter = (owner: string) => ({
@@ -232,7 +230,7 @@ export const fetchProofsByOwner = async (
 
   const ownerProofs: OwnerProof[] = []
 
-  proofs.every(proof => {
+  for (let proof of proofs) {
     let ownerProof: OwnerProof = {
       id: proof.publicKey.toBase58(),
       owner: proof.account.owner.toBase58(),
@@ -240,7 +238,7 @@ export const fetchProofsByOwner = async (
       proof: proof.account.proof,
     }
     ownerProofs.push(ownerProof)
-  })
+  }
 
   return ownerProofs
 }
