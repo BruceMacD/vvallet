@@ -8,7 +8,7 @@ export const Proofs: FC<{ identity: IdentityAlias }> = ({ identity }) => {
   const { proofs, isLoading, error } = useProofs(identity.owner)
 
   const proofsDisplay: JSX.Element[] = proofs?.map(proof => (
-    <Proof proof={proof} key={proof.id} />
+    <Proof proof={proof} owner={identity.owner} key={proof.id} />
   ))
 
   if (isLoading)

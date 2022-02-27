@@ -4,8 +4,9 @@ import { FC } from 'react'
 import { OwnerProof } from 'types/ownerProof'
 import { useProofValidator } from 'utils/fetcher'
 import { parseProfileLink, parseUsername } from 'utils/parser'
+import { validateProofHasExpectedOwner } from 'utils/validator'
 
-export const Proof: FC<{ proof: OwnerProof }> = ({ proof }) => {
+export const Proof: FC<{ proof: OwnerProof, owner: string }> = ({ proof, owner }) => {
   const { proofValidation, isLoading, error } = useProofValidator(proof)
 
   const displayValidity = (): JSX.Element => {
@@ -35,6 +36,11 @@ export const Proof: FC<{ proof: OwnerProof }> = ({ proof }) => {
           loading...
         </div>
       )
+    }
+
+    if (proofValidation != undefined && proofValidation.valid) {
+      // a double check to make sure the server isn't returning invalid proof validations
+      proofValidation.valid = validateProofHasExpectedOwner(proofValidation, owner)
     }
 
     if (proofValidation != undefined && proofValidation.valid) {

@@ -1,4 +1,5 @@
 import { IdentityAlias } from 'types/identityAlias'
+import { OwnerProof, ProofValidation } from 'types/ownerProof'
 import { Tweet } from 'types/tweet'
 
 const TWEET_REGEX = '(Verifying my @vvalletdotme alias is )(.*)(: )'
@@ -18,4 +19,10 @@ export const validateTweet = async (
     }
   }
   return false
+}
+
+// validateProofHasExpectedOwner is used by clients to check that the validated proof has the owner they expect
+// this removes some trust in the server
+export const validateProofHasExpectedOwner = (proofValidation: ProofValidation, expectedOwner: string): boolean => {
+  return proofValidation.owner === expectedOwner
 }
