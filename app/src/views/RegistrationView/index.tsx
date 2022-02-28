@@ -11,6 +11,8 @@ import { SolanaLogo } from 'components'
 import { IdentityAlias } from 'types/identityAlias'
 
 export const RegistrationView: FC = () => {
+  const URL_SAFE_CHARS = "^[A-Za-z0-9._ ~()'!*:@,;+-]*$"
+
   const [isWaiting, setIsWaiting] = useState(false)
   const [alias, setAlias] = useState('')
   const [disableRegistration, setDisableRegistration] = useState(true)
@@ -36,6 +38,14 @@ export const RegistrationView: FC = () => {
 
     if (inputAlias.length > 50) {
       setAliasMessage('Alias must be less than 50 characters')
+      setDisableRegistration(true)
+      return
+    }
+
+    const validChars = inputAlias.match(URL_SAFE_CHARS)
+    if (validChars === null || validChars.length !== 1) {
+      // contains characters which are not URL safe
+      setAliasMessage('Alias contains invalid characters')
       setDisableRegistration(true)
       return
     }
