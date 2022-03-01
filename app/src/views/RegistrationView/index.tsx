@@ -19,12 +19,15 @@ export const RegistrationView: FC = () => {
   const [disableAliasInput, setDisableAliasInput] = useState(false)
   const [aliasMessage, setAliasMessage] = useState('Please enter an alias')
   const [aliasPlaceholder, setAliasPlaceholder] = useState('alias')
+  const [errMsg, setErrMsg] = useState('User rejected the request')
   const app = useVVallet()
 
   const register = async () => {
     if (app) {
       setIsWaiting(true)
-      await registerAccount(app, alias)
+      await registerAccount(app, alias).catch((err: Error) => {
+        setErrMsg(err.message)
+      })
       setIsWaiting(false)
     }
   }
@@ -186,6 +189,29 @@ export const RegistrationView: FC = () => {
                       >
                         register now
                       </button>
+                    )}
+                    {errMsg != '' && (
+                      <div className="alert alert-error w-80 mt-3">
+                        <div className="flex-1">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            className="w-6 h-6 mx-2 stroke-current"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+                            ></path>
+                          </svg>
+                          <label>{errMsg}</label>
+                        </div>
+                        <button className="btn btn-outline" onClick={() => setErrMsg('')}>
+                          ok
+                        </button>
+                      </div>
                     )}
                   </div>
                 </div>
