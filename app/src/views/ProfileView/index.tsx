@@ -5,10 +5,9 @@ import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 
 import styles from './index.module.css'
 import { isKeyRegistered, useVVallet } from 'contexts/VVallet'
-import { IdCard } from './idCard'
 import { useIdentity } from 'utils/fetcher'
 import { Proofs } from './proofs'
-import { Loader } from 'components'
+import { IdCard, Loader } from 'components'
 import { AddProof } from './addProof'
 
 export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
@@ -98,7 +97,7 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
 
           <div className="flex flex-row mt-16">
             <div className="basis-1/2">
-              <IdCard identity={identity} />
+              <IdCard identity={identity} registration={false} />
             </div>
 
             <div className="basis-1/2 ml-4">
