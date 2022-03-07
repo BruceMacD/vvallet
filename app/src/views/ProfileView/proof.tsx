@@ -1,13 +1,35 @@
+import { SuccessDisplay } from 'components'
+import { ErrorDisplay } from 'components/ErrorDisplay'
 import { getIcon } from 'components/Icon'
+import { deleteProof, useVVallet } from 'contexts/VVallet'
 import Link from 'next/link'
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import { OwnerProof } from 'types/ownerProof'
 import { useProofValidator } from 'utils/fetcher'
 import { parseProfileLink, parseUsername } from 'utils/parser'
 import { validateProofHasExpectedOwner } from 'utils/validator'
 
 export const Proof: FC<{ proof: OwnerProof; owner: string }> = ({ proof, owner }) => {
+  const app = useVVallet()
+  const [proofDeleted, setProofDeleted] = useState(false)
+  const [errMsg, setErrMsg] = useState('')
+  const [confirmationMsg, setConfirmationMsg] = useState('')
   const { proofValidation, isLoading, error } = useProofValidator(proof)
+
+  const requestDeleteProof = async () => {
+    if (app) {
+      await deleteProof(app, proof)
+        .then(() => {
+          setConfirmationMsg(
+            'Request submitted, please allow it a few minutes to process.',
+          )
+          setProofDeleted(true)
+        })
+        .catch((err: Error) => {
+          setErrMsg(err.message)
+        })
+    }
+  }
 
   const displayValidity = (): JSX.Element => {
     if (isLoading) {
@@ -112,22 +134,57 @@ export const Proof: FC<{ proof: OwnerProof; owner: string }> = ({ proof, owner }
           {displayValidity()}
         </div>
       </div>
+
       <div className="collapse-content">
         <div>
           <Link href={profileLink}>
             <a className="text-base link link-primary">{profileLink}</a>
           </Link>
         </div>
+
         <div className="mt-3">
           <p className="font-bold">Proof:</p>
           <Link href={proof.proof}>
             <a className="text-sm link link-primary">link</a>
           </Link>
         </div>
+
         <div className="mt-3">
           <p className="font-bold">Validation:</p>
           <p className="text-sm">{proofValidation?.byProxy ? 'proxy' : 'local'}</p>
         </div>
+
+        {app?.connectedWallet?.publicKey &&
+        proof.owner == app.connectedWallet.publicKey.toBase58() &&
+        !proofDeleted ? (
+          <button
+            className="btn btn-error btn-outline w-64 mt-6"
+            onClick={requestDeleteProof}
+          >
+            delete
+          </button>
+        ) : null}
+
+        {errMsg != '' && (
+          <div className="alert alert-error w-64 mt-3">
+            <ErrorDisplay message={errMsg} />
+            <button className="btn btn-outline ml-1" onClick={() => setErrMsg('')}>
+              ok
+            </button>
+          </div>
+        )}
+
+        {proofDeleted && confirmationMsg != '' && (
+          <div className="alert alert-success w-64 mt-3">
+            <SuccessDisplay message={confirmationMsg} />
+            <button
+              className="btn btn-outline ml-1"
+              onClick={() => setConfirmationMsg('')}
+            >
+              ok
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )

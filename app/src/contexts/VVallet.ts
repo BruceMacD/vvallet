@@ -228,3 +228,17 @@ export const fetchProof = async (
     proof: proof.proof,
   }
 }
+
+// deleteProof by the public key of the proof
+export const deleteProof = async (app: VVallet, ownerProof: OwnerProof) => {
+  if (!app.connectedWallet) {
+    throw new Error('no wallet connected')
+  }
+
+  await app.program.rpc.releaseProof({
+    accounts: {
+      proof: ownerProof.id,
+      owner: ownerProof.owner,
+    },
+  })
+}

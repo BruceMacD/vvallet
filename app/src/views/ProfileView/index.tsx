@@ -100,7 +100,7 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
               <IdCard identity={identity} registration={false} />
             </div>
 
-            <div className="basis-1/2 ml-4">
+            <div className="basis-1/2 ml-24">
               {app?.connectedWallet?.publicKey &&
               identity.owner == app.connectedWallet.publicKey.toBase58() ? (
                 <AddProof app={app} identity={identity} />

@@ -63,6 +63,7 @@ export const IdCard: FC<{ identity: IdentityAlias; registration: boolean }> = ({
       await registerAccount(app, alias).catch((err: Error) => {
         setErrMsg(err.message)
       })
+      // TODO: retry account look up until it succeeds, then redirect
       setIsWaiting(false)
     }
   }

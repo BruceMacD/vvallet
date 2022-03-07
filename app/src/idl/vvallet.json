@@ -29,6 +29,22 @@
       ]
     },
     {
+      "name": "releaseIdentity",
+      "accounts": [
+        {
+          "name": "identity",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "owner",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "addProof",
       "accounts": [
         {
@@ -57,6 +73,22 @@
           "type": "string"
         }
       ]
+    },
+    {
+      "name": "releaseProof",
+      "accounts": [
+        {
+          "name": "proof",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "owner",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": []
     }
   ],
   "accounts": [
@@ -71,6 +103,10 @@
           },
           {
             "name": "alias",
+            "type": "string"
+          },
+          {
+            "name": "ipfs",
             "type": "string"
           }
         ]
