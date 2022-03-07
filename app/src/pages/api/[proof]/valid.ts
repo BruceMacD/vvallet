@@ -39,7 +39,7 @@ export default async function ownerProofsHandler(
           proof: toValidate.proof,
           valid: false, // assume not valid until proven otherwise
           byProxy: true, // always true if validating the proof using the API
-          error: err.message
+          error: err.message,
         }
         res.status(200).json(result)
       }
@@ -60,18 +60,18 @@ const validate = async (
     proof: proof.proof,
     valid: false, // assume not valid until proven otherwise
     byProxy: true, // always true if validating the proof using the API
-    error: ''
+    error: '',
   }
 
   switch (proof.kind) {
     case 'twitter':
       const tweet = await fetchTweet(proof.proof)
       result.valid = await validateTweet(tweet, expectedOwner)
-      
+
       if (!result.valid) {
         result.error = 'proof tweet did not match the expected format'
       }
-      
+
       break
   }
 

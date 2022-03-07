@@ -14,6 +14,8 @@ describe('vvallet', () => {
   // @ts-ignore
   const program = anchor.workspace.Vvallet as Program<Vvallet>
 
+  // identity tests
+
   it('can register a new identity', async () => {
     let alias = "new_alias"
     let aliasKeys: anchor.web3.Keypair = generateAliasKeypair(alias)
@@ -84,7 +86,7 @@ describe('vvallet', () => {
           bytes: bs58.encode(Buffer.from(alias)),
         },
       }
-    ]);
+    ])
 
     assert.equal(lookupByAlias.length, 1)
 
@@ -117,7 +119,7 @@ describe('vvallet', () => {
           bytes: ownerKeys.publicKey.toBase58(),
         },
       }
-    ]);
+    ])
 
     assert.equal(lookupByOwner.length, 1)
 
@@ -255,6 +257,70 @@ describe('vvallet', () => {
     assert.fail('it should not be possible to register an alias with greater than 50 characters')
   })
 
+  it('can release an identity', async () => {
+    // create the identity
+    let alias = "alias_to_release"
+    let aliasKeys: anchor.web3.Keypair = generateAliasKeypair(alias)
+
+    await program.rpc.register(alias, {
+      accounts: {
+        identity: aliasKeys.publicKey,
+        owner: program.provider.wallet.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      },
+      signers: [aliasKeys],
+    })
+
+    await program.account.identity.fetch(aliasKeys.publicKey)
+
+    // release the identity
+    await program.rpc.releaseIdentity({
+      accounts: {
+        identity: aliasKeys.publicKey,
+        owner: program.provider.wallet.publicKey,
+      },
+    })
+
+    const identity = await program.account.identity.fetchNullable(aliasKeys.publicKey)
+    assert.ok(identity === null)
+  })
+
+  it('cannot release someone else\'s identity', async () => {
+    let alias = "somones_alias_to_try_release"
+    let aliasKeys: anchor.web3.Keypair = generateAliasKeypair(alias)
+
+    const otherUser = anchor.web3.Keypair.generate()
+    const airdrop = await program.provider.connection.requestAirdrop(otherUser.publicKey, 1000000000)
+    await program.provider.connection.confirmTransaction(airdrop)
+
+    await program.rpc.register(alias, {
+      accounts: {
+        identity: aliasKeys.publicKey,
+        owner: otherUser.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      },
+      signers: [aliasKeys, otherUser], // wallet is automatically added as a signer
+    })
+
+    await program.account.identity.fetch(aliasKeys.publicKey)
+
+    try {
+      await program.rpc.releaseIdentity({
+        accounts: {
+          identity: aliasKeys.publicKey,
+          owner: otherUser.publicKey,
+        },
+      })
+      assert.fail('should not be able to release someone else\'s identity.')
+    } catch (error) {
+      const notReleased = await program.account.identity.fetch(aliasKeys.publicKey)
+      assert.equal(notReleased.alias, alias)
+      assert.equal(notReleased.owner.toBase58(), otherUser.publicKey.toBase58())
+    }
+  })
+
+  // proof tests
+
   it('can add a new proof', async () => {
     let kind = "github"
     let proof = "https://gist.github.com/BruceMacD/1234567abcdef"
@@ -328,7 +394,7 @@ describe('vvallet', () => {
           bytes: ownerKeys.publicKey.toBase58(),
         }
       }
-    ]);
+    ])
 
     assert.equal(matchingProofs.length, 1)
     assert.equal(matchingProofs[0].account.owner.toBase58(), ownerKeys.publicKey.toBase58())
@@ -341,11 +407,11 @@ describe('vvallet', () => {
       let kind = "github"
       let proof = "https://gist.github.com/BruceMacD/1234567abcdef"
       let proofKeys: anchor.web3.Keypair = anchor.web3.Keypair.generate()
-  
+
       const otherUser = anchor.web3.Keypair.generate()
       const signature = await program.provider.connection.requestAirdrop(otherUser.publicKey, 1000000000)
       await program.provider.connection.confirmTransaction(signature)
-  
+
       await program.rpc.addProof(kind, proof, {
         accounts: {
           proof: proofKeys.publicKey,
@@ -354,12 +420,6 @@ describe('vvallet', () => {
         },
         signers: [proofKeys],
       })
-  
-      const createdProof = await program.account.proof.fetch(proofKeys.publicKey)
-  
-      assert.equal(createdProof.owner.toBase58(), program.provider.wallet.publicKey.toBase58())
-      assert.equal(createdProof.kind, kind)
-      assert.equal(createdProof.proof, proof)
     } catch (err) {
       assert.equal(err.toString(), 'Error: Signature verification failed')
       return
@@ -373,7 +433,7 @@ describe('vvallet', () => {
       let kind = "github"
       let proof = "https://gist.github.com/BruceMacD/1234567abcdef"
       let proofKeys: anchor.web3.Keypair = anchor.web3.Keypair.generate()
-  
+
       await program.rpc.addProof(kind, proof, {
         accounts: {
           proof: proofKeys.publicKey,
@@ -382,9 +442,9 @@ describe('vvallet', () => {
         },
         signers: [proofKeys],
       })
-  
+
       await program.account.proof.fetch(proofKeys.publicKey)
-  
+
       // attempt to re-create
       await program.rpc.addProof(kind, proof, {
         accounts: {
@@ -408,7 +468,7 @@ describe('vvallet', () => {
       let kind = ""
       let proof = "https://gist.github.com/BruceMacD/1234567abcdef"
       let proofKeys: anchor.web3.Keypair = anchor.web3.Keypair.generate()
-  
+
       await program.rpc.addProof(kind, proof, {
         accounts: {
           proof: proofKeys.publicKey,
@@ -430,7 +490,7 @@ describe('vvallet', () => {
       let kind = ' '
       let proof = "https://gist.github.com/BruceMacD/1234567abcdef"
       let proofKeys: anchor.web3.Keypair = anchor.web3.Keypair.generate()
-  
+
       await program.rpc.addProof(kind, proof, {
         accounts: {
           proof: proofKeys.publicKey,
@@ -446,13 +506,13 @@ describe('vvallet', () => {
 
     assert.fail('should not be able to create a proof with a blank space kind')
   })
-  
+
   it('cannot add a proof kind with greater than 50 characters', async () => {
     try {
       let kind = 'x'.repeat(51)
       let proof = "https://gist.github.com/BruceMacD/1234567abcdef"
       let proofKeys: anchor.web3.Keypair = anchor.web3.Keypair.generate()
-  
+
       await program.rpc.addProof(kind, proof, {
         accounts: {
           proof: proofKeys.publicKey,
@@ -474,7 +534,7 @@ describe('vvallet', () => {
       let kind = "github"
       let proof = ""
       let proofKeys: anchor.web3.Keypair = anchor.web3.Keypair.generate()
-  
+
       await program.rpc.addProof(kind, proof, {
         accounts: {
           proof: proofKeys.publicKey,
@@ -496,7 +556,7 @@ describe('vvallet', () => {
       let kind = 'github'
       let proof = ' '
       let proofKeys: anchor.web3.Keypair = anchor.web3.Keypair.generate()
-  
+
       await program.rpc.addProof(kind, proof, {
         accounts: {
           proof: proofKeys.publicKey,
@@ -512,13 +572,13 @@ describe('vvallet', () => {
 
     assert.fail('should not be able to create a proof with a blank space')
   })
-  
+
   it('cannot add a proof with greater than 200 characters', async () => {
     try {
       let kind = 'github'
       let proof = 'x'.repeat(201)
       let proofKeys: anchor.web3.Keypair = anchor.web3.Keypair.generate()
-  
+
       await program.rpc.addProof(kind, proof, {
         accounts: {
           proof: proofKeys.publicKey,
@@ -533,5 +593,68 @@ describe('vvallet', () => {
     }
 
     assert.fail('should not be able to create a proof greater than 200 characters')
+  })
+
+  it('can release a proof', async () => {
+    let kind = "github"
+    let proof = "https://gist.github.com/BruceMacD/1234567abcdef"
+    let proofKeys: anchor.web3.Keypair = anchor.web3.Keypair.generate()
+
+    await program.rpc.addProof(kind, proof, {
+      accounts: {
+        proof: proofKeys.publicKey,
+        owner: program.provider.wallet.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      },
+      signers: [proofKeys],
+    })
+
+    await program.account.proof.fetch(proofKeys.publicKey)
+
+    await program.rpc.releaseProof({
+      accounts: {
+        proof: proofKeys.publicKey,
+        owner: program.provider.wallet.publicKey,
+      },
+    })
+
+    const accountProof = await program.account.proof.fetchNullable(proofKeys.publicKey)
+    assert.ok(accountProof === null)
+  })
+
+  it('cannot release someone else\'s proof', async () => {
+    let kind = "github"
+      let proof = "https://gist.github.com/BruceMacD/1234567abcdef"
+      let proofKeys: anchor.web3.Keypair = anchor.web3.Keypair.generate()
+
+      const otherUser = anchor.web3.Keypair.generate()
+      const airdrop = await program.provider.connection.requestAirdrop(otherUser.publicKey, 1000000000)
+      await program.provider.connection.confirmTransaction(airdrop)
+
+      await program.rpc.addProof(kind, proof, {
+        accounts: {
+          proof: proofKeys.publicKey,
+          owner: otherUser.publicKey,
+          systemProgram: anchor.web3.SystemProgram.programId,
+        },
+        signers: [proofKeys, otherUser],
+      })
+
+      await program.account.proof.fetch(proofKeys.publicKey)
+
+    try {
+      await program.rpc.releaseProof({
+        accounts: {
+          proof: proofKeys.publicKey,
+          owner: otherUser.publicKey,
+        },
+      })
+      assert.fail('should not be able to release someone else\'s proof.')
+    } catch (error) {
+      const notReleased = await program.account.proof.fetch(proofKeys.publicKey)
+      assert.equal(notReleased.owner.toBase58(), otherUser.publicKey.toBase58())
+      assert.equal(notReleased.kind, kind)
+      assert.equal(notReleased.proof, proof)
+    }
   })
 })

@@ -4,6 +4,8 @@ use anchor_lang::solana_program::system_program;
 declare_id!("5EwrjHSsAiQjLmepCocQCEXuCe2wUZVjTaWM4jAim3Fo");
 
 const MAX_ALIAS_LENGTH: usize = 50; // 50 chars * 4 bytes each
+const MAX_IPFS_LENGTH: usize = 53; // 50 chars * 4 bytes each
+
 const MAX_PROOF_KIND_LENGTH: usize = 50; // 50 chars * 4 bytes each
 const MAX_PROOF_LENGTH: usize = 200; // 200 chars * 4 bytes each
 
@@ -34,8 +36,12 @@ pub mod vvallet {
         
         id.owner = *owner.key;
         id.alias = alias;
-        // TODO: IPFS hash
 
+        Ok(())
+    }
+
+    pub fn release_identity(_ctx: Context<ReleaseIdentity>) -> ProgramResult {
+        // handled by anchor close constraint
         Ok(())
     }
 
@@ -70,12 +76,20 @@ pub mod vvallet {
 
         Ok(())
     }
+
+    pub fn release_proof(_ctx: Context<ReleaseProof>) -> ProgramResult {
+        // handled by anchor close constraint
+        Ok(())
+    }
 }
 
 const DISCRIMINATOR_SIZE: usize = 8;
+
 const PUBLIC_KEY_SIZE: usize = 32; // the owner of the account/proof
 const STRING_LENGTH_PREFIX: usize = 4; // stores the size of the string
 const MAX_ALIAS_SIZE: usize = MAX_ALIAS_LENGTH * 4; // max characters * 4 bytes each
+const MAX_IPFS_SIZE: usize = MAX_IPFS_LENGTH * 4; // max characters * 4 bytes each
+
 const MAX_PROOF_KIND_SIZE: usize = MAX_PROOF_KIND_LENGTH * 4; // max characters * 4 bytes each
 const MAX_PROOF_SIZE: usize = MAX_PROOF_LENGTH * 4; // max characters * 4 bytes each
 
@@ -86,20 +100,28 @@ pub struct RegisterIdentity<'info> {
     #[account(mut)]
     pub owner: Signer<'info>,
     #[account(address = system_program::ID)]
-    pub system_program: AccountInfo<'info>,
+    pub system_program: AccountInfo<'info>, // TODO: is this needed
+}
+
+#[derive(Accounts)]
+pub struct ReleaseIdentity<'info> {
+    #[account(mut, has_one = owner, close = owner)]
+    pub identity: Account<'info, Identity>,
+    pub owner: Signer<'info>,
 }
 
 #[account]
 pub struct Identity {
     pub owner: Pubkey,
     pub alias: String, // max size 50 chars, should be validated client-side to match the correct hash
-    // TODO: IPFS hash
+    pub ipfs: String, // not used at this time
 }
 
 impl Identity {
     const LEN: usize = DISCRIMINATOR_SIZE
         + PUBLIC_KEY_SIZE // owner
-        + STRING_LENGTH_PREFIX + MAX_ALIAS_SIZE; // alias
+        + STRING_LENGTH_PREFIX + MAX_ALIAS_SIZE // alias
+        + STRING_LENGTH_PREFIX + MAX_IPFS_SIZE; // ipfs hash
 }
 
 #[derive(Accounts)]
@@ -110,6 +132,13 @@ pub struct RegisterProof<'info> {
     pub owner: Signer<'info>,
     #[account(address = system_program::ID)]
     pub system_program: AccountInfo<'info>,
+}
+
+#[derive(Accounts)]
+pub struct ReleaseProof<'info> {
+    #[account(mut, has_one = owner, close = owner)]
+    pub proof: Account<'info, Proof>,
+    pub owner: Signer<'info>,
 }
 
 #[account]

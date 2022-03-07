@@ -63,9 +63,15 @@ export const HomeView: FC = ({}) => {
           </div>
 
           <div className="inline-block hero-content lg:flex-row mt-24">
-            <h1 className="fancy pb-8 text-3xl">use your cryptocurrency wallet to link your distributed accounts</h1>
+            <h1 className="fancy pb-8 text-3xl">
+              use your cryptocurrency wallet to link your distributed accounts
+            </h1>
             <div className="hero-content">
-              <img src="/bidirectrional_identity_diagram.png" className="max-w-lg rounded-lg shadow-2xl" alt="vvallet.me account connection web" />
+              <img
+                src="/bidirectrional_identity_diagram.png"
+                className="max-w-lg rounded-lg shadow-2xl"
+                alt="vvallet.me account connection web"
+              />
             </div>
           </div>
         </div>

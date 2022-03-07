@@ -6,7 +6,7 @@ import { useProofValidator } from 'utils/fetcher'
 import { parseProfileLink, parseUsername } from 'utils/parser'
 import { validateProofHasExpectedOwner } from 'utils/validator'
 
-export const Proof: FC<{ proof: OwnerProof, owner: string }> = ({ proof, owner }) => {
+export const Proof: FC<{ proof: OwnerProof; owner: string }> = ({ proof, owner }) => {
   const { proofValidation, isLoading, error } = useProofValidator(proof)
 
   const displayValidity = (): JSX.Element => {
@@ -66,7 +66,12 @@ export const Proof: FC<{ proof: OwnerProof, owner: string }> = ({ proof, owner }
 
     // not valid
     if (proofValidation && proofValidation.error != '') {
-      console.log("Proof validation for " + proofValidation.proof + " failed: " + proofValidation.error)
+      console.log(
+        'Proof validation for ' +
+          proofValidation.proof +
+          ' failed: ' +
+          proofValidation.error,
+      )
     }
 
     if (error) {

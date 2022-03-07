@@ -1,9 +1,18 @@
 import { SolanaLogo } from 'components'
-import { fetchIdentitiesByOwner, isAliasRegistered, isKeyRegistered, registerAccount, useVVallet } from 'contexts/VVallet'
+import {
+  fetchIdentitiesByOwner,
+  isAliasRegistered,
+  isKeyRegistered,
+  registerAccount,
+  useVVallet,
+} from 'contexts/VVallet'
 import { FC, useState } from 'react'
 import { IdentityAlias } from 'types/identityAlias'
 
-export const IdCard: FC<{ identity: IdentityAlias, registration: boolean }> = ({ identity, registration }) => {
+export const IdCard: FC<{ identity: IdentityAlias; registration: boolean }> = ({
+  identity,
+  registration,
+}) => {
   const URL_SAFE_CHARS = "^[A-Za-z0-9._ ~()'!*:@,;+-]*$"
 
   const [isWaiting, setIsWaiting] = useState(false)
@@ -109,15 +118,16 @@ export const IdCard: FC<{ identity: IdentityAlias, registration: boolean }> = ({
     // if they are don't let them register again
     isKeyRegistered(app, app.connectedWallet.publicKey).then((registered: boolean) => {
       if (registered) {
-        fetchIdentitiesByOwner(app, app.connectedWallet.publicKey.toBase58())
-          .then((identities: IdentityAlias[]) => {
+        fetchIdentitiesByOwner(app, app.connectedWallet.publicKey.toBase58()).then(
+          (identities: IdentityAlias[]) => {
             // assume they only have one alias registed in this case
             let id = identities[0]
             setAliasPlaceholder(id.alias)
             setAliasMessage("You're already registered")
             setDisableAliasInput(true)
             setDisableRegistration(true)
-          })
+          },
+        )
       }
     })
   }
@@ -152,8 +162,7 @@ export const IdCard: FC<{ identity: IdentityAlias, registration: boolean }> = ({
           </div>
         ) : (
           <div className={memberAliasStyling()}>{identity.alias}</div>
-        )
-        }
+        )}
         <div className="absolute left-2 bottom-4 w-4 h-4 opacity-75">
           <SolanaLogo />
         </div>
@@ -177,7 +186,7 @@ export const IdCard: FC<{ identity: IdentityAlias, registration: boolean }> = ({
           </div>
         </div>
       </div>
-      {registration &&
+      {registration && (
         <div>
           {isWaiting ? (
             <button className="btn btn-primary btn-accent border-base-300 mt-3 loading flex items-center mx-auto" />
@@ -214,7 +223,7 @@ export const IdCard: FC<{ identity: IdentityAlias, registration: boolean }> = ({
             </div>
           )}
         </div>
-      }
+      )}
     </div>
   )
 }

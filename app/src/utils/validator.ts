@@ -23,6 +23,9 @@ export const validateTweet = async (
 
 // validateProofHasExpectedOwner is used by clients to check that the validated proof has the owner they expect
 // this removes some trust in the server
-export const validateProofHasExpectedOwner = (proofValidation: ProofValidation, expectedOwner: string): boolean => {
+export const validateProofHasExpectedOwner = (
+  proofValidation: ProofValidation,
+  expectedOwner: string,
+): boolean => {
   return proofValidation.owner === expectedOwner
 }

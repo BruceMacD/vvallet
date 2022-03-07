@@ -37,7 +37,7 @@ export const RegistrationView: FC = () => {
 
   const idAlias: IdentityAlias = {
     owner: app.connectedWallet.publicKey.toBase58(),
-    alias: ""
+    alias: '',
   }
 
   return (
