@@ -41,26 +41,27 @@ export const HomeView: FC = ({}) => {
               <div className="max-w-lg">
                 <h1 className="fancy text-7xl">prove your online identity</h1>
                 <div className="hero-content">
-                  <video loop autoPlay muted>
-                    <source src="/placeholder.mp4" type="video/mp4" />
+                  <video loop autoPlay muted poster="/spinning_wallet_poster.png">
+                    <source src="/spinning_wallet.mp4" type="video/mp4" />
                   </video>
                 </div>
-                <div className="hero-content pt-0">
+                <div className="hero-content">
                   <WalletMultiButton className="btn btn-ghost" />
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="max-w-4xl mx-auto mt-24">
-            <h1 className="fancy pb-8 text-4xl ">featured profile</h1>
-            <ul className="text-center leading-10">
-              <li>
+          <div className="max-w-4xl mx-auto mt-24 stats bg-neutral text-primary-content stat w-96">
+            <div className="stat bg-neutral">
+              <div className="stat-title">featured profile</div>
+              <div className="stat-value">
                 <Link href="/im/bruce">
                   <a className="mb-5 text-2xl font-bold hover:underline">💳 Bruce</a>
                 </Link>
-              </li>
-            </ul>
+              </div>
+              <div className="stat-desc">Creator of vvallet.me</div>
+            </div>
           </div>
 
           <div className="inline-block hero-content lg:flex-row mt-24">
