@@ -57,7 +57,7 @@ export const HomeView: FC = ({}) => {
             <ul className="text-center leading-10">
               <li>
                 <Link href="/im/bruce">
-                  <a className="mb-5 text-2xl font-bold hover:underline">🛅 Bruce</a>
+                  <a className="mb-5 text-2xl font-bold hover:underline">💳 Bruce</a>
                 </Link>
               </li>
             </ul>
@@ -80,7 +80,7 @@ export const HomeView: FC = ({}) => {
 
       <footer className="footer px-10 py-4 border-t bg-base-200 text-base-content border-base-300 mt-6">
         <div className="items-center grid-flow-col">
-          <p>Trust0 HQ © 2022</p>
+          <p>Trust0 HQ © {(new Date().getFullYear())}</p>
         </div>
         <div className="md:place-self-center md:justify-self-end">
           <div className="grid grid-flow-col gap-4">
