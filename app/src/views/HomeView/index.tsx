@@ -54,7 +54,7 @@ export const HomeView: FC = ({}) => {
 
           <div className="max-w-4xl mx-auto mt-24 stats bg-neutral text-primary-content stat w-96">
             <div className="stat bg-neutral">
-              <div className="stat-title">featured profile</div>
+              <div className="stat-title">Featured Profile</div>
               <div className="stat-value">
                 <Link href="/im/bruce">
                   <a className="mb-5 text-2xl font-bold hover:underline">💳 Bruce</a>
