@@ -154,28 +154,29 @@ export const Proof: FC<{ proof: OwnerProof; owner: string }> = ({ proof, owner }
           <p className="text-sm">{proofValidation?.byProxy ? 'proxy' : 'local'}</p>
         </div>
 
-        {app?.connectedWallet?.publicKey &&
-        proof.owner == app.connectedWallet.publicKey.toBase58() &&
-        !proofDeleted ? (
-          <button
-            className="btn btn-error btn-outline w-64 mt-6"
-            onClick={requestDeleteProof}
-          >
-            delete
-          </button>
-        ) : null}
-
-        {errMsg != '' && (
-          <div className="alert alert-error w-64 mt-3">
-            <ErrorDisplay message={errMsg} />
-            <button className="btn btn-outline ml-1" onClick={() => setErrMsg('')}>
-              ok
+        <div className='grid place-items-center'>
+          {app?.connectedWallet?.publicKey &&
+            proof.owner == app.connectedWallet.publicKey.toBase58() &&
+            !proofDeleted ? (
+            <button
+              className="btn btn-error btn-outline w-64 mt-6"
+              onClick={requestDeleteProof}
+            >
+              delete
             </button>
-          </div>
-        )}
+          ) : null}
+
+          {errMsg != '' && (
+            <div className="alert alert-error w-64 mt-6">
+              <ErrorDisplay message={errMsg} />
+              <button className="btn btn-outline ml-1" onClick={() => setErrMsg('')}>
+                ok
+              </button>
+            </div>
+          )}
 
         {proofDeleted && confirmationMsg != '' && (
-          <div className="alert alert-success w-64 mt-3">
+          <div className="alert alert-success w-64 mt-6">
             <SuccessDisplay message={confirmationMsg} />
             <button
               className="btn btn-outline ml-1"
@@ -185,6 +186,8 @@ export const Proof: FC<{ proof: OwnerProof; owner: string }> = ({ proof, owner }
             </button>
           </div>
         )}
+        </div>
+
       </div>
     </div>
   )

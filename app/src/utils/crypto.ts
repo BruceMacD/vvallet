@@ -1,6 +1,5 @@
 import { createHash } from 'crypto'
 import * as anchor from '@project-serum/anchor'
-import { PublicKey } from '@solana/web3.js'
 
 // generateAliasKeypair converts a string into a keypair that is used to store accounts on chain
 // this is useful to ensure uniqueness and (maybe) make look ups faster

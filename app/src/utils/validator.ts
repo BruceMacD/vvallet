@@ -1,5 +1,5 @@
 import { IdentityAlias } from 'types/identityAlias'
-import { OwnerProof, ProofValidation } from 'types/ownerProof'
+import { ProofValidation } from 'types/ownerProof'
 import { Tweet } from 'types/tweet'
 
 const TWEET_REGEX = '(Verifying my @vvalletdotme alias is )(.*)(: )'

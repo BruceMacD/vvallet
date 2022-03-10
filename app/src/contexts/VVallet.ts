@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 import { AnchorWallet, useAnchorWallet } from '@solana/wallet-adapter-react'
 import { Connection, Keypair, PublicKey } from '@solana/web3.js'
 import { Provider, Program, web3 } from '@project-serum/anchor'
-import bs58 from 'bs58'
 
 import { generateAliasKeypair } from 'utils/crypto'
 import idl from 'idl/vvallet.json'
@@ -157,7 +156,7 @@ export const isKeyRegistered = async (app: VVallet, pub: PublicKey): Promise<boo
   return registered.length > 0
 }
 
-export const registerProof = async (app: VVallet, kind: string, proof: string) => {
+export const registerProof = async (app: VVallet, kind: string, proof: string): Promise<Keypair | undefined> => {
   if (!app.connectedWallet) {
     console.log('wallet not connected')
     return
@@ -174,6 +173,8 @@ export const registerProof = async (app: VVallet, kind: string, proof: string) =
     },
     signers: [keypair], // wallet (owner) is automatically added as a signer
   })
+
+  return keypair
 }
 
 const proofOwnerFilter = (owner: string) => ({

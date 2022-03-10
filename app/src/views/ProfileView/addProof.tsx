@@ -1,8 +1,9 @@
-import { ErrorDisplay } from 'components/ErrorDisplay'
-import { SuccessDisplay } from 'components/SuccessDisplay'
-import { registerProof, VVallet } from 'contexts/VVallet'
 import { FC, useState } from 'react'
+import { ErrorDisplay, SuccessDisplay, ProcessingDisplay } from 'components'
+import { fetchProof, registerProof, VVallet } from 'contexts/VVallet'
 import { IdentityAlias } from 'types/identityAlias'
+import { Keypair } from '@solana/web3.js'
+import { waitUntilTrue } from 'utils/timer'
 
 export const AddProof: FC<{ app: VVallet; identity: IdentityAlias }> = ({
   app,
@@ -43,22 +44,53 @@ export const AddProof: FC<{ app: VVallet; identity: IdentityAlias }> = ({
 
   const addProof = async () => {
     if (app) {
+      // remove and tracking query parameters from copying the URL
+      let proofParts = proof.split('?')
+      
       setIsWaiting(true)
-      await registerProof(app, proofType, proof)
-        .then(() => {
-          setConfirmationMsg(
-            'Request submitted, please allow it a few minutes to process.',
-          )
+      await registerProof(app, proofType, proofParts[0])
+        .then((registered: Keypair | undefined) => {
+          if (registered !== undefined) {
+            const proofRegistered = async (): Promise<boolean> => {
+              let isRegistered = false
+              await fetchProof(app, registered.publicKey.toBase58())
+                .then(() => {
+                  // if it doesn't exist an error would have been thrown
+                  isRegistered = true
+                })
+                .catch((err: Error) => {
+                  console.log(err)
+                })
+              return isRegistered
+            }
+
+            waitUntilTrue(proofRegistered).then(() => {
+              setIsWaiting(false)
+              setConfirmationMsg(
+                'Success, your proof has been recorded.',
+              )
+            })
+          }
         })
         .catch((err: Error) => {
+          setIsWaiting(false)
           setErrMsg(err.message)
         })
-      setIsWaiting(false)
     }
   }
 
   return (
     <div>
+
+      {isWaiting && (
+        <div className="alert alert-info w-64 mt-3 w-96">
+          <ProcessingDisplay />
+          <button className="btn btn-outline" onClick={() => setIsWaiting(false)}>
+            dismiss
+          </button>
+        </div>
+      )}
+
       {errMsg != '' && (
         <div className="alert alert-error w-96">
           <ErrorDisplay message={errMsg} />
