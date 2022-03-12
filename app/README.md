@@ -21,7 +21,7 @@ The app will be served on localhost:3000.
 
 ## Deploying to Devnet
 
-First, create a `.env.devnet` file at the root of the `app` directory:
+First, create a `.env.development` file at the root of the `app` directory:
 
 ```
 NEXT_PUBLIC_CLUSTER_URL=https://api.devnet.solana.com
@@ -30,13 +30,12 @@ NEXT_PUBLIC_CLUSTER_URL=https://api.devnet.solana.com
 Build and deploy:
 
 ```bash
-yarn build:devnet
-yarn start:devnet
+yarn run dev
 ```
 
 ## Deploying to Mainnet
 
-First, create a `.env.mainnet` file at the root of the `app` directory:
+First, create a `.env.production` file at the root of the `app` directory:
 
 ```
 NEXT_PUBLIC_CLUSTER_URL=https://api.mainnet-beta.solana.com
@@ -45,6 +44,5 @@ NEXT_PUBLIC_CLUSTER_URL=https://api.mainnet-beta.solana.com
 Build and deploy:
 
 ```bash
-yarn build:mainnet
-yarn start:mainnet
+yarn run start
 ```
