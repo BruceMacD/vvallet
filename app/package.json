@@ -1,7 +1,7 @@
 {
   "name": "vvallet",
   "version": "1.0.0",
-  "license" : "GNU General Public License v3 (GPL-3)",
+  "license": "GPL-3.0-only",
   "prettier": "@geist-ui/prettier-config",
   "scripts": {
     "dev": "next dev",
