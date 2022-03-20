@@ -4,16 +4,19 @@ import { FC, useMemo } from 'react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 
 import styles from './index.module.css'
-import { isKeyRegistered, useVVallet } from 'contexts/VVallet'
+import { fetchIdentitiesByOwner, useVVallet } from 'contexts/VVallet'
+import { IdentityAlias } from 'types/identityAlias'
 
 export const HomeView: FC = ({}) => {
   const app = useVVallet()
 
   useMemo(() => {
     if (app?.connectedWallet?.publicKey) {
-      isKeyRegistered(app, app.connectedWallet.publicKey).then((registered: boolean) => {
-        if (!registered) {
+      fetchIdentitiesByOwner(app, app.connectedWallet.publicKey.toBase58()).then((identities: IdentityAlias[]) => {
+        if (identities.length == 0) {
           Router.push('/register')
+        } else {
+          Router.push('/im/' + identities[0].alias)
         }
       })
     }
