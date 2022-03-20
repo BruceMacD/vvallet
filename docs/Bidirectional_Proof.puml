@@ -1,0 +1,9 @@
+@startuml Proof of Identity Through Bidirectional Linking
+title Bidirectional Proof of Identity
+participant web_profile
+participant cryptocurrency_wallet
+participant blockchain
+web_profile -> web_profile: the owner make a public post that declares they have a specific public key
+cryptocurrency_wallet -> blockchain: the account owner registers a link to the public post that declares their public key
+blockchain -> blockchain: the transaction can only succeed if the keypair of the cryptocurrency wallet matches what is declared in the original proof post
+@enduml
