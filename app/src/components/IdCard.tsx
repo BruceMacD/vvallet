@@ -1,3 +1,6 @@
+import { FC, useState } from 'react'
+import Image from 'next/image'
+
 import { SolanaLogo } from 'components'
 import {
   fetchIdentitiesByOwner,
@@ -6,7 +9,6 @@ import {
   registerAccount,
   useVVallet,
 } from 'contexts/VVallet'
-import { FC, useState } from 'react'
 import { IdentityAlias } from 'types/identityAlias'
 
 export const IdCard: FC<{ identity: IdentityAlias; registration: boolean }> = ({
@@ -31,6 +33,11 @@ export const IdCard: FC<{ identity: IdentityAlias; registration: boolean }> = ({
 
     return 'animate-linger artboard phone-1 id-card overflow-hidden'
   }
+
+  const qrStyle = {
+    backgroundImage: 'url(/placeholder_card_background.png)',
+    backgroundSize: "cover",
+  };
 
   const memberAliasStyling = (): string => {
     let len = identity.alias.length
@@ -141,13 +148,19 @@ export const IdCard: FC<{ identity: IdentityAlias; registration: boolean }> = ({
         <div className="m-4 mt-8 text-5xl">
           <span className="fancy">vvallet</span>
         </div>
-        <div className="w-64 h-64">
-          <img src="/placeholder_card_background.png" />
+
+        <div style={qrStyle} className="w-64 h-64">
+          <div className="w-32 h-32 ml-16 pt-16">
+            <Image 
+              src="/qr-code.png" 
+              alt='vvallet.me QR code'
+              width={500}
+              height={500}
+            />
+          </div>
         </div>
-        <div className="w-32 h-32 ml-16 -mt-48">
-          <img src="/qr-code.png" />
-        </div>
-        <div className="mt-16 ml-4 pb-1 underline card-body">member</div>
+
+        <div className="ml-4 mt-4 pb-1 underline card-body">member</div>
         {registration ? (
           <div className="form-control ml-3">
             <input

@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Router from 'next/router'
+import Image from 'next/image'
 import { FC, useMemo } from 'react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 
@@ -71,10 +72,12 @@ export const HomeView: FC = ({}) => {
               use your cryptocurrency wallet to link your distributed accounts
             </h1>
             <div className="hero-content">
-              <img
+              <Image 
                 src="/bidirectrional_identity_diagram.png"
                 className="max-w-lg rounded-lg shadow-2xl"
                 alt="vvallet.me account connection web"
+                width={500}
+                height={500}
               />
             </div>
           </div>
