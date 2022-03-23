@@ -8,4 +8,6 @@ export const waitUntilTrue = async (checkFunc: () => Promise<boolean>) => {
   }
 }
 
-export const sleep = (ms: number): Promise<NodeJS.Timeout> => { return new Promise(res => setTimeout(res, ms)); }
+export const sleep = (ms: number): Promise<NodeJS.Timeout> => {
+  return new Promise(res => setTimeout(res, ms))
+}

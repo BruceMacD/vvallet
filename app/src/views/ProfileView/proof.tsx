@@ -124,7 +124,7 @@ export const Proof: FC<{ proof: OwnerProof; owner: string }> = ({ proof, owner }
   const profileLink = parseProfileLink(proof.kind, proof.proof)
 
   return (
-    <div className="mt-3 collapse w-96 border rounded-box border-base-300 collapse-arrow">
+    <div className="mt-3 collapse md:w-96 border rounded-box border-base-300 collapse-arrow">
       <input type="checkbox" />
       <div className="collapse-title text-sm font-medium">
         {getIcon(proof.kind)}
@@ -154,10 +154,10 @@ export const Proof: FC<{ proof: OwnerProof; owner: string }> = ({ proof, owner }
           <p className="text-sm">{proofValidation?.byProxy ? 'proxy' : 'local'}</p>
         </div>
 
-        <div className='grid place-items-center'>
+        <div className="grid place-items-center">
           {app?.connectedWallet?.publicKey &&
-            proof.owner == app.connectedWallet.publicKey.toBase58() &&
-            !proofDeleted ? (
+          proof.owner == app.connectedWallet.publicKey.toBase58() &&
+          !proofDeleted ? (
             <button
               className="btn btn-error btn-outline w-64 mt-6"
               onClick={requestDeleteProof}
@@ -175,19 +175,18 @@ export const Proof: FC<{ proof: OwnerProof; owner: string }> = ({ proof, owner }
             </div>
           )}
 
-        {proofDeleted && confirmationMsg != '' && (
-          <div className="alert alert-success w-64 mt-6">
-            <SuccessDisplay message={confirmationMsg} />
-            <button
-              className="btn btn-outline ml-1"
-              onClick={() => setConfirmationMsg('')}
-            >
-              ok
-            </button>
-          </div>
-        )}
+          {proofDeleted && confirmationMsg != '' && (
+            <div className="alert alert-success w-64 mt-6">
+              <SuccessDisplay message={confirmationMsg} />
+              <button
+                className="btn btn-outline ml-1"
+                onClick={() => setConfirmationMsg('')}
+              >
+                ok
+              </button>
+            </div>
+          )}
         </div>
-
       </div>
     </div>
   )

@@ -46,7 +46,7 @@ export const AddProof: FC<{ app: VVallet; identity: IdentityAlias }> = ({
     if (app) {
       // remove and tracking query parameters from copying the URL
       let proofParts = proof.split('?')
-      
+
       setIsWaiting(true)
       await registerProof(app, proofType, proofParts[0])
         .then((registered: Keypair | undefined) => {
@@ -66,9 +66,7 @@ export const AddProof: FC<{ app: VVallet; identity: IdentityAlias }> = ({
 
             waitUntilTrue(proofRegistered).then(() => {
               setIsWaiting(false)
-              setConfirmationMsg(
-                'Success, your proof has been recorded.',
-              )
+              setConfirmationMsg('Success, your proof has been recorded.')
             })
           }
         })
@@ -81,7 +79,6 @@ export const AddProof: FC<{ app: VVallet; identity: IdentityAlias }> = ({
 
   return (
     <div>
-
       {isWaiting && (
         <div className="alert alert-info w-64 mt-3 w-96">
           <ProcessingDisplay />
@@ -92,7 +89,7 @@ export const AddProof: FC<{ app: VVallet; identity: IdentityAlias }> = ({
       )}
 
       {errMsg != '' && (
-        <div className="alert alert-error w-96">
+        <div className="alert alert-error md:w-96">
           <ErrorDisplay message={errMsg} />
           <button className="btn btn-outline" onClick={() => setErrMsg('')}>
             ok
@@ -111,12 +108,12 @@ export const AddProof: FC<{ app: VVallet; identity: IdentityAlias }> = ({
 
       <div>
         {isWaiting ? (
-          <button className="btn btn-outline btn-accent border-base-300 w-96 mt-3 loading" />
+          <button className="btn btn-outline btn-accent border-base-300 md:w-96 mt-3 loading" />
         ) : (
           <div>
             <label
               htmlFor="add-proof-modal"
-              className="btn btn-outline btn-accent border-base-300 w-96 mt-3 modal-button"
+              className="btn btn-outline btn-accent border-base-300 w-80 sm:w-96 mt-3 modal-button"
             >
               + add a proof
             </label>

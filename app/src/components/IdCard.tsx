@@ -36,8 +36,8 @@ export const IdCard: FC<{ identity: IdentityAlias; registration: boolean }> = ({
 
   const qrStyle = {
     backgroundImage: 'url(/placeholder_card_background.png)',
-    backgroundSize: "cover",
-  };
+    backgroundSize: 'cover',
+  }
 
   const memberAliasStyling = (): string => {
     let len = identity.alias.length
@@ -151,12 +151,7 @@ export const IdCard: FC<{ identity: IdentityAlias; registration: boolean }> = ({
 
         <div style={qrStyle} className="w-64 h-64">
           <div className="w-32 h-32 ml-16 pt-16">
-            <Image 
-              src="/qr-code.png" 
-              alt='vvallet.me QR code'
-              width={500}
-              height={500}
-            />
+            <Image src="/qr-code.png" alt="vvallet.me QR code" width={500} height={500} />
           </div>
         </div>
 

@@ -156,7 +156,11 @@ export const isKeyRegistered = async (app: VVallet, pub: PublicKey): Promise<boo
   return registered.length > 0
 }
 
-export const registerProof = async (app: VVallet, kind: string, proof: string): Promise<Keypair | undefined> => {
+export const registerProof = async (
+  app: VVallet,
+  kind: string,
+  proof: string,
+): Promise<Keypair | undefined> => {
   if (!app.connectedWallet) {
     console.log('wallet not connected')
     return

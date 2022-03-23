@@ -95,12 +95,12 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
             </div>
           </div>
 
-          <div className="flex flex-row mt-16">
-            <div className="basis-1/2">
+          <div className="flex flex-wrap mt-16">
+            <div>
               <IdCard identity={identity} registration={false} />
             </div>
 
-            <div className="basis-1/2 ml-24">
+            <div className="md:ml-24">
               {app?.connectedWallet?.publicKey &&
               identity.owner == app.connectedWallet.publicKey.toBase58() ? (
                 <AddProof app={app} identity={identity} />
