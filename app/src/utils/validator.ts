@@ -1,3 +1,7 @@
+import { Contract } from "@ethersproject/contracts"
+import { namehash } from "@ethersproject/hash"
+import { getDefaultProvider } from "@ethersproject/providers"
+
 import { IdentityAlias } from 'types/identityAlias'
 import { ProofValidation } from 'types/ownerProof'
 import { Tweet } from 'types/tweet'
@@ -18,6 +22,24 @@ export const validateTweet = async (
       return true
     }
   }
+  return false
+}
+
+const ensContract = new Contract(
+  "0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41", // ENS resolver contract
+  [
+    "function addr(bytes32,uint256) view returns (bytes)",
+    "function text(bytes32,string) view returns (string)",
+    "function contenthash(bytes32) view returns (bytes)"
+  ],
+  getDefaultProvider()
+)
+
+export const validateENS = async (
+  name: string
+): Promise<boolean> => {
+  const vvalletProfile = await ensContract.text(namehash(name), "vvallet.me");
+  console.log("vvallet.me", vvalletProfile);
   return false
 }
 
