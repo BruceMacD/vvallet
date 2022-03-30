@@ -5,6 +5,7 @@ import { OwnerProof, ProofValidation } from 'types/ownerProof'
 import { fetchTweet } from 'utils/fetcher'
 import { IdentityAlias } from 'types/identityAlias'
 import { validateTweet } from 'utils/validator'
+import { Constants } from 'types/constants'
 
 const connection = useReadOnlyVVallet()
 
@@ -64,7 +65,7 @@ const validate = async (
   }
 
   switch (proof.kind) {
-    case 'twitter':
+    case Constants.TWITTER:
       const tweet = await fetchTweet(proof.proof)
       result.valid = await validateTweet(tweet, expectedOwner)
 

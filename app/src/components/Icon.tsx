@@ -1,8 +1,22 @@
+import Image from 'next/image'
+import { Constants } from 'types/constants'
+
+const ens = (): JSX.Element => {
+  return (
+    <Image
+      src="/svg/ens.svg"
+      alt="ethereum name service logo"
+      width={20}
+      height={22.33}
+    />
+  )
+}
+
 const twitter = (): JSX.Element => {
   return (
     <svg
       fill="none"
-      className="inline-block w-6 h-6 mr-2 stroke-current"
+      className="inline-block w-6 h-6 stroke-current"
       viewBox="0 0 24 24"
       xmlns="http://www.w3.org/2000/svg"
     >
@@ -17,7 +31,9 @@ const twitter = (): JSX.Element => {
 
 export const getIcon = (kind: string): JSX.Element | undefined => {
   switch (kind) {
-    case 'twitter':
+    case Constants.ENS:
+      return ens()
+    case Constants.TWITTER:
       return twitter()
   }
 

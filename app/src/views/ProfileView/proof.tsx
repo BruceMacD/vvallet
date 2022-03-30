@@ -4,17 +4,19 @@ import { getIcon } from 'components/Icon'
 import { deleteProof, useVVallet } from 'contexts/VVallet'
 import Link from 'next/link'
 import { FC, useState } from 'react'
+import { Constants } from 'types/constants'
+import { IdentityAlias } from 'types/identityAlias'
 import { OwnerProof } from 'types/ownerProof'
 import { useProofValidator } from 'utils/fetcher'
 import { parseProfileLink, parseUsername } from 'utils/parser'
 import { validateProofHasExpectedOwner } from 'utils/validator'
 
-export const Proof: FC<{ proof: OwnerProof; owner: string }> = ({ proof, owner }) => {
+export const Proof: FC<{ proof: OwnerProof; identity: IdentityAlias }> = ({ proof, identity }) => {
   const app = useVVallet()
   const [proofDeleted, setProofDeleted] = useState(false)
   const [errMsg, setErrMsg] = useState('')
   const [confirmationMsg, setConfirmationMsg] = useState('')
-  const { proofValidation, isLoading, error } = useProofValidator(proof)
+  const { proofValidation, isLoading, error } = useProofValidator(proof, identity.alias)
 
   const requestDeleteProof = async () => {
     if (app) {
@@ -28,6 +30,24 @@ export const Proof: FC<{ proof: OwnerProof; owner: string }> = ({ proof, owner }
         .catch((err: Error) => {
           setErrMsg(err.message)
         })
+    }
+  }
+
+  const proofToLink = (kind: string, proof: string): string => {
+    switch (kind) {
+      case Constants.ENS:
+        return "https://app.ens.domains/name/" + proof + "/details"
+      default:
+        return proof
+    }
+  }
+
+  const kindToTitle = (kind: string): string => {
+    switch (kind) {
+      case Constants.ENS:
+        return "ethereum name service"
+      default:
+        return kind
     }
   }
 
@@ -62,7 +82,7 @@ export const Proof: FC<{ proof: OwnerProof; owner: string }> = ({ proof, owner }
 
     if (proofValidation != undefined && proofValidation.valid) {
       // a double check to make sure the server isn't returning invalid proof validations
-      proofValidation.valid = validateProofHasExpectedOwner(proofValidation, owner)
+      proofValidation.valid = validateProofHasExpectedOwner(proofValidation, identity.owner)
     }
 
     if (proofValidation != undefined && proofValidation.valid) {
@@ -127,8 +147,10 @@ export const Proof: FC<{ proof: OwnerProof; owner: string }> = ({ proof, owner }
     <div className="mt-3 collapse md:w-96 border rounded-box border-base-300 collapse-arrow">
       <input type="checkbox" />
       <div className="collapse-title text-sm font-medium">
-        {getIcon(proof.kind)}
-        {proof.kind}
+        <div className="flex">
+          {getIcon(proof.kind)}
+          <span className="ml-2 align-middle" > {kindToTitle(proof.kind)} </span>
+        </div>
         <div className="text-lg mt-5">
           {username}
           {displayValidity()}
@@ -144,7 +166,7 @@ export const Proof: FC<{ proof: OwnerProof; owner: string }> = ({ proof, owner }
 
         <div className="mt-3">
           <p className="font-bold">Proof:</p>
-          <Link href={proof.proof}>
+          <Link href={proofToLink(proof.kind, proof.proof)}>
             <a className="text-sm link link-primary">link</a>
           </Link>
         </div>

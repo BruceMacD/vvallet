@@ -7,8 +7,8 @@ import { Proof } from './proof'
 export const Proofs: FC<{ identity: IdentityAlias }> = ({ identity }) => {
   const { proofs, isLoading, error } = useProofs(identity.owner)
 
-  const proofsDisplay: JSX.Element[] = proofs?.map(proof => (
-    <Proof proof={proof} owner={identity.owner} key={proof.id} />
+  const proofsDisplay: JSX.Element[] = proofs?.sort().map(proof => (
+    <Proof proof={proof} identity={identity} key={proof.id} />
   ))
 
   if (isLoading)

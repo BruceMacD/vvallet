@@ -1,7 +1,9 @@
+import { Constants } from "../types/constants"
+
 // get a root link to a profile from a given proof
 export const parseProfileLink = (kind: string, proof: string): string => {
   switch (kind) {
-    case 'twitter':
+    case Constants.TWITTER:
       return twitterProfileFromProof(proof)
   }
 
@@ -15,8 +17,10 @@ const twitterProfileFromProof = (proof: string): string => {
 
 export const parseUsername = (kind: string, proof: string): string => {
   switch (kind) {
-    case 'twitter':
+    case Constants.TWITTER:
       return twitterUsernameFromProof(proof)
+    case Constants.ENS:
+      return proof
   }
 
   return ''

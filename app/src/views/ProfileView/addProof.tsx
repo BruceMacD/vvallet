@@ -4,6 +4,7 @@ import { fetchProof, registerProof, VVallet } from 'contexts/VVallet'
 import { IdentityAlias } from 'types/identityAlias'
 import { Keypair } from '@solana/web3.js'
 import { waitUntilTrue } from 'utils/timer'
+import { Constants } from 'types/constants'
 
 export const AddProof: FC<{ app: VVallet; identity: IdentityAlias }> = ({
   app,
@@ -118,13 +119,13 @@ export const AddProof: FC<{ app: VVallet; identity: IdentityAlias }> = ({
                   <option value="DEFAULT" disabled>
                     Select the type of proof...
                   </option>
-                  <option value="ens">Ethereum Name Service (ENS)</option>
-                  <option value="twitter">Twitter</option>
+                  <option value={Constants.ENS}>Ethereum Name Service (ENS)</option>
+                  <option value={Constants.TWITTER}>Twitter</option>
                 </select>
-                {proofType == 'ens' && (
+                {proofType == Constants.ENS && (
                   <ProofInput info='Add this link to your ENS text records.' proofText={ensProofText} placeholder='example.eth' prompt='Enter your .eth name' addProofCallback={addProof}/>
                 )}
-                {proofType == 'twitter' && (
+                {proofType == Constants.TWITTER && (
                   <ProofInput info='Tweet this.' proofText={twitterProofText} placeholder='https://twitter.com/.../status/...' prompt='Enter a publicly accessible link to your proof' addProofCallback={addProof}/>
                 )}
               </div>

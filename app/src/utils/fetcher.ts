@@ -1,11 +1,19 @@
 import useSWR from 'swr'
+import { Contract } from "@ethersproject/contracts"
+import { namehash } from "@ethersproject/hash"
+import { getDefaultProvider } from "@ethersproject/providers"
+
 import { IdResponse } from 'types/identityAlias'
 import {
+  OwnerProof,
   ProofsResponse,
+  ProofValidation,
   ProofValidationResponse,
   ValidateProofRequest,
 } from 'types/ownerProof'
 import { Tweet } from 'types/tweet'
+import { validateENS } from './validator'
+import { Constants } from 'types/constants'
 
 export const fetcher = async (url: string): Promise<any> => {
   const res = await fetch(url)
@@ -40,6 +48,49 @@ const parseFetcherResponse = async (res: Response, url: string): Promise<any> =>
 }
 
 // external API fetchers
+
+const ensContract = new Contract(
+  "0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41", // ENS resolver contract
+  [
+    "function addr(bytes32,uint256) view returns (bytes)",
+    "function text(bytes32,string) view returns (string)",
+    "function contenthash(bytes32) view returns (bytes)"
+  ],
+  getDefaultProvider()
+)
+
+export const fetchENSValidation = async (urn: string): Promise<any> => {
+  const inputs = urn.split(":")
+
+  const result: ProofValidation = {
+    owner: "",
+    proof: "",
+    valid: false,
+    byProxy: false,
+    error: '',
+  }
+
+  if (inputs.length !== 3) {
+    result.error = 'invalid ENS proof URN format, expected exactly 3 parts'
+    return result
+  }
+
+  const owner = inputs[0]
+  const alias = inputs[1]
+  const ensAddr = inputs[2]
+
+  result.owner = owner
+  result.proof = ensAddr
+
+  const ensDetails = await ensContract.text(namehash(ensAddr), "vvallet.me")
+  result.valid = validateENS(ensDetails, alias)
+
+  if (!result.valid) {
+    result.error = 'proof ENS did not match the expected format'
+  }
+
+  return result
+}
 
 // https://twitter.com/${username}/status/${tweet_id}
 const TWEET_URL_REGEX = '(.*twitter.com/)(.*)(/status/)([0-9]*)'
@@ -93,12 +144,27 @@ export const useProofs = (owner: string): ProofsResponse => {
   }
 }
 
-export const useProofValidator = (req: ValidateProofRequest): ProofValidationResponse => {
-  const { data, error } = useSWR(`/api/${req.id}/valid`, fetcher)
+export const useProofValidator = (proof: OwnerProof, alias: string): ProofValidationResponse => {
+  switch (proof.kind) {
+    case Constants.ENS:
+      // need to stuff the proof and the expected value into the key with a urn, separate with ':'
+      let { data: ensData, error: ensError } = useSWR(proof.owner + ":" + alias + ":" + proof.proof, fetchENSValidation)
 
-  return {
-    proofValidation: data,
-    isLoading: !error && !data,
-    error: error,
+      return {
+        proofValidation: ensData,
+        isLoading: !ensError && !ensData,
+        error: ensError
+      }
+      
+    default:
+      // validate by proxy
+      let req: ValidateProofRequest = { id: proof.id }
+      const { data, error } = useSWR(`/api/${req.id}/valid`, fetcher)
+
+      return {
+        proofValidation: data,
+        isLoading: !error && !data,
+        error: error,
+      }
   }
 }
