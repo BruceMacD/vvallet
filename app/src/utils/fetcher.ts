@@ -12,8 +12,9 @@ import {
   ValidateProofRequest,
 } from 'types/ownerProof'
 import { Tweet } from 'types/tweet'
-import { validateENS } from './validator'
+import { validateENS, validateReddit } from './validator'
 import { Constants } from 'types/constants'
+import { RedditSubmission, SubmissionDetails } from 'types/redditSubmission'
 
 export const fetcher = async (url: string): Promise<any> => {
   const res = await fetch(url)
@@ -122,6 +123,43 @@ export const fetchTweet = async (url: string): Promise<Tweet> => {
   }
 }
 
+export const fetchRedditValidation = async (urn: string): Promise<any> => {
+  const inputs = urn.split(":")
+
+  const result: ProofValidation = {
+    owner: "",
+    proof: "",
+    valid: false,
+    byProxy: false,
+    error: '',
+  }
+
+  if (inputs.length !== 3) {
+    result.error = 'invalid reddit proof URN format, expected exactly 3 parts'
+    return result
+  }
+
+  const owner = inputs[0]
+  const alias = inputs[1]
+  const redditLink = inputs[2]
+
+  result.owner = owner
+  result.proof = redditLink
+
+  // get the submission
+  const redditSubmissions: RedditSubmission[] = await fetcher("https://" + redditLink + ".json")
+  const submissionText: string = redditSubmissions[0].data.children[0].data.selftext
+  
+  // validate the fetched submission
+  result.valid = validateReddit(submissionText, alias)
+
+  if (!result.valid) {
+    result.error = 'proof reddit post did not match the expected format'
+  }
+
+  return result
+}
+
 // vvallet API fetchers
 
 export const useIdentity = (id: string): IdResponse => {
@@ -154,6 +192,30 @@ export const useProofValidator = (proof: OwnerProof, alias: string): ProofValida
         proofValidation: ensData,
         isLoading: !ensError && !ensData,
         error: ensError
+      }
+    
+    case Constants.REDDIT:
+      // clean up the proof link to stuff into the URN
+      let proofLink = proof.proof
+
+      if (proofLink.startsWith("https://")) {
+        proofLink = proofLink.slice("https://".length)
+      }
+
+      if (proofLink.startsWith("http://")) {
+        proofLink = proofLink.slice("http://".length)
+      }
+
+      if (proofLink.endsWith("/")) {
+        proofLink = proofLink.slice(0, (proofLink.length - 1 ))
+      }
+
+      let { data: redditData, error: redditError } = useSWR(proof.owner + ":" + alias + ":" + proofLink, fetchRedditValidation)
+
+      return {
+        proofValidation: redditData,
+        isLoading: !redditError && !redditData,
+        error: redditError
       }
       
     default:

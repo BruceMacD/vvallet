@@ -5,6 +5,9 @@ import { Tweet } from 'types/tweet'
 const PROFILE_LINK_REGEX = '(vvallet.me\/im\/)(.*)'
 const PROFILE_LINK_GROUPS = 3
 
+const REDDIT_TEXT_REGEX = '(This post connects my Reddit account to my decentralized identity: vvallet.me\/im\/)(.*)'
+const REDDIT_TEXT_GROUPS = 3
+
 const TWEET_REGEX = '(Verifying my @vvalletdotme alias is )(.*)(: )'
 const TWEET_GROUPS = 4
 
@@ -27,6 +30,18 @@ export const validateENS = (
   expectedOwner: string
 ): boolean => {
   return validate(vvalletProfileLink, expectedOwner, PROFILE_LINK_REGEX, PROFILE_LINK_GROUPS, 2)
+}
+
+export const validateReddit = (
+  submissionText: string,
+  expectedOwner: string
+): boolean => {
+  // clean up the reddit submission text in case it's a markdown link
+  submissionText = submissionText.replace('[','')
+  submissionText = submissionText.replace(']','')
+  submissionText = submissionText.split('(')[0]
+
+  return validate(submissionText, expectedOwner, REDDIT_TEXT_REGEX, REDDIT_TEXT_GROUPS, 2)
 }
 
 export const validateTweet = async (

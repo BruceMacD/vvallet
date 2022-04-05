@@ -1,5 +1,5 @@
 import { Tweet } from 'types/tweet'
-import { validateENS, validateTweet } from './validator'
+import { validateENS, validateReddit, validateTweet } from './validator'
 
 test('valid ens proof', async () => {
   const validENSProof = 'vvallet.me/im/bruce'
@@ -30,6 +30,38 @@ test('valid ens proof followed by invalid ens proof', async () => {
   const expectedOwner = 'bruce'
 
   const result = validateENS(validENSProof, expectedOwner)
+  expect(result).toBe(false)
+})
+
+test('valid reddit proof with link', async () => {
+  const validPost = 'This post connects my Reddit account to my decentralized identity: [vvallet.me/im/bruce](https://vvallet.me/im/bruce)'
+  const expectedOwner = 'bruce'
+
+  const result = await validateReddit(validPost, expectedOwner)
+  expect(result).toBe(true)
+})
+
+test('valid reddit proof with no link', async () => {
+  const validPost = 'This post connects my Reddit account to my decentralized identity: vvallet.me/im/bruce'
+  const expectedOwner = 'bruce'
+
+  const result = await validateReddit(validPost, expectedOwner)
+  expect(result).toBe(true)
+})
+
+test('invalid reddit proof', async () => {
+  const invalidPost = 'This post connects my Reddit account to my decentralized identity: vvallet.me/im/bob'
+  const expectedOwner = 'bruce'
+
+  const result = await validateReddit(invalidPost, expectedOwner)
+  expect(result).toBe(false)
+})
+
+test('invalid reddit proof link', async () => {
+  const invalidPost = 'This post connects my Reddit account to my decentralized identity: [vvallet.me/im/bob](https://vvallet.me/im/bruce)'
+  const expectedOwner = 'bruce'
+
+  const result = await validateReddit(invalidPost, expectedOwner)
   expect(result).toBe(false)
 })
 

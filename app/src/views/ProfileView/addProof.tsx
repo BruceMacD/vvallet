@@ -16,14 +16,19 @@ export const AddProof: FC<{ app: VVallet; identity: IdentityAlias }> = ({
   const [confirmationMsg, setConfirmationMsg] = useState('')
 
   const ensProofText = identity
-    ? 'http://vvallet.me/im/' +
+    ? 'vvallet.me/im/' +
       identity.alias
+    : ''
+
+  const redditProofText = identity
+    ? 'This post connects my Reddit account to my decentralized identity: ' +
+    'vvallet.me/im/' + identity.alias
     : ''
   
   const twitterProofText = identity
     ? 'Verifying my @vvalletdotme alias is ' +
       identity.alias +
-      ': http://vvallet.me/im/' +
+      ': vvallet.me/im/' +
       identity.alias
     : ''
 
@@ -120,10 +125,14 @@ export const AddProof: FC<{ app: VVallet; identity: IdentityAlias }> = ({
                     Select the type of proof...
                   </option>
                   <option value={Constants.ENS}>Ethereum Name Service (ENS)</option>
+                  <option value={Constants.REDDIT}>Reddit</option>
                   <option value={Constants.TWITTER}>Twitter</option>
                 </select>
                 {proofType == Constants.ENS && (
                   <ProofInput info='Add this link to your ENS text records.' proofText={ensProofText} placeholder='example.eth' prompt='Enter your .eth name' addProofCallback={addProof}/>
+                )}
+                {proofType == Constants.REDDIT && (
+                  <ProofInput info='Create a submission on Reddit with this text.' proofText={redditProofText} placeholder='https://www.reddit.com/user/.../comments/.../vvalletme_proof' prompt='Enter a publicly accessible link to your proof' addProofCallback={addProof}/>
                 )}
                 {proofType == Constants.TWITTER && (
                   <ProofInput info='Tweet this.' proofText={twitterProofText} placeholder='https://twitter.com/.../status/...' prompt='Enter a publicly accessible link to your proof' addProofCallback={addProof}/>

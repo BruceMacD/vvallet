@@ -12,6 +12,17 @@ const ens = (): JSX.Element => {
   )
 }
 
+const reddit = (): JSX.Element => {
+  return (
+    <Image
+      src="/svg/reddit.svg"
+      alt="reddit logo"
+      width={23}
+      height={23}
+    />
+  )
+}
+
 const twitter = (): JSX.Element => {
   return (
     <svg
@@ -33,6 +44,8 @@ export const getIcon = (kind: string): JSX.Element | undefined => {
   switch (kind) {
     case Constants.ENS:
       return ens()
+    case Constants.REDDIT:
+      return reddit()
     case Constants.TWITTER:
       return twitter()
   }
