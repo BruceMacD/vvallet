@@ -23,6 +23,8 @@ const twitterProfileFromProof = (proof: string): string => {
 
 export const parseUsername = (kind: string, proof: string): string => {
   switch (kind) {
+    case Constants.DNS:
+      return proof
     case Constants.ENS:
       return proof
     case Constants.REDDIT:

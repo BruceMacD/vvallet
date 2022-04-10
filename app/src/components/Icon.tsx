@@ -1,13 +1,24 @@
 import Image from 'next/image'
 import { Constants } from 'types/constants'
 
+const dns = (): JSX.Element => {
+  return (
+    <Image
+      src="/svg/globe.svg"
+      alt="globe logo"
+      width={23}
+      height={23}
+    />
+  )
+}
+
 const ens = (): JSX.Element => {
   return (
     <Image
       src="/svg/ens.svg"
       alt="ethereum name service logo"
-      width={20}
-      height={22.33}
+      width={23}
+      height={23}
     />
   )
 }
@@ -42,6 +53,8 @@ const twitter = (): JSX.Element => {
 
 export const getIcon = (kind: string): JSX.Element | undefined => {
   switch (kind) {
+    case Constants.DNS:
+      return dns()
     case Constants.ENS:
       return ens()
     case Constants.REDDIT:

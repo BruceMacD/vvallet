@@ -12,9 +12,10 @@ import {
   ValidateProofRequest,
 } from 'types/ownerProof'
 import { Tweet } from 'types/tweet'
-import { validateENS, validateReddit } from './validator'
+import { validateDNS, validateENS, validateReddit } from './validator'
 import { Constants } from 'types/constants'
-import { RedditSubmission, SubmissionDetails } from 'types/redditSubmission'
+import { RedditSubmission } from 'types/redditSubmission'
+import { DNSTextRecord } from 'types/dnsTxtRecord'
 
 export const fetcher = async (url: string): Promise<any> => {
   const res = await fetch(url)
@@ -25,6 +26,17 @@ export const authorizedFetcher = async (url: string, token: string): Promise<any
   const res = await fetch(url, {
     headers: new Headers({
       Authorization: 'Bearer ' + token,
+    }),
+  })
+
+  return parseFetcherResponse(res, url)
+}
+
+export const dnsFetcher = async (url: string): Promise<any> => {
+  // Cloudflare’s DNS over HTTPS endpoint
+  const res = await fetch("https://cloudflare-dns.com/dns-query?name=" + url + "&type=TXT", {
+    headers: new Headers({
+      Accept: 'application/dns-json'
     }),
   })
 
@@ -46,6 +58,47 @@ const parseFetcherResponse = async (res: Response, url: string): Promise<any> =>
   }
 
   return res.json()
+}
+
+export const fetchDNSValidation = async (urn: string): Promise<any> => {
+  const inputs = urn.split(":")
+
+  const result: ProofValidation = {
+    owner: "",
+    proof: "",
+    valid: false,
+    byProxy: false,
+    error: '',
+  }
+
+  if (inputs.length !== 3) {
+    result.error = 'invalid DNS proof URN format, expected exactly 3 parts'
+    return result
+  }
+
+  const owner = inputs[0]
+  const alias = inputs[1]
+  const dnsAddr = inputs[2]
+
+  result.owner = owner
+  result.proof = dnsAddr
+
+  const txtRecords: DNSTextRecord = await dnsFetcher(dnsAddr)
+
+  for (let i = 0; i < txtRecords.Answer.length; i++) {
+    // do not know which text record is going to be the proof,
+    // need to check each one
+    if (validateDNS(txtRecords.Answer[i].data, alias)) {
+      result.valid = true
+      break
+    }
+  }
+
+  if (!result.valid) {
+    result.error = 'proof DNS text record did not match the expected format'
+  }
+
+  return result
 }
 
 // external API fetchers
@@ -184,8 +237,17 @@ export const useProofs = (owner: string): ProofsResponse => {
 
 export const useProofValidator = (proof: OwnerProof, alias: string): ProofValidationResponse => {
   switch (proof.kind) {
+    case Constants.DNS:
+      let dnsProofLink = getFormattedProofLink(proof.proof)
+       // need to stuff the proof and the expected value into the key with a urn, separate with ':'
+       let { data: dnsData, error: dnsError } = useSWR(proof.owner + ":" + alias + ":" + dnsProofLink, fetchDNSValidation)
+
+       return {
+         proofValidation: dnsData,
+         isLoading: !dnsError && !dnsData,
+         error: dnsError
+       }
     case Constants.ENS:
-      // need to stuff the proof and the expected value into the key with a urn, separate with ':'
       let { data: ensData, error: ensError } = useSWR(proof.owner + ":" + alias + ":" + proof.proof, fetchENSValidation)
 
       return {
@@ -196,21 +258,9 @@ export const useProofValidator = (proof: OwnerProof, alias: string): ProofValida
     
     case Constants.REDDIT:
       // clean up the proof link to stuff into the URN
-      let proofLink = proof.proof
+      let redditProofLink = getFormattedProofLink(proof.proof)
 
-      if (proofLink.startsWith("https://")) {
-        proofLink = proofLink.slice("https://".length)
-      }
-
-      if (proofLink.startsWith("http://")) {
-        proofLink = proofLink.slice("http://".length)
-      }
-
-      if (proofLink.endsWith("/")) {
-        proofLink = proofLink.slice(0, (proofLink.length - 1 ))
-      }
-
-      let { data: redditData, error: redditError } = useSWR(proof.owner + ":" + alias + ":" + proofLink, fetchRedditValidation)
+      let { data: redditData, error: redditError } = useSWR(proof.owner + ":" + alias + ":" + redditProofLink, fetchRedditValidation)
 
       return {
         proofValidation: redditData,
@@ -229,4 +279,20 @@ export const useProofValidator = (proof: OwnerProof, alias: string): ProofValida
         error: error,
       }
   }
+}
+
+const getFormattedProofLink = (proofLink: string): string => {
+  if (proofLink.startsWith("https://")) {
+    proofLink = proofLink.slice("https://".length)
+  }
+
+  if (proofLink.startsWith("http://")) {
+    proofLink = proofLink.slice("http://".length)
+  }
+
+  if (proofLink.endsWith("/")) {
+    proofLink = proofLink.slice(0, (proofLink.length - 1 ))
+  }
+
+  return proofLink
 }

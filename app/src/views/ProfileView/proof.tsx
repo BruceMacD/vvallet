@@ -44,6 +44,8 @@ export const Proof: FC<{ proof: OwnerProof; identity: IdentityAlias }> = ({ proo
 
   const kindToTitle = (kind: string): string => {
     switch (kind) {
+      case Constants.DNS:
+        return "domain name"
       case Constants.ENS:
         return "ethereum name service"
       default:

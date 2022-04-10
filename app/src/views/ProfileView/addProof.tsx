@@ -15,7 +15,7 @@ export const AddProof: FC<{ app: VVallet; identity: IdentityAlias }> = ({
   const [errMsg, setErrMsg] = useState('')
   const [confirmationMsg, setConfirmationMsg] = useState('')
 
-  const ensProofText = identity
+  const linkProofText = identity
     ? 'vvallet.me/im/' +
       identity.alias
     : ''
@@ -124,12 +124,16 @@ export const AddProof: FC<{ app: VVallet; identity: IdentityAlias }> = ({
                   <option value="DEFAULT" disabled>
                     Select the type of proof...
                   </option>
+                  <option value={Constants.DNS}>Domain Name Service (DNS)</option>
                   <option value={Constants.ENS}>Ethereum Name Service (ENS)</option>
                   <option value={Constants.REDDIT}>Reddit</option>
                   <option value={Constants.TWITTER}>Twitter</option>
                 </select>
+                {proofType == Constants.DNS && (
+                  <ProofInput info='Add this TXT record to the DNS record of your domain.' proofText={linkProofText} placeholder='example.com' prompt='Enter your domain' addProofCallback={addProof}/>
+                )}
                 {proofType == Constants.ENS && (
-                  <ProofInput info='Add this link to your ENS text records.' proofText={ensProofText} placeholder='example.eth' prompt='Enter your .eth name' addProofCallback={addProof}/>
+                  <ProofInput info='Add this link to your ENS text records.' proofText={linkProofText} placeholder='example.eth' prompt='Enter your .eth name' addProofCallback={addProof}/>
                 )}
                 {proofType == Constants.REDDIT && (
                   <ProofInput info='Create a submission on Reddit with this text.' proofText={redditProofText} placeholder='https://www.reddit.com/user/.../comments/.../vvalletme_proof' prompt='Enter a publicly accessible link to your proof' addProofCallback={addProof}/>

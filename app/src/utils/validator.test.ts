@@ -1,5 +1,29 @@
 import { Tweet } from 'types/tweet'
-import { validateENS, validateReddit, validateTweet } from './validator'
+import { validateDNS, validateENS, validateReddit, validateTweet } from './validator'
+
+test('valid dns proof', async () => {
+  const validDNSProof = '"vvallet.me/im/bruce"'
+  const expectedOwner = 'bruce'
+
+  const result = validateDNS(validDNSProof, expectedOwner)
+  expect(result).toBe(true)
+})
+
+test('invalid dns proof, no quotes', async () => {
+  const validDNSProof = 'vvallet.me/im/bruce'
+  const expectedOwner = 'bruce'
+
+  const result = validateDNS(validDNSProof, expectedOwner)
+  expect(result).toBe(false)
+})
+
+test('invalid dns proof, wrong alias', async () => {
+  const validDNSProof = 'vvallet.me/im/alice'
+  const expectedOwner = 'bruce'
+
+  const result = validateDNS(validDNSProof, expectedOwner)
+  expect(result).toBe(false)
+})
 
 test('valid ens proof', async () => {
   const validENSProof = 'vvallet.me/im/bruce'

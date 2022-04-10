@@ -2,6 +2,9 @@ import { IdentityAlias } from 'types/identityAlias'
 import { ProofValidation } from 'types/ownerProof'
 import { Tweet } from 'types/tweet'
 
+const DNS_LINK_REGEX = '("vvallet.me\/im\/)(.*)(")'
+const DNS_LINK_GROUPS = 4
+
 const PROFILE_LINK_REGEX = '(vvallet.me\/im\/)(.*)'
 const PROFILE_LINK_GROUPS = 3
 
@@ -13,16 +16,22 @@ const TWEET_GROUPS = 4
 
 const validate = (proof: string, expectedOwner: string, expectedPattern: string, expectedGroups: number, aliasIndex: number): boolean => {
   const groups = proof.match(expectedPattern)
-  
+
   if (groups !== null && groups.length === expectedGroups) {
     const claimedAlias = groups[aliasIndex]
-
     if (claimedAlias === expectedOwner) {
       return true
     }
   }
 
   return false
+}
+
+export const validateDNS = (
+  vvalletProfileLink: string,
+  expectedOwner: string
+): boolean => {
+  return validate(vvalletProfileLink, expectedOwner, DNS_LINK_REGEX, DNS_LINK_GROUPS, 2)
 }
 
 export const validateENS = (
