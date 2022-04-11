@@ -3,6 +3,8 @@ import { Constants } from "../types/constants"
 // get a root link to a profile from a given proof
 export const parseProfileLink = (kind: string, proof: string): string => {
   switch (kind) {
+    case Constants.DNS:
+      return "https://" + getFormattedProofLink(proof)
     case Constants.REDDIT:
       return redditProfileFromProof(proof)
     case Constants.TWITTER:
@@ -58,4 +60,21 @@ const twitterUsernameFromProof = (proof: string): string => {
   }
 
   return ''
+}
+
+// parseFormattdProofLink returns a URL in a standard expected format without protocol or trailing slashes
+export const getFormattedProofLink = (proofLink: string): string => {
+  if (proofLink.startsWith("https://")) {
+    proofLink = proofLink.slice("https://".length)
+  }
+
+  if (proofLink.startsWith("http://")) {
+    proofLink = proofLink.slice("http://".length)
+  }
+
+  if (proofLink.endsWith("/")) {
+    proofLink = proofLink.slice(0, (proofLink.length - 1 ))
+  }
+
+  return proofLink
 }

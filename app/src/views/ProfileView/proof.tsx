@@ -8,7 +8,7 @@ import { Constants } from 'types/constants'
 import { IdentityAlias } from 'types/identityAlias'
 import { OwnerProof } from 'types/ownerProof'
 import { useProofValidator } from 'utils/fetcher'
-import { parseProfileLink, parseUsername } from 'utils/parser'
+import { getFormattedProofLink, parseProfileLink, parseUsername } from 'utils/parser'
 import { validateProofHasExpectedOwner } from 'utils/validator'
 
 export const Proof: FC<{ proof: OwnerProof; identity: IdentityAlias }> = ({ proof, identity }) => {
@@ -35,6 +35,8 @@ export const Proof: FC<{ proof: OwnerProof; identity: IdentityAlias }> = ({ proo
 
   const proofToLink = (kind: string, proof: string): string => {
     switch (kind) {
+      case Constants.DNS:
+        return "https://" + getFormattedProofLink(proof)
       case Constants.ENS:
         return "https://app.ens.domains/name/" + proof + "/details"
       default:
@@ -142,7 +144,6 @@ export const Proof: FC<{ proof: OwnerProof; identity: IdentityAlias }> = ({ proo
     )
   }
 
-  const username = parseUsername(proof.kind, proof.proof)
   const profileLink = parseProfileLink(proof.kind, proof.proof)
 
   return (
@@ -154,7 +155,7 @@ export const Proof: FC<{ proof: OwnerProof; identity: IdentityAlias }> = ({ proo
           <span className="ml-2 align-middle" > {kindToTitle(proof.kind)} </span>
         </div>
         <div className="text-lg mt-5">
-          {username}
+          {parseUsername(proof.kind, proof.proof)}
           {displayValidity()}
         </div>
       </div>

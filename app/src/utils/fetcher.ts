@@ -16,6 +16,7 @@ import { validateDNS, validateENS, validateReddit } from './validator'
 import { Constants } from 'types/constants'
 import { RedditSubmission } from 'types/redditSubmission'
 import { DNSTextRecord } from 'types/dnsTxtRecord'
+import { getFormattedProofLink } from './parser'
 
 export const fetcher = async (url: string): Promise<any> => {
   const res = await fetch(url)
@@ -279,20 +280,4 @@ export const useProofValidator = (proof: OwnerProof, alias: string): ProofValida
         error: error,
       }
   }
-}
-
-const getFormattedProofLink = (proofLink: string): string => {
-  if (proofLink.startsWith("https://")) {
-    proofLink = proofLink.slice("https://".length)
-  }
-
-  if (proofLink.startsWith("http://")) {
-    proofLink = proofLink.slice("http://".length)
-  }
-
-  if (proofLink.endsWith("/")) {
-    proofLink = proofLink.slice(0, (proofLink.length - 1 ))
-  }
-
-  return proofLink
 }
