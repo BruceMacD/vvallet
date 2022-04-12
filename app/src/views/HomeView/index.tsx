@@ -89,7 +89,7 @@ export const HomeView: FC = ({}) => {
 
       <footer className="footer px-10 py-4 border-t bg-base-200 text-base-content border-base-300 mt-6">
         <div className="items-center grid-flow-col">
-          <p>Trust0 HQ © {new Date().getFullYear()}</p>
+          <p>Panoptic Future © {new Date().getFullYear()}</p>
         </div>
         <div className="md:place-self-center md:justify-self-end">
           <div className="grid grid-flow-col gap-4">
@@ -107,7 +107,7 @@ export const HomeView: FC = ({}) => {
                 />
               </svg>
             </a>
-            <a href="https://github.com/trust0hq/vvallet">
+            <a href="https://github.com/panoptic-future/vvallet">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
