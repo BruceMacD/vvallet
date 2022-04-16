@@ -1,12 +1,36 @@
 import { Constants } from '../types/constants'
 import { parseProfileLink, parseUsername } from './parser'
 
+test('website from DNS proof link', async () => {
+  const proof = 'example.com'
+
+  const profile = parseProfileLink(Constants.DNS, proof)
+
+  expect(profile).toEqual('https://example.com')
+})
+
+test('reddit profile from proof link', async () => {
+  const proof = 'example.com'
+
+  const profile = parseProfileLink(Constants.DNS, proof)
+
+  expect(profile).toEqual('https://example.com')
+})
+
 test('twitter profile from proof link', async () => {
-  const proof = 'https://twitter.com/vvalletdotme/status/1488510691359268870'
+  const proof = 'https://www.reddit.com/user/bmacd1/comments/tvc57p/vvalletme_proof/'
 
-  const profile = parseProfileLink(Constants.TWITTER, proof)
+  const profile = parseProfileLink(Constants.REDDIT, proof)
 
-  expect(profile).toEqual('https://twitter.com/vvalletdotme')
+  expect(profile).toEqual('https://reddit.com/user/bmacd1')
+})
+
+test('reddit username from proof link', async () => {
+  const proof = 'https://www.reddit.com/user/bmacd1/comments/tvc57p/vvalletme_proof/'
+
+  const user = parseUsername(Constants.REDDIT, proof)
+
+  expect(user).toEqual('bmacd1')
 })
 
 test('twitter username from proof link', async () => {
