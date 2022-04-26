@@ -23,6 +23,17 @@ const ens = (): JSX.Element => {
   )
 }
 
+const mastodon = (): JSX.Element => {
+  return (
+    <Image
+      src="/svg/mastodon.svg"
+      alt="mastodon social logo"
+      width={23}
+      height={23}
+    />
+  )
+}
+
 const reddit = (): JSX.Element => {
   return (
     <Image
@@ -57,6 +68,8 @@ export const getIcon = (kind: string): JSX.Element | undefined => {
       return dns()
     case Constants.ENS:
       return ens()
+    case Constants.MASTODON:
+      return mastodon()
     case Constants.REDDIT:
       return reddit()
     case Constants.TWITTER:

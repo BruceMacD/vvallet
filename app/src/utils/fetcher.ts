@@ -17,6 +17,7 @@ import { Constants } from 'types/constants'
 import { RedditSubmission } from 'types/redditSubmission'
 import { DNSTextRecord } from 'types/dnsTxtRecord'
 import { getFormattedProofLink } from './parser'
+import { MastodonProof } from 'types/mastodonProof'
 
 export const fetcher = async (url: string): Promise<any> => {
   const res = await fetch(url)
@@ -147,6 +148,30 @@ export const fetchENSValidation = async (urn: string): Promise<any> => {
   return result
 }
 
+// https://mastodon.social/@${username}/${status_id}
+const MASTODON_URL_REGEX = '(.*mastodon.social\/web\/)(.*)(\/)([0-9]*)'
+const MASTODON_URL_GROUPS = 5
+
+export const fetchMastodonPost = async (url: string): Promise<MastodonProof> => {
+  const groups = url.match(MASTODON_URL_REGEX)
+
+  let postId = ''
+  if (groups !== null && groups.length == MASTODON_URL_GROUPS) {
+    postId = groups[4]
+  } else {
+    throw new Error('unexpected mastodon proof URL format')
+  }
+
+  const apiUrl = 'https://mastodon.social/api/v1/statuses/' + postId
+
+  const resp = await fetcher(apiUrl)
+  
+  return {
+    username: resp.account.username,
+    content: resp.content,
+  }
+}
+
 // https://twitter.com/${username}/status/${tweet_id}
 const TWEET_URL_REGEX = '(.*twitter.com/)(.*)(/status/)([0-9]*)'
 const TWEET_URL_GROUPS = 5
@@ -270,6 +295,7 @@ export const useProofValidator = (proof: OwnerProof, alias: string): ProofValida
       }
       
     default:
+      // twitter, mastodon, ...
       // validate by proxy
       let req: ValidateProofRequest = { id: proof.id }
       const { data, error } = useSWR(`/api/${req.id}/valid`, fetcher)

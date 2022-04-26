@@ -20,12 +20,12 @@ export const AddProof: FC<{ app: VVallet; identity: IdentityAlias }> = ({
       identity.alias
     : ''
 
-  const redditProofText = identity
+  const postProofText = identity
     ? 'This post connects my Reddit account to my decentralized identity: ' +
     'vvallet.me/im/' + identity.alias
     : ''
   
-  const twitterProofText = identity
+  const verifyingProofText = identity
     ? 'Verifying my @vvalletdotme alias is ' +
       identity.alias +
       ': vvallet.me/im/' +
@@ -126,6 +126,7 @@ export const AddProof: FC<{ app: VVallet; identity: IdentityAlias }> = ({
                   </option>
                   <option value={Constants.DNS}>Domain Name Service (DNS)</option>
                   <option value={Constants.ENS}>Ethereum Name Service (ENS)</option>
+                  <option value={Constants.MASTODON}>Mastodon</option>
                   <option value={Constants.REDDIT}>Reddit</option>
                   <option value={Constants.TWITTER}>Twitter</option>
                 </select>
@@ -135,11 +136,14 @@ export const AddProof: FC<{ app: VVallet; identity: IdentityAlias }> = ({
                 {proofType == Constants.ENS && (
                   <ProofInput info='Add this link to your ENS text records.' proofText={linkProofText} placeholder='example.eth' prompt='Enter your .eth name' addProofCallback={addProof}/>
                 )}
+                {proofType == Constants.MASTODON && (
+                  <ProofInput info='Post this.' proofText={verifyingProofText} placeholder='https://mastodon.social/web/@...' prompt='Enter a publicly accessible link to your proof' addProofCallback={addProof}/>
+                )}
                 {proofType == Constants.REDDIT && (
-                  <ProofInput info='Create a submission on Reddit with this text.' proofText={redditProofText} placeholder='https://www.reddit.com/user/.../comments/.../vvalletme_proof' prompt='Enter a publicly accessible link to your proof' addProofCallback={addProof}/>
+                  <ProofInput info='Create a submission on Reddit with this text.' proofText={postProofText} placeholder='https://www.reddit.com/user/.../comments/.../vvalletme_proof' prompt='Enter a publicly accessible link to your proof' addProofCallback={addProof}/>
                 )}
                 {proofType == Constants.TWITTER && (
-                  <ProofInput info='Tweet this.' proofText={twitterProofText} placeholder='https://twitter.com/.../status/...' prompt='Enter a publicly accessible link to your proof' addProofCallback={addProof}/>
+                  <ProofInput info='Tweet this.' proofText={verifyingProofText} placeholder='https://twitter.com/.../status/...' prompt='Enter a publicly accessible link to your proof' addProofCallback={addProof}/>
                 )}
               </div>
             </div>

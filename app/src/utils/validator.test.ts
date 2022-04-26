@@ -1,5 +1,6 @@
+import { MastodonProof } from 'types/mastodonProof'
 import { Tweet } from 'types/tweet'
-import { validateDNS, validateENS, validateReddit, validateTweet } from './validator'
+import { validateDNS, validateENS, validateMastodon, validateReddit, validateTweet } from './validator'
 
 test('valid dns proof', async () => {
   const validDNSProof = '"vvallet.me/im/bruce"'
@@ -54,6 +55,36 @@ test('valid ens proof followed by invalid ens proof', async () => {
   const expectedOwner = 'bruce'
 
   const result = validateENS(validENSProof, expectedOwner)
+  expect(result).toBe(false)
+})
+
+test('valid mastodon proof', async () => {
+  const mastodonProof: MastodonProof = {
+    username: 'bmacd',
+    content: '<p>Verifying my @vvalletdotme alias is bruce: vvallet.me/im/bruce</p>'
+  }
+
+  const expectedOwner = {
+    owner: 'some public key value',
+    alias: 'bruce',
+  }
+
+  const result = await validateMastodon(mastodonProof, expectedOwner)
+  expect(result).toBe(true)
+})
+
+test('invalid mastodon proof', async () => {
+  const mastodonProof: MastodonProof = {
+    username: 'bmacd',
+    content: '<p>Verifying my @vvalletdotme alias is bob: vvallet.me/im/bob</p>'
+  }
+
+  const expectedOwner = {
+    owner: 'some public key value',
+    alias: 'bruce',
+  }
+
+  const result = await validateMastodon(mastodonProof, expectedOwner)
   expect(result).toBe(false)
 })
 

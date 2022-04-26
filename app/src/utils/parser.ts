@@ -29,10 +29,24 @@ export const parseUsername = (kind: string, proof: string): string => {
       return proof
     case Constants.ENS:
       return proof
+    case Constants.MASTODON:
+      return mastodonUsernameFromProof(proof)
     case Constants.REDDIT:
       return redditUsernameFromProof(proof)
     case Constants.TWITTER:
       return twitterUsernameFromProof(proof)
+  }
+
+  return ''
+}
+
+const MASTODON_USERNAME_REGEX = '(.*mastodon.social\/web\/@)(.*)\/(.*)'
+
+const mastodonUsernameFromProof = (proof: string): string => {
+  const groups = proof.match(MASTODON_USERNAME_REGEX)
+
+  if (groups !== null && groups.length >= 3) {
+    return groups[2]
   }
 
   return ''

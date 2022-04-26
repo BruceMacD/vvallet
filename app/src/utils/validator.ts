@@ -1,4 +1,5 @@
 import { IdentityAlias } from 'types/identityAlias'
+import { MastodonProof } from 'types/mastodonProof'
 import { ProofValidation } from 'types/ownerProof'
 import { Tweet } from 'types/tweet'
 
@@ -10,6 +11,9 @@ const PROFILE_LINK_GROUPS = 3
 
 const REDDIT_TEXT_REGEX = '(This post connects my Reddit account to my decentralized identity: vvallet.me\/im\/)(.*)'
 const REDDIT_TEXT_GROUPS = 3
+
+const MASTODON_REGEX = '(<p>Verifying my @vvalletdotme alias is )(.*)(: )'
+const MASTODON_GROUPS = 4
 
 const TWEET_REGEX = '(Verifying my @vvalletdotme alias is )(.*)(: )'
 const TWEET_GROUPS = 4
@@ -51,6 +55,13 @@ export const validateReddit = (
   submissionText = submissionText.split('(')[0]
 
   return validate(submissionText, expectedOwner, REDDIT_TEXT_REGEX, REDDIT_TEXT_GROUPS, 2)
+}
+
+export const validateMastodon = async (
+  post: MastodonProof,
+  expectedOwner: IdentityAlias,
+): Promise<boolean> => {
+  return validate(post.content, expectedOwner.alias, MASTODON_REGEX, MASTODON_GROUPS, 2)
 }
 
 export const validateTweet = async (

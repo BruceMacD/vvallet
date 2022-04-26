@@ -25,6 +25,14 @@ test('twitter profile from proof link', async () => {
   expect(profile).toEqual('https://reddit.com/user/bmacd1')
 })
 
+test('mastdon username from proof link', async () => {
+  const proof = 'https://mastodon.social/web/@bmacd/108121125227719604'
+
+  const user = parseUsername(Constants.MASTODON, proof)
+
+  expect(user).toEqual('bmacd')
+})
+
 test('reddit username from proof link', async () => {
   const proof = 'https://www.reddit.com/user/bmacd1/comments/tvc57p/vvalletme_proof/'
 

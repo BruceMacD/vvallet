@@ -2,9 +2,9 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 
 import { fetchIdentitiesByOwner, fetchProof, useReadOnlyVVallet } from 'contexts/VVallet'
 import { OwnerProof, ProofValidation } from 'types/ownerProof'
-import { fetchTweet } from 'utils/fetcher'
+import { fetchMastodonPost, fetchTweet } from 'utils/fetcher'
 import { IdentityAlias } from 'types/identityAlias'
-import { validateTweet } from 'utils/validator'
+import { validateMastodon, validateTweet } from 'utils/validator'
 import { Constants } from 'types/constants'
 
 const connection = useReadOnlyVVallet()
@@ -65,6 +65,15 @@ const validate = async (
   }
 
   switch (proof.kind) {
+    case Constants.MASTODON:
+      const post = await fetchMastodonPost(proof.proof)
+      result.valid = await validateMastodon(post, expectedOwner)
+
+      if (!result.valid) {
+        result.error = 'mastodon proof did not match the expected format'
+      }
+
+      break
     case Constants.TWITTER:
       const tweet = await fetchTweet(proof.proof)
       result.valid = await validateTweet(tweet, expectedOwner)
