@@ -1,10 +1,10 @@
-import { Constants } from "../types/constants"
+import { Constants } from '../types/constants'
 
 // get a root link to a profile from a given proof
 export const parseProfileLink = (kind: string, proof: string): string => {
   switch (kind) {
     case Constants.DNS:
-      return "https://" + getFormattedProofLink(proof)
+      return 'https://' + getFormattedProofLink(proof)
     case Constants.REDDIT:
       return redditProfileFromProof(proof)
     case Constants.TWITTER:
@@ -15,7 +15,7 @@ export const parseProfileLink = (kind: string, proof: string): string => {
 }
 
 const redditProfileFromProof = (proof: string): string => {
-  return "https://reddit.com/user/" + redditUsernameFromProof(proof)
+  return 'https://reddit.com/user/' + redditUsernameFromProof(proof)
 }
 
 const twitterProfileFromProof = (proof: string): string => {
@@ -40,7 +40,7 @@ export const parseUsername = (kind: string, proof: string): string => {
   return ''
 }
 
-const MASTODON_USERNAME_REGEX = '(.*mastodon.social\/web\/@)(.*)\/(.*)'
+const MASTODON_USERNAME_REGEX = '(.*mastodon.social/web/@)(.*)/(.*)'
 
 const mastodonUsernameFromProof = (proof: string): string => {
   const groups = proof.match(MASTODON_USERNAME_REGEX)
@@ -52,7 +52,7 @@ const mastodonUsernameFromProof = (proof: string): string => {
   return ''
 }
 
-const REDDIT_USERNAME_REGEX = '(.*reddit.com\/user)\/(.*)\/comments'
+const REDDIT_USERNAME_REGEX = '(.*reddit.com/user)/(.*)/comments'
 
 const redditUsernameFromProof = (proof: string): string => {
   const groups = proof.match(REDDIT_USERNAME_REGEX)
@@ -64,7 +64,7 @@ const redditUsernameFromProof = (proof: string): string => {
   return ''
 }
 
-const TWITTER_USERNAME_REGEX = '(.*twitter.com)\/(.*)\/(status)'
+const TWITTER_USERNAME_REGEX = '(.*twitter.com)/(.*)/(status)'
 
 const twitterUsernameFromProof = (proof: string): string => {
   const groups = proof.match(TWITTER_USERNAME_REGEX)
@@ -78,16 +78,16 @@ const twitterUsernameFromProof = (proof: string): string => {
 
 // parseFormattdProofLink returns a URL in a standard expected format without protocol or trailing slashes
 export const getFormattedProofLink = (proofLink: string): string => {
-  if (proofLink.startsWith("https://")) {
-    proofLink = proofLink.slice("https://".length)
+  if (proofLink.startsWith('https://')) {
+    proofLink = proofLink.slice('https://'.length)
   }
 
-  if (proofLink.startsWith("http://")) {
-    proofLink = proofLink.slice("http://".length)
+  if (proofLink.startsWith('http://')) {
+    proofLink = proofLink.slice('http://'.length)
   }
 
-  if (proofLink.endsWith("/")) {
-    proofLink = proofLink.slice(0, (proofLink.length - 1 ))
+  if (proofLink.endsWith('/')) {
+    proofLink = proofLink.slice(0, proofLink.length - 1)
   }
 
   return proofLink

@@ -36,7 +36,7 @@ export const HomeView: FC = ({}) => {
           <div className="flex-1 px-2 mx-2" />
 
           <div className="text-center text-xl grid grid-cols-2 divide-x">
-            <Link href="/">
+            <Link href="/docs/getting-started/overview">
               <a className="px-2 hover:underline">docs</a>
             </Link>
             <Link href="https://mirror.xyz/bmacd.eth">

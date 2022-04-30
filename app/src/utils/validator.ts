@@ -3,13 +3,14 @@ import { MastodonProof } from 'types/mastodonProof'
 import { ProofValidation } from 'types/ownerProof'
 import { Tweet } from 'types/tweet'
 
-const DNS_LINK_REGEX = '("vvallet.me\/im\/)(.*)(")'
+const DNS_LINK_REGEX = '("vvallet.me/im/)(.*)(")'
 const DNS_LINK_GROUPS = 4
 
-const PROFILE_LINK_REGEX = '(vvallet.me\/im\/)(.*)'
+const PROFILE_LINK_REGEX = '(vvallet.me/im/)(.*)'
 const PROFILE_LINK_GROUPS = 3
 
-const REDDIT_TEXT_REGEX = '(This post connects my Reddit account to my decentralized identity: vvallet.me\/im\/)(.*)'
+const REDDIT_TEXT_REGEX =
+  '(This post connects my Reddit account to my decentralized identity: vvallet.me/im/)(.*)'
 const REDDIT_TEXT_GROUPS = 3
 
 const MASTODON_REGEX = '(<p>Verifying my @vvalletdotme alias is )(.*)(: )'
@@ -18,7 +19,13 @@ const MASTODON_GROUPS = 4
 const TWEET_REGEX = '(Verifying my @vvalletdotme alias is )(.*)(: )'
 const TWEET_GROUPS = 4
 
-const validate = (proof: string, expectedOwner: string, expectedPattern: string, expectedGroups: number, aliasIndex: number): boolean => {
+const validate = (
+  proof: string,
+  expectedOwner: string,
+  expectedPattern: string,
+  expectedGroups: number,
+  aliasIndex: number,
+): boolean => {
   const groups = proof.match(expectedPattern)
 
   if (groups !== null && groups.length === expectedGroups) {
@@ -33,25 +40,31 @@ const validate = (proof: string, expectedOwner: string, expectedPattern: string,
 
 export const validateDNS = (
   vvalletProfileLink: string,
-  expectedOwner: string
+  expectedOwner: string,
 ): boolean => {
   return validate(vvalletProfileLink, expectedOwner, DNS_LINK_REGEX, DNS_LINK_GROUPS, 2)
 }
 
 export const validateENS = (
   vvalletProfileLink: string,
-  expectedOwner: string
+  expectedOwner: string,
 ): boolean => {
-  return validate(vvalletProfileLink, expectedOwner, PROFILE_LINK_REGEX, PROFILE_LINK_GROUPS, 2)
+  return validate(
+    vvalletProfileLink,
+    expectedOwner,
+    PROFILE_LINK_REGEX,
+    PROFILE_LINK_GROUPS,
+    2,
+  )
 }
 
 export const validateReddit = (
   submissionText: string,
-  expectedOwner: string
+  expectedOwner: string,
 ): boolean => {
   // clean up the reddit submission text in case it's a markdown link
-  submissionText = submissionText.replace('[','')
-  submissionText = submissionText.replace(']','')
+  submissionText = submissionText.replace('[', '')
+  submissionText = submissionText.replace(']', '')
   submissionText = submissionText.split('(')[0]
 
   return validate(submissionText, expectedOwner, REDDIT_TEXT_REGEX, REDDIT_TEXT_GROUPS, 2)

@@ -34,6 +34,7 @@
     "@tailwindcss/typography": "^0.4.1",
     "bs58": "^4.0.1",
     "daisyui": "^1.16.2",
+    "gray-matter": "^4.0.3",
     "heroicons": "^1.0.5",
     "next": "12.0.3",
     "next-compose-plugins": "^2.2.1",

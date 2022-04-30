@@ -1,7 +1,7 @@
 export type TextRecord = {
-    data: string
+  data: string
 }
 
 export type DNSTextRecord = {
-    Answer: TextRecord[]
+  Answer: TextRecord[]
 }

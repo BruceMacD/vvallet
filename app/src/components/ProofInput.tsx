@@ -1,6 +1,12 @@
 import { FC, useState } from 'react'
 
-export const ProofInput: FC<{ info: string, proofText: string, placeholder: string, prompt: string, addProofCallback: (proof: string) => any}> = ({ info, proofText, placeholder, prompt, addProofCallback }) => {
+export const ProofInput: FC<{
+  info: string
+  proofText: string
+  placeholder: string
+  prompt: string
+  addProofCallback: (proof: string) => any
+}> = ({ info, proofText, placeholder, prompt, addProofCallback }) => {
   const [isCopied, setIsCopied] = useState(false)
   const [proof, setProof] = useState('')
 
@@ -25,7 +31,19 @@ export const ProofInput: FC<{ info: string, proofText: string, placeholder: stri
     <div>
       <div className="alert alert-info shadow-lg">
         <div>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current flex-shrink-0 w-6 h-6 mr-2"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            className="stroke-current flex-shrink-0 w-6 h-6 mr-2"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
+          </svg>
           <span>{info}</span>
         </div>
       </div>
@@ -61,17 +79,11 @@ export const ProofInput: FC<{ info: string, proofText: string, placeholder: stri
           onChange={setProofInput}
         />
         <label className="label">
-          <span className="label-text-alt">
-            {prompt}
-          </span>
+          <span className="label-text-alt">{prompt}</span>
         </label>
       </div>
       <div className="modal-action">
-        <label
-          htmlFor="add-proof-modal"
-          className="btn btn-primary"
-          onClick={addProof}
-        >
+        <label htmlFor="add-proof-modal" className="btn btn-primary" onClick={addProof}>
           Submit
         </label>
         <label htmlFor="add-proof-modal" className="btn">

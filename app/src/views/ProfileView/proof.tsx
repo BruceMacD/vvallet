@@ -11,7 +11,10 @@ import { useProofValidator } from 'utils/fetcher'
 import { getFormattedProofLink, parseProfileLink, parseUsername } from 'utils/parser'
 import { validateProofHasExpectedOwner } from 'utils/validator'
 
-export const Proof: FC<{ proof: OwnerProof; identity: IdentityAlias }> = ({ proof, identity }) => {
+export const Proof: FC<{ proof: OwnerProof; identity: IdentityAlias }> = ({
+  proof,
+  identity,
+}) => {
   const app = useVVallet()
   const [proofDeleted, setProofDeleted] = useState(false)
   const [errMsg, setErrMsg] = useState('')
@@ -36,9 +39,9 @@ export const Proof: FC<{ proof: OwnerProof; identity: IdentityAlias }> = ({ proo
   const proofToLink = (kind: string, proof: string): string => {
     switch (kind) {
       case Constants.DNS:
-        return "https://" + getFormattedProofLink(proof)
+        return 'https://' + getFormattedProofLink(proof)
       case Constants.ENS:
-        return "https://app.ens.domains/name/" + proof + "/details"
+        return 'https://app.ens.domains/name/' + proof + '/details'
       default:
         return proof
     }
@@ -47,9 +50,9 @@ export const Proof: FC<{ proof: OwnerProof; identity: IdentityAlias }> = ({ proo
   const kindToTitle = (kind: string): string => {
     switch (kind) {
       case Constants.DNS:
-        return "domain name"
+        return 'domain name'
       case Constants.ENS:
-        return "ethereum name service"
+        return 'ethereum name service'
       default:
         return kind
     }
@@ -86,7 +89,10 @@ export const Proof: FC<{ proof: OwnerProof; identity: IdentityAlias }> = ({ proo
 
     if (proofValidation != undefined && proofValidation.valid) {
       // a double check to make sure the server isn't returning invalid proof validations
-      proofValidation.valid = validateProofHasExpectedOwner(proofValidation, identity.owner)
+      proofValidation.valid = validateProofHasExpectedOwner(
+        proofValidation,
+        identity.owner,
+      )
     }
 
     if (proofValidation != undefined && proofValidation.valid) {
@@ -152,7 +158,7 @@ export const Proof: FC<{ proof: OwnerProof; identity: IdentityAlias }> = ({ proo
       <div className="collapse-title text-sm font-medium">
         <div className="flex">
           {getIcon(proof.kind)}
-          <span className="ml-2 align-middle" > {kindToTitle(proof.kind)} </span>
+          <span className="ml-2 align-middle"> {kindToTitle(proof.kind)} </span>
         </div>
         <div className="text-lg mt-5">
           {parseUsername(proof.kind, proof.proof)}

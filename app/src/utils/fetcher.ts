@@ -1,7 +1,7 @@
 import useSWR from 'swr'
-import { Contract } from "@ethersproject/contracts"
-import { namehash } from "@ethersproject/hash"
-import { getDefaultProvider } from "@ethersproject/providers"
+import { Contract } from '@ethersproject/contracts'
+import { namehash } from '@ethersproject/hash'
+import { getDefaultProvider } from '@ethersproject/providers'
 
 import { IdResponse } from 'types/identityAlias'
 import {
@@ -36,11 +36,14 @@ export const authorizedFetcher = async (url: string, token: string): Promise<any
 
 export const dnsFetcher = async (url: string): Promise<any> => {
   // Cloudflare’s DNS over HTTPS endpoint
-  const res = await fetch("https://cloudflare-dns.com/dns-query?name=" + url + "&type=TXT", {
-    headers: new Headers({
-      Accept: 'application/dns-json'
-    }),
-  })
+  const res = await fetch(
+    'https://cloudflare-dns.com/dns-query?name=' + url + '&type=TXT',
+    {
+      headers: new Headers({
+        Accept: 'application/dns-json',
+      }),
+    },
+  )
 
   return parseFetcherResponse(res, url)
 }
@@ -63,11 +66,11 @@ const parseFetcherResponse = async (res: Response, url: string): Promise<any> =>
 }
 
 export const fetchDNSValidation = async (urn: string): Promise<any> => {
-  const inputs = urn.split(":")
+  const inputs = urn.split(':')
 
   const result: ProofValidation = {
-    owner: "",
-    proof: "",
+    owner: '',
+    proof: '',
     valid: false,
     byProxy: false,
     error: '',
@@ -106,21 +109,21 @@ export const fetchDNSValidation = async (urn: string): Promise<any> => {
 // external API fetchers
 
 const ensContract = new Contract(
-  "0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41", // ENS resolver contract
+  '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41', // ENS resolver contract
   [
-    "function addr(bytes32,uint256) view returns (bytes)",
-    "function text(bytes32,string) view returns (string)",
-    "function contenthash(bytes32) view returns (bytes)"
+    'function addr(bytes32,uint256) view returns (bytes)',
+    'function text(bytes32,string) view returns (string)',
+    'function contenthash(bytes32) view returns (bytes)',
   ],
-  getDefaultProvider()
+  getDefaultProvider(),
 )
 
 export const fetchENSValidation = async (urn: string): Promise<any> => {
-  const inputs = urn.split(":")
+  const inputs = urn.split(':')
 
   const result: ProofValidation = {
-    owner: "",
-    proof: "",
+    owner: '',
+    proof: '',
     valid: false,
     byProxy: false,
     error: '',
@@ -138,7 +141,7 @@ export const fetchENSValidation = async (urn: string): Promise<any> => {
   result.owner = owner
   result.proof = ensAddr
 
-  const ensDetails = await ensContract.text(namehash(ensAddr), "vvallet.me")
+  const ensDetails = await ensContract.text(namehash(ensAddr), 'vvallet.me')
   result.valid = validateENS(ensDetails, alias)
 
   if (!result.valid) {
@@ -149,7 +152,7 @@ export const fetchENSValidation = async (urn: string): Promise<any> => {
 }
 
 // https://mastodon.social/@${username}/${status_id}
-const MASTODON_URL_REGEX = '(.*mastodon.social\/web\/)(.*)(\/)([0-9]*)'
+const MASTODON_URL_REGEX = '(.*mastodon.social/web/)(.*)(/)([0-9]*)'
 const MASTODON_URL_GROUPS = 5
 
 export const fetchMastodonPost = async (url: string): Promise<MastodonProof> => {
@@ -165,7 +168,7 @@ export const fetchMastodonPost = async (url: string): Promise<MastodonProof> => 
   const apiUrl = 'https://mastodon.social/api/v1/statuses/' + postId
 
   const resp = await fetcher(apiUrl)
-  
+
   return {
     username: resp.account.username,
     content: resp.content,
@@ -203,11 +206,11 @@ export const fetchTweet = async (url: string): Promise<Tweet> => {
 }
 
 export const fetchRedditValidation = async (urn: string): Promise<any> => {
-  const inputs = urn.split(":")
+  const inputs = urn.split(':')
 
   const result: ProofValidation = {
-    owner: "",
-    proof: "",
+    owner: '',
+    proof: '',
     valid: false,
     byProxy: false,
     error: '',
@@ -226,9 +229,11 @@ export const fetchRedditValidation = async (urn: string): Promise<any> => {
   result.proof = redditLink
 
   // get the submission
-  const redditSubmissions: RedditSubmission[] = await fetcher("https://" + redditLink + ".json")
+  const redditSubmissions: RedditSubmission[] = await fetcher(
+    'https://' + redditLink + '.json',
+  )
   const submissionText: string = redditSubmissions[0].data.children[0].data.selftext
-  
+
   // validate the fetched submission
   result.valid = validateReddit(submissionText, alias)
 
@@ -261,39 +266,51 @@ export const useProofs = (owner: string): ProofsResponse => {
   }
 }
 
-export const useProofValidator = (proof: OwnerProof, alias: string): ProofValidationResponse => {
+export const useProofValidator = (
+  proof: OwnerProof,
+  alias: string,
+): ProofValidationResponse => {
   switch (proof.kind) {
     case Constants.DNS:
       let dnsProofLink = getFormattedProofLink(proof.proof)
-       // need to stuff the proof and the expected value into the key with a urn, separate with ':'
-       let { data: dnsData, error: dnsError } = useSWR(proof.owner + ":" + alias + ":" + dnsProofLink, fetchDNSValidation)
+      // need to stuff the proof and the expected value into the key with a urn, separate with ':'
+      let { data: dnsData, error: dnsError } = useSWR(
+        proof.owner + ':' + alias + ':' + dnsProofLink,
+        fetchDNSValidation,
+      )
 
-       return {
-         proofValidation: dnsData,
-         isLoading: !dnsError && !dnsData,
-         error: dnsError
-       }
+      return {
+        proofValidation: dnsData,
+        isLoading: !dnsError && !dnsData,
+        error: dnsError,
+      }
     case Constants.ENS:
-      let { data: ensData, error: ensError } = useSWR(proof.owner + ":" + alias + ":" + proof.proof, fetchENSValidation)
+      let { data: ensData, error: ensError } = useSWR(
+        proof.owner + ':' + alias + ':' + proof.proof,
+        fetchENSValidation,
+      )
 
       return {
         proofValidation: ensData,
         isLoading: !ensError && !ensData,
-        error: ensError
+        error: ensError,
       }
-    
+
     case Constants.REDDIT:
       // clean up the proof link to stuff into the URN
       let redditProofLink = getFormattedProofLink(proof.proof)
 
-      let { data: redditData, error: redditError } = useSWR(proof.owner + ":" + alias + ":" + redditProofLink, fetchRedditValidation)
+      let { data: redditData, error: redditError } = useSWR(
+        proof.owner + ':' + alias + ':' + redditProofLink,
+        fetchRedditValidation,
+      )
 
       return {
         proofValidation: redditData,
         isLoading: !redditError && !redditData,
-        error: redditError
+        error: redditError,
       }
-      
+
     default:
       // twitter, mastodon, ...
       // validate by proxy

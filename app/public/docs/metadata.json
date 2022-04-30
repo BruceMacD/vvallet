@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Getting Started",
+    "pages": ["Overview", "What is vvallet.me?"]
+  },
+  {
+    "name": "Advanced",
+    "pages": [
+      "Bidirectional Proofs",
+      "Cryptography",
+      "Decentralization",
+      "Open Source",
+      "Verification",
+      "Whitepaper"
+    ]
+  },
+  {
+    "name": "Proof of Identity",
+    "pages": [
+      "Registering an Alias",
+      "Adding a Proof",
+      "Removing a Proof",
+      "Verifying a Proof"
+    ]
+  }
+]

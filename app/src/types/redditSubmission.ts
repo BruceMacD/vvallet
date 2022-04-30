@@ -1,16 +1,16 @@
 export type SubmissionDetails = {
-    author: string,
-    selftext: string
+  author: string
+  selftext: string
 }
 
 export type ChildData = {
-    data: SubmissionDetails
+  data: SubmissionDetails
 }
 
 export type SubmissionChildren = {
-    children: ChildData[]
+  children: ChildData[]
 }
 
 export type RedditSubmission = {
-    data: SubmissionChildren
+  data: SubmissionChildren
 }

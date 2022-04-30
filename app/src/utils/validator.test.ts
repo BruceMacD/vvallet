@@ -1,6 +1,12 @@
 import { MastodonProof } from 'types/mastodonProof'
 import { Tweet } from 'types/tweet'
-import { validateDNS, validateENS, validateMastodon, validateReddit, validateTweet } from './validator'
+import {
+  validateDNS,
+  validateENS,
+  validateMastodon,
+  validateReddit,
+  validateTweet,
+} from './validator'
 
 test('valid dns proof', async () => {
   const validDNSProof = '"vvallet.me/im/bruce"'
@@ -61,7 +67,7 @@ test('valid ens proof followed by invalid ens proof', async () => {
 test('valid mastodon proof', async () => {
   const mastodonProof: MastodonProof = {
     username: 'bmacd',
-    content: '<p>Verifying my @vvalletdotme alias is bruce: vvallet.me/im/bruce</p>'
+    content: '<p>Verifying my @vvalletdotme alias is bruce: vvallet.me/im/bruce</p>',
   }
 
   const expectedOwner = {
@@ -76,7 +82,7 @@ test('valid mastodon proof', async () => {
 test('invalid mastodon proof', async () => {
   const mastodonProof: MastodonProof = {
     username: 'bmacd',
-    content: '<p>Verifying my @vvalletdotme alias is bob: vvallet.me/im/bob</p>'
+    content: '<p>Verifying my @vvalletdotme alias is bob: vvallet.me/im/bob</p>',
   }
 
   const expectedOwner = {
@@ -89,7 +95,8 @@ test('invalid mastodon proof', async () => {
 })
 
 test('valid reddit proof with link', async () => {
-  const validPost = 'This post connects my Reddit account to my decentralized identity: [vvallet.me/im/bruce](https://vvallet.me/im/bruce)'
+  const validPost =
+    'This post connects my Reddit account to my decentralized identity: [vvallet.me/im/bruce](https://vvallet.me/im/bruce)'
   const expectedOwner = 'bruce'
 
   const result = await validateReddit(validPost, expectedOwner)
@@ -97,7 +104,8 @@ test('valid reddit proof with link', async () => {
 })
 
 test('valid reddit proof with no link', async () => {
-  const validPost = 'This post connects my Reddit account to my decentralized identity: vvallet.me/im/bruce'
+  const validPost =
+    'This post connects my Reddit account to my decentralized identity: vvallet.me/im/bruce'
   const expectedOwner = 'bruce'
 
   const result = await validateReddit(validPost, expectedOwner)
@@ -105,7 +113,8 @@ test('valid reddit proof with no link', async () => {
 })
 
 test('invalid reddit proof', async () => {
-  const invalidPost = 'This post connects my Reddit account to my decentralized identity: vvallet.me/im/bob'
+  const invalidPost =
+    'This post connects my Reddit account to my decentralized identity: vvallet.me/im/bob'
   const expectedOwner = 'bruce'
 
   const result = await validateReddit(invalidPost, expectedOwner)
@@ -113,7 +122,8 @@ test('invalid reddit proof', async () => {
 })
 
 test('invalid reddit proof link', async () => {
-  const invalidPost = 'This post connects my Reddit account to my decentralized identity: [vvallet.me/im/bob](https://vvallet.me/im/bruce)'
+  const invalidPost =
+    'This post connects my Reddit account to my decentralized identity: [vvallet.me/im/bob](https://vvallet.me/im/bruce)'
   const expectedOwner = 'bruce'
 
   const result = await validateReddit(invalidPost, expectedOwner)

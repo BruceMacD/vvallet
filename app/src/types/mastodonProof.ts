@@ -1,4 +1,4 @@
 export type MastodonProof = {
-    username: string,
-    content: string
+  username: string
+  content: string
 }

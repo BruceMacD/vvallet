@@ -15,16 +15,14 @@ export const AddProof: FC<{ app: VVallet; identity: IdentityAlias }> = ({
   const [errMsg, setErrMsg] = useState('')
   const [confirmationMsg, setConfirmationMsg] = useState('')
 
-  const linkProofText = identity
-    ? 'vvallet.me/im/' +
-      identity.alias
-    : ''
+  const linkProofText = identity ? 'vvallet.me/im/' + identity.alias : ''
 
   const postProofText = identity
     ? 'This post connects my Reddit account to my decentralized identity: ' +
-    'vvallet.me/im/' + identity.alias
+      'vvallet.me/im/' +
+      identity.alias
     : ''
-  
+
   const verifyingProofText = identity
     ? 'Verifying my @vvalletdotme alias is ' +
       identity.alias +
@@ -36,7 +34,6 @@ export const AddProof: FC<{ app: VVallet; identity: IdentityAlias }> = ({
     const selectedType = e.currentTarget.value
     setProofType(selectedType)
   }
-
 
   const addProof = async (proof: string) => {
     if (app) {
@@ -131,19 +128,49 @@ export const AddProof: FC<{ app: VVallet; identity: IdentityAlias }> = ({
                   <option value={Constants.TWITTER}>Twitter</option>
                 </select>
                 {proofType == Constants.DNS && (
-                  <ProofInput info='Add this TXT record to the DNS record of your domain.' proofText={linkProofText} placeholder='example.com' prompt='Enter your domain' addProofCallback={addProof}/>
+                  <ProofInput
+                    info="Add this TXT record to the DNS record of your domain."
+                    proofText={linkProofText}
+                    placeholder="example.com"
+                    prompt="Enter your domain"
+                    addProofCallback={addProof}
+                  />
                 )}
                 {proofType == Constants.ENS && (
-                  <ProofInput info='Add this link to your ENS text records.' proofText={linkProofText} placeholder='example.eth' prompt='Enter your .eth name' addProofCallback={addProof}/>
+                  <ProofInput
+                    info="Add this link to your ENS text records."
+                    proofText={linkProofText}
+                    placeholder="example.eth"
+                    prompt="Enter your .eth name"
+                    addProofCallback={addProof}
+                  />
                 )}
                 {proofType == Constants.MASTODON && (
-                  <ProofInput info='Post this.' proofText={verifyingProofText} placeholder='https://mastodon.social/web/@...' prompt='Enter a publicly accessible link to your proof' addProofCallback={addProof}/>
+                  <ProofInput
+                    info="Post this."
+                    proofText={verifyingProofText}
+                    placeholder="https://mastodon.social/web/@..."
+                    prompt="Enter a publicly accessible link to your proof"
+                    addProofCallback={addProof}
+                  />
                 )}
                 {proofType == Constants.REDDIT && (
-                  <ProofInput info='Create a submission on Reddit with this text.' proofText={postProofText} placeholder='https://www.reddit.com/user/.../comments/.../vvalletme_proof' prompt='Enter a publicly accessible link to your proof' addProofCallback={addProof}/>
+                  <ProofInput
+                    info="Create a submission on Reddit with this text."
+                    proofText={postProofText}
+                    placeholder="https://www.reddit.com/user/.../comments/.../vvalletme_proof"
+                    prompt="Enter a publicly accessible link to your proof"
+                    addProofCallback={addProof}
+                  />
                 )}
                 {proofType == Constants.TWITTER && (
-                  <ProofInput info='Tweet this.' proofText={verifyingProofText} placeholder='https://twitter.com/.../status/...' prompt='Enter a publicly accessible link to your proof' addProofCallback={addProof}/>
+                  <ProofInput
+                    info="Tweet this."
+                    proofText={verifyingProofText}
+                    placeholder="https://twitter.com/.../status/..."
+                    prompt="Enter a publicly accessible link to your proof"
+                    addProofCallback={addProof}
+                  />
                 )}
               </div>
             </div>

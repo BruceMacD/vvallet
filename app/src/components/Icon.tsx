@@ -2,47 +2,23 @@ import Image from 'next/image'
 import { Constants } from 'types/constants'
 
 const dns = (): JSX.Element => {
-  return (
-    <Image
-      src="/svg/globe.svg"
-      alt="globe logo"
-      width={23}
-      height={23}
-    />
-  )
+  return <Image src="/svg/globe.svg" alt="globe logo" width={23} height={23} />
 }
 
 const ens = (): JSX.Element => {
   return (
-    <Image
-      src="/svg/ens.svg"
-      alt="ethereum name service logo"
-      width={23}
-      height={23}
-    />
+    <Image src="/svg/ens.svg" alt="ethereum name service logo" width={23} height={23} />
   )
 }
 
 const mastodon = (): JSX.Element => {
   return (
-    <Image
-      src="/svg/mastodon.svg"
-      alt="mastodon social logo"
-      width={23}
-      height={23}
-    />
+    <Image src="/svg/mastodon.svg" alt="mastodon social logo" width={23} height={23} />
   )
 }
 
 const reddit = (): JSX.Element => {
-  return (
-    <Image
-      src="/svg/reddit.svg"
-      alt="reddit logo"
-      width={23}
-      height={23}
-    />
-  )
+  return <Image src="/svg/reddit.svg" alt="reddit logo" width={23} height={23} />
 }
 
 const twitter = (): JSX.Element => {
