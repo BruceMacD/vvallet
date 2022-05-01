@@ -6,11 +6,12 @@ import { NavSection } from './NavSection'
 import { Footer } from 'components/Footer'
 
 type Props = {
+  content: string
   page: DocPage
   metadata: DocSectionMetadata[]
 }
 
-export const DocsView = ({ page, metadata }: Props) => {
+export const DocsView = ({ content, page, metadata }: Props) => {
 
   const navDisplay: JSX.Element[] = metadata.map(section => <NavSection sectionMetadata={section} activePage={page.title} />)
 
@@ -35,7 +36,7 @@ export const DocsView = ({ page, metadata }: Props) => {
         <div className="card w-4/6 bg-base-100 shadow-xl">
           <div className="card-body">
             <h2 className="card-title">{page?.title}</h2>
-            <p>{page?.content}</p>
+            <div className={styles['markdown']} dangerouslySetInnerHTML={{ __html: content }}/>
           </div>
         </div>
       </div>
