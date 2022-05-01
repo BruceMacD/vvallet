@@ -9,6 +9,7 @@ import styles from './index.module.css'
 import { useVVallet } from 'contexts/VVallet'
 import { IdCard } from 'components'
 import { IdentityAlias } from 'types/identityAlias'
+import { Footer } from 'components/Footer'
 
 export const RegistrationView: FC = () => {
   const app = useVVallet()
@@ -57,6 +58,8 @@ export const RegistrationView: FC = () => {
           </div>
         </div>
       </div>
+      
+      <Footer />
     </div>
   )
 }

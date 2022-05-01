@@ -9,6 +9,7 @@ import { useIdentity } from 'utils/fetcher'
 import { Proofs } from './proofs'
 import { IdCard, Loader } from 'components'
 import { AddProof } from './addProof'
+import { Footer } from 'components/Footer'
 
 export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
   const { identity, isLoading, error } = useIdentity(alias)
@@ -47,6 +48,8 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
             </div>
           </div>
         </div>
+
+        <Footer />
       </div>
     )
   else if (error) {
@@ -76,6 +79,8 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
             </div>
           </div>
         </div>
+
+        <Footer />
       </div>
     )
   } else
@@ -109,6 +114,8 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
             </div>
           </div>
         </div>
+
+        <Footer />
       </div>
     )
 }
