@@ -4,11 +4,14 @@ vvallet = "5EwrjHSsAiQjLmepCocQCEXuCe2wUZVjTaWM4jAim3Fo"
 [programs.devnet]
 vvallet = "5EwrjHSsAiQjLmepCocQCEXuCe2wUZVjTaWM4jAim3Fo"
 
+[programs.mainnet]
+vvallet = "ApxQXBHmgccUFM97XLvULbcvLjW7kgrtzNDosFpRXs4h"
+
 [registry]
 url = "https://anchor.projectserum.com"
 
 [provider]
-cluster = "devnet"
+cluster = "mainnet"
 wallet = "/Users/bruce/.config/solana/id.json"
 
 [scripts]
