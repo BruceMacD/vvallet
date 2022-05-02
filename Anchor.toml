@@ -5,7 +5,7 @@ vvallet = "5EwrjHSsAiQjLmepCocQCEXuCe2wUZVjTaWM4jAim3Fo"
 vvallet = "5EwrjHSsAiQjLmepCocQCEXuCe2wUZVjTaWM4jAim3Fo"
 
 [programs.mainnet]
-vvallet = "ApxQXBHmgccUFM97XLvULbcvLjW7kgrtzNDosFpRXs4h"
+vvallet = "FWs57YWEkULEPu7a3VSUoFQMyatrqoNrDu1CeBwiejQe"
 
 [registry]
 url = "https://anchor.projectserum.com"
