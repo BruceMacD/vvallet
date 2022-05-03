@@ -315,7 +315,7 @@ export const useProofValidator = (
       // twitter, mastodon, ...
       // validate by proxy
       let req: ValidateProofRequest = { id: proof.id }
-      const { data, error } = useSWR(`/api/${req.id}/valid`, fetcher)
+      const { data, error } = useSWR(`/api/validate/${req.id}`, fetcher)
 
       return {
         proofValidation: data,
