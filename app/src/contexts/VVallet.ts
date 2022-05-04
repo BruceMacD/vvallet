@@ -20,9 +20,18 @@ export interface VVallet {
 
 // used by the API to look up information on a private Solana RPC
 export function useReadOnlyVVallet(): VVallet {
-  const clusterURL: string = process.env.NEXT_PUBLIC_CLUSTER_URL
-    ? process.env.NEXT_PUBLIC_CLUSTER_URL
-    : 'http://127.0.0.1:8899' // default to local
+  var clusterURL: string= 'http://127.0.0.1:8899' // default to local
+
+  // try to set the cluster URL from environment variables
+  // in production we use a private cluster, so start with checking that
+  // in dev we can just use the public cluster URL
+  if (process.env.PRIVATE_CLUSTER_URL && process.env.PRIVATE_CLUSTER_KEY) {
+    clusterURL = process.env.PRIVATE_CLUSTER_URL + "/" + process.env.PRIVATE_CLUSTER_KEY
+  } else if (process.env.PRIVATE_CLUSTER_URL) {
+    clusterURL = process.env.PRIVATE_CLUSTER_URL
+  } else if (process.env.NEXT_PUBLIC_CLUSTER_URL) {
+    clusterURL = process.env.NEXT_PUBLIC_CLUSTER_URL
+  }
 
   const keypair = Keypair.generate()
   const local = new ReadOnlyWallet(keypair)
