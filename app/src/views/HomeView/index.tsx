@@ -5,9 +5,10 @@ import { FC, useMemo, useState } from 'react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 
 import styles from './index.module.css'
-import { fetchIdentitiesByOwner, useVVallet } from 'contexts/VVallet'
+import { useVVallet } from 'contexts/VVallet'
 import { IdentityAlias } from 'types/identityAlias'
 import { Footer } from 'components/Footer'
+import { fetchKeyIdentities } from 'utils/fetcher'
 
 export const HomeView: FC = ({}) => {
   const app = useVVallet()
@@ -15,15 +16,14 @@ export const HomeView: FC = ({}) => {
 
   useMemo(() => {
     if (app?.connectedWallet?.publicKey && !walletConnectedOnLoad) {
-      fetchIdentitiesByOwner(app, app.connectedWallet.publicKey.toBase58()).then(
-        (identities: IdentityAlias[]) => {
-          if (identities.length == 0) {
-            Router.push('/register')
-          } else {
-            Router.push('/im/' + identities[0].alias)
-          }
-        },
-      )
+      fetchKeyIdentities(app.connectedWallet.publicKey).then((identities: IdentityAlias[]) => {
+        if (identities.length == 0) {
+          // they need to register
+          Router.push('/register')
+        } else {
+          Router.push('/im/' + identities[0].alias)
+        }
+      })
     }
   }, [app])
 

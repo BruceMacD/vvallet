@@ -1,10 +1,11 @@
 import { FC, useState } from 'react'
 import { ErrorDisplay, SuccessDisplay, ProcessingDisplay, ProofInput } from 'components'
-import { fetchProof, registerProof, VVallet } from 'contexts/VVallet'
+import { registerProof, VVallet } from 'contexts/VVallet'
 import { IdentityAlias } from 'types/identityAlias'
 import { Keypair } from '@solana/web3.js'
 import { waitUntilTrue } from 'utils/timer'
 import { Constants } from 'types/constants'
+import { fetchKeyProof } from 'utils/fetcher'
 
 export const AddProof: FC<{ app: VVallet; identity: IdentityAlias }> = ({
   app,
@@ -37,7 +38,7 @@ export const AddProof: FC<{ app: VVallet; identity: IdentityAlias }> = ({
 
   const addProof = async (proof: string) => {
     if (app) {
-      // remove and tracking query parameters from copying the URL
+      // remove tracking query parameters from copying the URL
       let proofParts = proof.split('?')
 
       setIsWaiting(true)
@@ -46,7 +47,7 @@ export const AddProof: FC<{ app: VVallet; identity: IdentityAlias }> = ({
           if (registered !== undefined) {
             const proofRegistered = async (): Promise<boolean> => {
               let isRegistered = false
-              await fetchProof(app, registered.publicKey.toBase58())
+              await fetchKeyProof(registered.publicKey)
                 .then(() => {
                   // if it doesn't exist an error would have been thrown
                   isRegistered = true

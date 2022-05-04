@@ -3,13 +3,11 @@ import Image from 'next/image'
 
 import { SolanaLogo } from 'components'
 import {
-  fetchIdentitiesByOwner,
-  isAliasRegistered,
-  isKeyRegistered,
   registerAccount,
   useVVallet,
 } from 'contexts/VVallet'
 import { IdentityAlias } from 'types/identityAlias'
+import { fetchAliasIdentity, fetchKeyIdentities } from 'utils/fetcher'
 
 export const IdCard: FC<{ identity: IdentityAlias; registration: boolean }> = ({
   identity,
@@ -96,10 +94,23 @@ export const IdCard: FC<{ identity: IdentityAlias; registration: boolean }> = ({
       return
     }
 
+    try {
+      const idAlias = await fetchAliasIdentity(inputAlias)
+      // if the response is not nil, this alias is registered
+      setAliasMessage('This alias is already claimed')
+      setDisableRegistration(true)
+      return
+    } catch (err: any) {
+      // this alias has not been registered yet
+      console.log(err)
+    }
+
     if (app) {
-      isAliasRegistered(app, inputAlias).then((registered: boolean) => {
-        if (registered) {
-          setAliasMessage('This alias is already claimed')
+      fetchKeyIdentities(app.connectedWallet.publicKey).then((identities: IdentityAlias[]) => {
+        if (identities.length != 0) {
+          setAliasPlaceholder(identities[0].alias)
+          setAliasMessage("You're already registered")
+          setDisableAliasInput(true)
           setDisableRegistration(true)
           return
         }
@@ -117,25 +128,20 @@ export const IdCard: FC<{ identity: IdentityAlias; registration: boolean }> = ({
   const validateAndSetAlias = (e: React.FormEvent<HTMLInputElement>) => {
     const inputAlias = e.currentTarget.value.trim()
     setAlias(inputAlias)
-    console.log(inputAlias)
     updateAliasValidation(inputAlias)
   }
 
   if (app && registration) {
     // check if this wallet is already registered
     // if they are don't let them register again
-    isKeyRegistered(app, app.connectedWallet.publicKey).then((registered: boolean) => {
-      if (registered) {
-        fetchIdentitiesByOwner(app, app.connectedWallet.publicKey.toBase58()).then(
-          (identities: IdentityAlias[]) => {
-            // assume they only have one alias registed in this case
-            let id = identities[0]
-            setAliasPlaceholder(id.alias)
-            setAliasMessage("You're already registered")
-            setDisableAliasInput(true)
-            setDisableRegistration(true)
-          },
-        )
+    fetchKeyIdentities(app.connectedWallet.publicKey).then((identities: IdentityAlias[]) => {
+      if (identities.length > 0) {
+        // assume they only have one alias registed in this case
+        let id = identities[0]
+        setAliasPlaceholder(id.alias)
+        setAliasMessage("You're already registered")
+        setDisableAliasInput(true)
+        setDisableRegistration(true)
       }
     })
   }

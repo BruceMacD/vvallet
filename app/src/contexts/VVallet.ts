@@ -18,7 +18,7 @@ export interface VVallet {
   program: Program
 }
 
-// used by the API to look up information on Solana
+// used by the API to look up information on a private Solana RPC
 export function useReadOnlyVVallet(): VVallet {
   const clusterURL: string = process.env.NEXT_PUBLIC_CLUSTER_URL
     ? process.env.NEXT_PUBLIC_CLUSTER_URL
@@ -125,35 +125,6 @@ export const fetchIdentity = async (
   }
 
   return idAlias
-}
-
-export const isAliasRegistered = async (
-  app: VVallet,
-  alias: string,
-): Promise<boolean> => {
-  if (!app.connectedWallet) {
-    Promise.reject('no wallet connected')
-  }
-
-  try {
-    await fetchIdentity(app, alias)
-  } catch (err: any) {
-    console.log(err)
-    return false
-  }
-
-  // the look-up was a success, so this is registered
-  return true
-}
-
-export const isKeyRegistered = async (app: VVallet, pub: PublicKey): Promise<boolean> => {
-  if (!app.connectedWallet) {
-    Promise.reject('no wallet connected')
-  }
-
-  const registered = await fetchIdentitiesByOwner(app, pub.toBase58())
-
-  return registered.length > 0
 }
 
 export const registerProof = async (

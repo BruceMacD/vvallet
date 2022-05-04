@@ -4,12 +4,13 @@ import { FC, useMemo } from 'react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 
 import styles from './index.module.css'
-import { isKeyRegistered, useVVallet } from 'contexts/VVallet'
-import { useIdentity } from 'utils/fetcher'
+import { useVVallet } from 'contexts/VVallet'
+import { fetchKeyIdentities, useIdentity } from 'utils/fetcher'
 import { Proofs } from './proofs'
 import { IdCard, Loader } from 'components'
 import { AddProof } from './addProof'
 import { Footer } from 'components/Footer'
+import { IdentityAlias } from 'types/identityAlias'
 
 export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
   const { identity, isLoading, error } = useIdentity(alias)
@@ -17,8 +18,9 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
 
   useMemo(() => {
     if (app?.connectedWallet?.publicKey) {
-      isKeyRegistered(app, app.connectedWallet.publicKey).then((registered: boolean) => {
-        if (!registered) {
+      fetchKeyIdentities(app.connectedWallet.publicKey).then((identities: IdentityAlias[]) => {
+        if (identities.length == 0) {
+          // they need to register
           Router.push('/register')
         }
       })

@@ -3,7 +3,7 @@ import { Contract } from '@ethersproject/contracts'
 import { namehash } from '@ethersproject/hash'
 import { getDefaultProvider } from '@ethersproject/providers'
 
-import { IdResponse } from 'types/identityAlias'
+import { IdentityAlias, IdResponse } from 'types/identityAlias'
 import {
   OwnerProof,
   ProofsResponse,
@@ -18,6 +18,7 @@ import { RedditSubmission } from 'types/redditSubmission'
 import { DNSTextRecord } from 'types/dnsTxtRecord'
 import { getFormattedProofLink } from './parser'
 import { MastodonProof } from 'types/mastodonProof'
+import { PublicKey } from '@solana/web3.js'
 
 export const fetcher = async (url: string): Promise<any> => {
   const res = await fetch(url)
@@ -246,6 +247,18 @@ export const fetchRedditValidation = async (urn: string): Promise<any> => {
 
 // vvallet API fetchers
 
+export const fetchAliasIdentity = async (alias: string): Promise<IdentityAlias> => {
+  return await fetcher('/api/im/' + alias)
+}
+
+export const fetchKeyIdentities = async (publicKey: PublicKey): Promise<IdentityAlias[]> => {
+  return await fetcher('/api/identities/' + publicKey.toBase58())
+}
+
+export const fetchKeyProof = async (publicKey: PublicKey): Promise<OwnerProof> => {
+  return await fetcher('/api/proofs/' + publicKey.toBase58())
+}
+
 export const useIdentity = (id: string): IdResponse => {
   const { data, error } = useSWR(`/api/im/${id}`, fetcher)
 
@@ -257,7 +270,7 @@ export const useIdentity = (id: string): IdResponse => {
 }
 
 export const useProofs = (owner: string): ProofsResponse => {
-  const { data, error } = useSWR(`/api/proofs/${owner}`, fetcher)
+  const { data, error } = useSWR(`/api/proofs/identities/${owner}`, fetcher)
 
   return {
     proofs: data,
