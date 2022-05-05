@@ -141,6 +141,8 @@ export const registerProof = async (
   kind: string,
   proof: string,
 ): Promise<Keypair | undefined> => {
+  console.log("registering")
+  console.log(app)
   if (!app.connectedWallet) {
     console.log('wallet not connected')
     return
@@ -148,6 +150,7 @@ export const registerProof = async (
 
   // we don't need to regenerate this, so random is fine
   const keypair = web3.Keypair.generate()
+  console.log(keypair)
 
   await app.program.rpc.addProof(kind, proof, {
     accounts: {
