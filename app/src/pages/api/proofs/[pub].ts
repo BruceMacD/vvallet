@@ -18,7 +18,6 @@ export default async function proofsHandler(
         const proof = await fetchProof(connection, publicKey)
         res.status(200).json(proof)
       } catch (err: any) {
-          console.log(err)
         if (err.message.includes('Account does not exist')) {
           res.status(404).end(err.message)
         } else {
