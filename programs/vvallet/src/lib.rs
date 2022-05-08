@@ -99,8 +99,6 @@ pub struct RegisterIdentity<'info> {
     pub identity: Account<'info, Identity>,
     #[account(mut)]
     pub owner: Signer<'info>,
-    #[account(address = system_program::ID)]
-    pub system_program: AccountInfo<'info>, // TODO: is this needed
 }
 
 #[derive(Accounts)]
