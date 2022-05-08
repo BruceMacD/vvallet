@@ -108,8 +108,8 @@ export const fetchIdentitiesByOwner = async (
 
   for (let identity of identities) {
     const ownerIdentity: IdentityAlias = {
-      owner: identity.account.owner.toBase58(),
-      alias: identity.account.alias,
+      owner: (identity.account.owner as PublicKey).toBase58(),
+      alias: (identity.account.alias as string),
     }
     ownerIdentities.push(ownerIdentity)
   }
@@ -129,8 +129,8 @@ export const fetchIdentity = async (
   const resp = await app.program.account.identity.fetch(keypair.publicKey)
 
   const idAlias: IdentityAlias = {
-    owner: resp.owner.toBase58(),
-    alias: resp.alias,
+    owner: (resp.owner as PublicKey).toBase58(),
+    alias: (resp.alias as string),
   }
 
   return idAlias
@@ -188,9 +188,9 @@ export const fetchProofsByOwner = async (
   for (let proof of proofs) {
     let ownerProof: OwnerProof = {
       id: proof.publicKey.toBase58(),
-      owner: proof.account.owner.toBase58(),
-      kind: proof.account.kind,
-      proof: proof.account.proof,
+      owner: (proof.account.owner as PublicKey).toBase58(),
+      kind: (proof.account.kind as string),
+      proof: (proof.account.proof as string),
     }
     ownerProofs.push(ownerProof)
   }
@@ -211,9 +211,9 @@ export const fetchProof = async (
 
   return {
     id: publicKey,
-    owner: proof.owner.toBase58(),
-    kind: proof.kind,
-    proof: proof.proof,
+    owner: (proof.owner as PublicKey).toBase58(),
+    kind: (proof.kind as string),
+    proof: (proof.proof as string),
   }
 }
 
