@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { AnchorWallet, useAnchorWallet } from '@solana/wallet-adapter-react'
 import { Connection, Keypair, PublicKey } from '@solana/web3.js'
-import { Provider, Program, web3 } from '@project-serum/anchor'
+import { Provider, Program, web3, AnchorProvider } from '@project-serum/anchor'
 
 import { generateAliasKeypair } from 'utils/crypto'
 import idl from 'idl/vvallet.json'
@@ -36,7 +36,7 @@ export function useReadOnlyVVallet(): VVallet {
   const keypair = Keypair.generate()
   const local = new ReadOnlyWallet(keypair)
   const connection = new Connection(clusterURL)
-  const provider = new Provider(connection, local, Provider.defaultOptions())
+  const provider = new AnchorProvider(connection, local, AnchorProvider.defaultOptions())
   const programID = new PublicKey(idl.metadata.address)
   // @ts-ignore
   const program = new Program(idl, programID, provider)
@@ -52,7 +52,7 @@ export function useVVallet(): VVallet | undefined {
 
   const connectedWallet = useAnchorWallet()!
   const connection = new Connection(clusterURL)
-  const provider = new Provider(connection, connectedWallet, Provider.defaultOptions())
+  const provider = new AnchorProvider(connection, connectedWallet, AnchorProvider.defaultOptions())
   const programID = new PublicKey(idl.metadata.address)
   // @ts-ignore
   const program = new Program(idl, programID, provider)
