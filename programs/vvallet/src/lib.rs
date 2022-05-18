@@ -98,7 +98,9 @@ pub struct RegisterIdentity<'info> {
     #[account(init, payer = owner, space = Identity::LEN)]
     pub identity: Account<'info, Identity>,
     #[account(mut)]
-    pub owner: Signer<'info>,
+    pub owner: Signer<'info>, 
+    #[account(address = system_program::ID)]
+    pub system_program: AccountInfo<'info>,
 }
 
 #[derive(Accounts)]
