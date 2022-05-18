@@ -1,38 +1,8 @@
-# vvallet
+# vvallet.me
 
-The vvallet dapp for storing and exploring identity proof assertions.
+The vvallet.me dapp is a directory that maps social media identities to a cryptocurrency wallet. Through ownership of a secret key (stored in a cryptocurrency wallet) that allows adding transactions to a blockchain an owner can demonstrate that they control many separate accounts.
 
-## Development Quickstart
-[Start by following the environment setup in the docs.](./docs/Environment_Setup.md)
+## Links
+[Development environment setup](./docs/Environment_Setup.md)
+[Deployment configuration](./docs/Deployment.md)
 
-### First Local Deployment
-
-```
-# Compile the program
-anchor build
-
-# Run a local ledger
-solana-test-validator
-
-# Deploy the program
-anchor deploy
-...
-Program Id: 5EwrjHSsAiQjLmepCocQCEXuCe2wUZVjTaWM4jAim3Fo
-
-# set the programs.localnet property in Anchor.toml to the output program ID 
-# set the declared_id in `programs/vvallet/src/lib.rs` to the output program ID 
-```
-
-### Local Deployment
-
-```
-# Build, deploy, and start solana-test-validator. Runs continuously.
-anchor localnet
-```
-
-### Run Tests
-
-```
-# Build, deploy, start solana-test-validator, and run tests. Terminates after tests complete.
-anchor test
-```

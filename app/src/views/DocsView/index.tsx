@@ -29,11 +29,11 @@ export const DocsView = ({ content, page, metadata }: Props) => {
       </div>
 
       <div className="flex flex-wrap">
-        <ul className="menu bg-base-100 w-2/6 p-2 rounded-box" key="nav">
+        <ul className="menu bg-base-100 md:w-2/6 w-full p-2 rounded-box" key="nav">
           {navDisplay}
         </ul>
 
-        <div className="card w-4/6 bg-base-100 shadow-xl">
+        <div className="card md:w-4/6 w-full bg-base-100 shadow-xl">
           <div className="card-body">
             <h2 className="card-title">{page?.title}</h2>
             <div className={styles['markdown']} dangerouslySetInnerHTML={{ __html: content }}/>
