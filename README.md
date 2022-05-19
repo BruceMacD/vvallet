@@ -7,3 +7,8 @@ The vvallet.me dapp is a directory that maps social media identities to a crypto
 - [Development environment setup](./docs/Environment_Setup.md)
 - [Deployment configuration](./docs/Deployment.md)
 
+## Screenshots
+<img src="/docs/screenshots/homepage.png" width="24%"></img>
+<img src="/docs/screenshots/profile.png" width="24%"></img>
+<img src="/docs/screenshots/registration.png" width="24%"></img>
+<img src="/docs/screenshots/docs.png" width="24%"></img>
