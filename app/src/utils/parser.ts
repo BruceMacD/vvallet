@@ -40,11 +40,10 @@ export const parseUsername = (kind: string, proof: string): string => {
   return ''
 }
 
-const MASTODON_USERNAME_REGEX = '(.*mastodon.social/web/@)(.*)/(.*)'
+const MASTODON_USERNAME_REGEX = '(.*mastodon.social/@)(.*)/(.*)'
 
 const mastodonUsernameFromProof = (proof: string): string => {
   const groups = proof.match(MASTODON_USERNAME_REGEX)
-
   if (groups !== null && groups.length >= 3) {
     return groups[2]
   }

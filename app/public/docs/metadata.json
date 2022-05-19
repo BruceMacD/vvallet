@@ -5,12 +5,7 @@
   },
   {
     "name": "Advanced",
-    "pages": [
-      "Bidirectional Proofs",
-      "Decentralization",
-      "Open Source",
-      "Whitepaper"
-    ]
+    "pages": ["Bidirectional Proofs", "Decentralization", "Open Source", "Whitepaper"]
   },
   {
     "name": "Proof of Identity",

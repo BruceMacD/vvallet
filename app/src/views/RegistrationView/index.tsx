@@ -58,7 +58,7 @@ export const RegistrationView: FC = () => {
           </div>
         </div>
       </div>
-      
+
       <Footer />
     </div>
   )

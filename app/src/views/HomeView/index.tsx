@@ -16,14 +16,16 @@ export const HomeView: FC = ({}) => {
 
   useMemo(() => {
     if (app?.connectedWallet?.publicKey && !walletConnectedOnLoad) {
-      fetchKeyIdentities(app.connectedWallet.publicKey).then((identities: IdentityAlias[]) => {
-        if (identities.length == 0) {
-          // they need to register
-          Router.push('/register')
-        } else {
-          Router.push('/im/' + identities[0].alias)
-        }
-      })
+      fetchKeyIdentities(app.connectedWallet.publicKey).then(
+        (identities: IdentityAlias[]) => {
+          if (identities.length == 0) {
+            // they need to register
+            Router.push('/register')
+          } else {
+            Router.push('/im/' + identities[0].alias)
+          }
+        },
+      )
     }
   }, [app])
 
@@ -52,7 +54,13 @@ export const HomeView: FC = ({}) => {
               <div className="max-w-lg">
                 <h1 className="fancy text-7xl">prove your online identity</h1>
                 <div className="hero-content">
-                  <video loop autoPlay muted poster="/spinning_wallet_poster.png">
+                  <video
+                    loop
+                    autoPlay
+                    muted
+                    playsInline
+                    poster="/spinning_wallet_poster.png"
+                  >
                     <source src="/spinning_wallet.mp4" type="video/mp4" />
                   </video>
                 </div>

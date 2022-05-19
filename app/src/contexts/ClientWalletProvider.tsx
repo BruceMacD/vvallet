@@ -17,11 +17,11 @@ export function ClientWalletProvider(
 ): JSX.Element {
   const wallets = useMemo(
     () => [
-        new PhantomWalletAdapter(),
-        new SolflareWalletAdapter(),
-        new SolletWalletAdapter(),
+      new PhantomWalletAdapter(),
+      new SolflareWalletAdapter(),
+      new SolletWalletAdapter(),
     ],
-    []
+    [],
   )
 
   return (

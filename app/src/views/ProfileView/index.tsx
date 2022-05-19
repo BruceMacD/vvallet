@@ -18,12 +18,14 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
 
   useMemo(() => {
     if (app?.connectedWallet?.publicKey) {
-      fetchKeyIdentities(app.connectedWallet.publicKey).then((identities: IdentityAlias[]) => {
-        if (identities.length == 0) {
-          // they need to register
-          Router.push('/register')
-        }
-      })
+      fetchKeyIdentities(app.connectedWallet.publicKey).then(
+        (identities: IdentityAlias[]) => {
+          if (identities.length == 0) {
+            // they need to register
+            Router.push('/register')
+          }
+        },
+      )
     }
   }, [app])
 

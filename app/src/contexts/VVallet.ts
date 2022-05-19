@@ -20,13 +20,13 @@ export interface VVallet {
 
 // used by the API to look up information on a private Solana RPC
 export function useReadOnlyVVallet(): VVallet {
-  var clusterURL: string= 'http://127.0.0.1:8899' // default to local
+  var clusterURL: string = 'http://127.0.0.1:8899' // default to local
 
   // try to set the cluster URL from environment variables
   // in production we use a private cluster, so start with checking that
   // in dev we can just use the public cluster URL
   if (process.env.PRIVATE_CLUSTER_URL && process.env.PRIVATE_CLUSTER_KEY) {
-    clusterURL = process.env.PRIVATE_CLUSTER_URL + "/" + process.env.PRIVATE_CLUSTER_KEY
+    clusterURL = process.env.PRIVATE_CLUSTER_URL + '/' + process.env.PRIVATE_CLUSTER_KEY
   } else if (process.env.PRIVATE_CLUSTER_URL) {
     clusterURL = process.env.PRIVATE_CLUSTER_URL
   } else if (process.env.NEXT_PUBLIC_CLUSTER_URL) {
@@ -52,7 +52,11 @@ export function useVVallet(): VVallet | undefined {
 
   const connectedWallet = useAnchorWallet()!
   const connection = new Connection(clusterURL)
-  const provider = new AnchorProvider(connection, connectedWallet, AnchorProvider.defaultOptions())
+  const provider = new AnchorProvider(
+    connection,
+    connectedWallet,
+    AnchorProvider.defaultOptions(),
+  )
   const programID = new PublicKey(idl.metadata.address)
   // @ts-ignore
   const program = new Program(idl, programID, provider)
@@ -109,7 +113,7 @@ export const fetchIdentitiesByOwner = async (
   for (let identity of identities) {
     const ownerIdentity: IdentityAlias = {
       owner: (identity.account.owner as PublicKey).toBase58(),
-      alias: (identity.account.alias as string),
+      alias: identity.account.alias as string,
     }
     ownerIdentities.push(ownerIdentity)
   }
@@ -130,7 +134,7 @@ export const fetchIdentity = async (
 
   const idAlias: IdentityAlias = {
     owner: (resp.owner as PublicKey).toBase58(),
-    alias: (resp.alias as string),
+    alias: resp.alias as string,
   }
 
   return idAlias
@@ -141,7 +145,7 @@ export const registerProof = async (
   kind: string,
   proof: string,
 ): Promise<Keypair | undefined> => {
-  console.log("registering")
+  console.log('registering')
   console.log(app)
   if (!app.connectedWallet) {
     console.log('wallet not connected')
@@ -189,8 +193,8 @@ export const fetchProofsByOwner = async (
     let ownerProof: OwnerProof = {
       id: proof.publicKey.toBase58(),
       owner: (proof.account.owner as PublicKey).toBase58(),
-      kind: (proof.account.kind as string),
-      proof: (proof.account.proof as string),
+      kind: proof.account.kind as string,
+      proof: proof.account.proof as string,
     }
     ownerProofs.push(ownerProof)
   }
@@ -212,8 +216,8 @@ export const fetchProof = async (
   return {
     id: publicKey,
     owner: (proof.owner as PublicKey).toBase58(),
-    kind: (proof.kind as string),
-    proof: (proof.proof as string),
+    kind: proof.kind as string,
+    proof: proof.proof as string,
   }
 }
 

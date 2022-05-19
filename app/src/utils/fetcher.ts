@@ -252,7 +252,9 @@ export const fetchAliasIdentity = async (alias: string): Promise<IdentityAlias> 
   return await fetcher('/api/im/' + alias)
 }
 
-export const fetchKeyIdentities = async (publicKey: PublicKey): Promise<IdentityAlias[]> => {
+export const fetchKeyIdentities = async (
+  publicKey: PublicKey,
+): Promise<IdentityAlias[]> => {
   return await fetcher('/api/identities/' + publicKey.toBase58())
 }
 

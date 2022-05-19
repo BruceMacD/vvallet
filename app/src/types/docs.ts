@@ -9,9 +9,13 @@ export type DocSectionMetadata = {
   pages: string[]
 }
 
-export function docLink(sectionTitle: string, pageTitle: string, ): string {
-    const section = sectionTitle.replace(/\s/g, '-').toLowerCase()
-    const page = pageTitle.replace(/\s/g, '-').replace('.', '-').replace('?', '').toLowerCase()
+export function docLink(sectionTitle: string, pageTitle: string): string {
+  const section = sectionTitle.replace(/\s/g, '-').toLowerCase()
+  const page = pageTitle
+    .replace(/\s/g, '-')
+    .replace('.', '-')
+    .replace('?', '')
+    .toLowerCase()
 
-    return '/docs/' + section + '/' + page
+  return '/docs/' + section + '/' + page
 }

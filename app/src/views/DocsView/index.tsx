@@ -12,8 +12,9 @@ type Props = {
 }
 
 export const DocsView = ({ content, page, metadata }: Props) => {
-
-  const navDisplay: JSX.Element[] = metadata.map(section => <NavSection sectionMetadata={section} activePage={page.title} />)
+  const navDisplay: JSX.Element[] = metadata.map(section => (
+    <NavSection sectionMetadata={section} activePage={page.title} />
+  ))
 
   return (
     <div className="container mx-auto max-w-6xl p-8 2xl:px-0">
@@ -36,7 +37,10 @@ export const DocsView = ({ content, page, metadata }: Props) => {
         <div className="card md:w-4/6 w-full bg-base-100 shadow-xl">
           <div className="card-body">
             <h2 className="card-title">{page?.title}</h2>
-            <div className={styles['markdown']} dangerouslySetInnerHTML={{ __html: content }}/>
+            <div
+              className={styles['markdown']}
+              dangerouslySetInnerHTML={{ __html: content }}
+            />
           </div>
         </div>
       </div>

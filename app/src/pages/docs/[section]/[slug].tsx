@@ -45,7 +45,7 @@ export const getStaticProps = async ({ params }: Params) => {
 
 export const getStaticPaths = async () => {
   let docPages = getDocPaths()
-  
+
   return {
     paths: docPages,
     fallback: false,

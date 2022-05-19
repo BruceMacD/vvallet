@@ -1,13 +1,12 @@
 import { FC, useState } from 'react'
 import Image from 'next/image'
+import Router from 'next/router'
 
-import { SolanaLogo } from 'components'
-import {
-  registerAccount,
-  useVVallet,
-} from 'contexts/VVallet'
+import { SolanaLogo, SuccessDisplay } from 'components'
+import { registerAccount, useVVallet } from 'contexts/VVallet'
 import { IdentityAlias } from 'types/identityAlias'
 import { fetchAliasIdentity, fetchKeyIdentities } from 'utils/fetcher'
+import { waitUntilTrue } from 'utils/timer'
 
 export const IdCard: FC<{ identity: IdentityAlias; registration: boolean }> = ({
   identity,
@@ -22,6 +21,8 @@ export const IdCard: FC<{ identity: IdentityAlias; registration: boolean }> = ({
   const [aliasMessage, setAliasMessage] = useState('Please enter an alias')
   const [aliasPlaceholder, setAliasPlaceholder] = useState('alias')
   const [errMsg, setErrMsg] = useState('')
+  const [confirmationMsg, setConfirmationMsg] = useState('')
+
   const app = useVVallet()
 
   const cardStyling = (): string => {
@@ -64,12 +65,29 @@ export const IdCard: FC<{ identity: IdentityAlias; registration: boolean }> = ({
 
   const register = async () => {
     if (app) {
+      setDisableRegistration(true)
       setIsWaiting(true)
       await registerAccount(app, alias).catch((err: Error) => {
         setErrMsg(err.message)
       })
-      // TODO: retry account look up until it succeeds, then redirect
-      setIsWaiting(false)
+
+      const aliasRegistered = async (): Promise<boolean> => {
+        let isRegistered = false
+        await fetchAliasIdentity(alias)
+          .then(() => {
+            // if it doesn't exist an error would have been thrown
+            isRegistered = true
+          })
+          .catch((err: Error) => {
+            console.log(err)
+          })
+        return isRegistered
+      }
+
+      waitUntilTrue(aliasRegistered).then(() => {
+        setIsWaiting(false)
+        setConfirmationMsg('Success, your alias has been recorded.')
+      })
     }
   }
 
@@ -106,15 +124,17 @@ export const IdCard: FC<{ identity: IdentityAlias; registration: boolean }> = ({
     }
 
     if (app) {
-      fetchKeyIdentities(app.connectedWallet.publicKey).then((identities: IdentityAlias[]) => {
-        if (identities.length != 0) {
-          setAliasPlaceholder(identities[0].alias)
-          setAliasMessage("You're already registered")
-          setDisableAliasInput(true)
-          setDisableRegistration(true)
-          return
-        }
-      })
+      fetchKeyIdentities(app.connectedWallet.publicKey).then(
+        (identities: IdentityAlias[]) => {
+          if (identities.length != 0) {
+            setAliasPlaceholder(identities[0].alias)
+            setAliasMessage("You're already registered")
+            setDisableAliasInput(true)
+            setDisableRegistration(true)
+            return
+          }
+        },
+      )
 
       setAliasMessage('This alias is available')
       setDisableRegistration(false)
@@ -134,85 +154,93 @@ export const IdCard: FC<{ identity: IdentityAlias; registration: boolean }> = ({
   if (app && registration) {
     // check if this wallet is already registered
     // if they are don't let them register again
-    fetchKeyIdentities(app.connectedWallet.publicKey).then((identities: IdentityAlias[]) => {
-      if (identities.length > 0) {
-        // assume they only have one alias registed in this case
-        let id = identities[0]
-        setAliasPlaceholder(id.alias)
-        setAliasMessage("You're already registered")
-        setDisableAliasInput(true)
-        setDisableRegistration(true)
-      }
-    })
+    fetchKeyIdentities(app.connectedWallet.publicKey).then(
+      (identities: IdentityAlias[]) => {
+        if (identities.length > 0) {
+          // assume they only have one alias registed in this case
+          let id = identities[0]
+          setAliasPlaceholder(id.alias)
+          setAliasMessage("You're already registered")
+          setDisableAliasInput(true)
+          setDisableRegistration(true)
+        }
+      },
+    )
   }
 
   // end registration functions
 
   return (
     <div className="text-left">
-      <div className={cardStyling()}>
-        <div className="m-4 mt-8 text-5xl">
-          <span className="fancy">vvallet</span>
-        </div>
-
-        <div style={qrStyle} className="w-64 h-64">
-          <div className="w-32 h-32 ml-16 pt-16">
-            <Image src="/qr-code.png" alt="vvallet.me QR code" width={500} height={500} />
+      <div className="hero">
+        <div className={cardStyling()}>
+          <div className="m-4 mt-8 text-5xl">
+            <span className="fancy">vvallet</span>
           </div>
-        </div>
 
-        <div className="ml-4 mt-4 pb-1 underline card-body">member</div>
-        {registration ? (
-          <div className="form-control ml-3">
-            <input
-              type="text"
-              placeholder={aliasPlaceholder}
-              className="input input-info input-bordered w-56 mt-3"
-              disabled={disableAliasInput}
-              onChange={validateAndSetAlias}
-            />
-            <label className="label">
-              <span className="label-text-alt">{aliasMessage}</span>
-            </label>
-          </div>
-        ) : (
-          <div className={memberAliasStyling()}>{identity.alias}</div>
-        )}
-        <div className="absolute left-2 bottom-4 w-4 h-4 opacity-75">
-          <SolanaLogo />
-        </div>
-        <div className="card-stripe card-key-font	h-16 rounded-tr-2xl absolute ml-80 left-0 bottom-0 origin-bottom-left -rotate-90">
-          <div className="badge h-6 ml-12 mr-12 mt-5">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 mr-3"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="1"
-                d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"
+          <div style={qrStyle} className="w-64 h-64">
+            <div className="w-32 h-32 ml-16 pt-16">
+              <Image
+                src="/qr-code.png"
+                alt="vvallet.me QR code"
+                width={500}
+                height={500}
               />
-            </svg>
-            {identity.owner}
+            </div>
+          </div>
+
+          <div className="ml-4 mt-4 pb-1 underline card-body">member</div>
+          {registration ? (
+            <div className="form-control ml-3">
+              <input
+                type="text"
+                placeholder={aliasPlaceholder}
+                className="input input-info input-bordered w-56 mt-3"
+                disabled={disableAliasInput}
+                onChange={validateAndSetAlias}
+              />
+              <label className="label">
+                <span className="label-text-alt">{aliasMessage}</span>
+              </label>
+            </div>
+          ) : (
+            <div className={memberAliasStyling()}>{identity.alias}</div>
+          )}
+          <div className="absolute left-2 bottom-4 w-4 h-4 opacity-75">
+            <SolanaLogo />
+          </div>
+          <div className="card-stripe card-key-font	h-16 rounded-tr-2xl absolute ml-80 left-0 bottom-0 origin-bottom-left -rotate-90">
+            <div className="badge h-6 ml-12 mr-12 mt-5">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6 mr-3"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="1"
+                  d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"
+                />
+              </svg>
+              {identity.owner}
+            </div>
           </div>
         </div>
       </div>
       {registration && (
         <div>
-          {isWaiting ? (
+          <button
+            className="btn btn-primary btn-accent border-base-300 mt-3 flex items-center mx-auto"
+            disabled={disableRegistration}
+            onClick={register}
+          >
+            register now
+          </button>
+          {isWaiting && (
             <button className="btn btn-primary btn-accent border-base-300 mt-3 loading flex items-center mx-auto" />
-          ) : (
-            <button
-              className="btn btn-primary btn-accent border-base-300 mt-3 flex items-center mx-auto"
-              disabled={disableRegistration}
-              onClick={register}
-            >
-              register now
-            </button>
           )}
           {errMsg != '' && (
             <div className="alert alert-error w-80 mt-3">
@@ -233,6 +261,17 @@ export const IdCard: FC<{ identity: IdentityAlias; registration: boolean }> = ({
                 <label>{errMsg}</label>
               </div>
               <button className="btn btn-outline" onClick={() => setErrMsg('')}>
+                ok
+              </button>
+            </div>
+          )}
+          {confirmationMsg != '' && (
+            <div className="alert alert-success w-96">
+              <SuccessDisplay message={confirmationMsg} />
+              <button
+                className="btn btn-outline ml-1"
+                onClick={() => Router.push('/im/' + alias)}
+              >
                 ok
               </button>
             </div>
