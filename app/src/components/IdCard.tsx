@@ -113,13 +113,13 @@ export const IdCard: FC<{ identity: IdentityAlias; registration: boolean }> = ({
     }
 
     try {
-      const idAlias = await fetchAliasIdentity(inputAlias)
+      await fetchAliasIdentity(inputAlias)
       // if the response is not nil, this alias is registered
       setAliasMessage('This alias is already claimed')
       setDisableRegistration(true)
       return
     } catch (err: any) {
-      // this alias has not been registered yet
+      // this alias has not been registered yet, this is fine
       console.log(err)
     }
 
@@ -153,7 +153,7 @@ export const IdCard: FC<{ identity: IdentityAlias; registration: boolean }> = ({
 
   if (app && registration) {
     // check if this wallet is already registered
-    // if they are don't let them register again
+    // if they are, don't let them register again
     fetchKeyIdentities(app.connectedWallet.publicKey).then(
       (identities: IdentityAlias[]) => {
         if (identities.length > 0) {

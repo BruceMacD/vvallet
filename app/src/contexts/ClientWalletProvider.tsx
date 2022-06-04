@@ -4,7 +4,6 @@ import { WalletProvider } from '@solana/wallet-adapter-react'
 import {
   PhantomWalletAdapter,
   SolflareWalletAdapter,
-  SolletExtensionWalletAdapter,
   SolletWalletAdapter,
 } from '@solana/wallet-adapter-wallets'
 import { useMemo } from 'react'
