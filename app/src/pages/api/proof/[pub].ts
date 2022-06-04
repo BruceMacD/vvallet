@@ -5,7 +5,7 @@ import { OwnerProof } from 'types/ownerProof'
 
 const connection = useReadOnlyVVallet()
 
-export default async function proofsHandler(
+export default async function proofHandler(
   req: NextApiRequest,
   res: NextApiResponse<OwnerProof>,
 ) {

@@ -1,4 +1,5 @@
 export { DocsView } from './DocsView'
+export { ExplorerView } from './ExplorerView'
 export { HomeView } from './HomeView'
 export { ProfileView } from './ProfileView'
 export { RegistrationView } from './RegistrationView'

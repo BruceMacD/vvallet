@@ -247,6 +247,9 @@ export const fetchRedditValidation = async (urn: string): Promise<any> => {
 }
 
 // vvallet API fetchers
+export const fetchAllIdentities = async (): Promise<IdentityAlias[]> => {
+  return await fetcher('/api/identity')
+}
 
 export const fetchAliasIdentity = async (alias: string): Promise<IdentityAlias> => {
   return await fetcher('/api/im/' + alias)
@@ -255,11 +258,11 @@ export const fetchAliasIdentity = async (alias: string): Promise<IdentityAlias> 
 export const fetchKeyIdentities = async (
   publicKey: PublicKey,
 ): Promise<IdentityAlias[]> => {
-  return await fetcher('/api/identities/' + publicKey.toBase58())
+  return await fetcher('/api/identity/' + publicKey.toBase58())
 }
 
 export const fetchKeyProof = async (publicKey: PublicKey): Promise<OwnerProof> => {
-  return await fetcher('/api/proofs/' + publicKey.toBase58())
+  return await fetcher('/api/proof/' + publicKey.toBase58())
 }
 
 export const useIdentity = (id: string): IdResponse => {
@@ -273,7 +276,7 @@ export const useIdentity = (id: string): IdResponse => {
 }
 
 export const useProofs = (owner: string): ProofsResponse => {
-  const { data, error } = useSWR(`/api/proofs/identities/${owner}`, fetcher)
+  const { data, error } = useSWR(`/api/proof/identity/${owner}`, fetcher)
 
   return {
     proofs: data,

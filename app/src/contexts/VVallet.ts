@@ -121,6 +121,26 @@ export const fetchIdentitiesByOwner = async (
   return ownerIdentities
 }
 
+export const fetchAllIdentities = async (app: VVallet): Promise<IdentityAlias[]> => {
+  if (!app.connectedWallet) {
+    Promise.reject('no wallet connected')
+  }
+
+  const resp = await app.program.account.identity.all()
+
+  const identities: IdentityAlias[] = []
+
+  for (let identity of resp) {
+    const ownerIdentity: IdentityAlias = {
+      owner: (identity.account.owner as PublicKey).toBase58(),
+      alias: identity.account.alias as string,
+    }
+    identities.push(ownerIdentity)
+  }
+
+  return identities
+}
+
 export const fetchIdentity = async (
   app: VVallet,
   alias: string,
@@ -145,8 +165,6 @@ export const registerProof = async (
   kind: string,
   proof: string,
 ): Promise<Keypair | undefined> => {
-  console.log('registering')
-  console.log(app)
   if (!app.connectedWallet) {
     console.log('wallet not connected')
     return
@@ -154,7 +172,6 @@ export const registerProof = async (
 
   // we don't need to regenerate this, so random is fine
   const keypair = web3.Keypair.generate()
-  console.log(keypair)
 
   await app.program.rpc.addProof(kind, proof, {
     accounts: {
