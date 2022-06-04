@@ -26,7 +26,7 @@ test('twitter profile from proof link', async () => {
 })
 
 test('mastdon username from proof link', async () => {
-  const proof = 'https://mastodon.social/web/@bmacd/108121125227719604'
+  const proof = 'https://mastodon.social/@bmacd/108121125227719604'
 
   const user = parseUsername(Constants.MASTODON, proof)
 
