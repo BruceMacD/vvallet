@@ -42,7 +42,7 @@ export const HomeView: FC = ({}) => {
             <Link href="/docs/getting-started/overview">
               <a className="px-2 hover:underline">docs</a>
             </Link>
-            <Link href="https://mirror.xyz/bmacd.eth">
+            <Link href="https://mirror.xyz/myvvallet.eth">
               <a className="px-2 hover:underline">blog</a>
             </Link>
           </div>
