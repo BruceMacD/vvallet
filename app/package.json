@@ -20,6 +20,7 @@
     "@ethersproject/hash": "^5.6.0",
     "@ethersproject/providers": "^5.6.5",
     "@heroicons/react": "^1.0.5",
+    "@jackybaby/react-custom-qrcode": "^2.7.6",
     "@project-serum/anchor": "^v0.24.2",
     "@solana/spl-token": "^0.2.0",
     "@solana/wallet-adapter-base": "^0.9.5",
