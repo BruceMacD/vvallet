@@ -169,8 +169,6 @@ export const fetchMastodonPost = async (url: string): Promise<MastodonProof> => 
 
   const resp = await fetcher(apiUrl)
 
-  console.log(resp)
-
   return {
     username: resp.account.username,
     content: resp.content,
