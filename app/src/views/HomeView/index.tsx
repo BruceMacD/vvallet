@@ -9,15 +9,19 @@ import { useVVallet } from 'contexts/VVallet'
 import { IdentityAlias } from 'types/identityAlias'
 import { Footer } from 'components/Footer'
 import { fetchKeyIdentities } from 'utils/fetcher'
+import { Loader } from 'components'
 
 export const HomeView: FC = ({}) => {
   const app = useVVallet()
   const [walletConnectedOnLoad, setWalletConnectedOnLoad] = useState(app !== undefined)
+  const [lookingUpWallet, setLookingUpWallet] = useState(false)
 
   useMemo(() => {
     if (app?.connectedWallet?.publicKey && !walletConnectedOnLoad) {
+      setLookingUpWallet(true)
       fetchKeyIdentities(app.connectedWallet.publicKey).then(
         (identities: IdentityAlias[]) => {
+          setLookingUpWallet(false)
           if (identities.length == 0) {
             // they need to register
             Router.push('/register')
@@ -67,6 +71,11 @@ export const HomeView: FC = ({}) => {
                 <div className="hero-content">
                   <WalletMultiButton className="btn btn-ghost" />
                 </div>
+                {lookingUpWallet && (
+                  <div className="text-center hero-content">
+                    <Loader text="Looking up wallet..." />
+                  </div>
+                )}
               </div>
             </div>
           </div>

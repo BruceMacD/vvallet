@@ -1,7 +1,7 @@
 import { FC, useState } from 'react'
 import Router from 'next/router'
 
-import { QRCode } from "@jackybaby/react-custom-qrcode"
+import { QRCode } from '@jackybaby/react-custom-qrcode'
 
 import { SolanaLogo, SuccessDisplay } from 'components'
 import { registerAccount, useVVallet } from 'contexts/VVallet'
@@ -181,10 +181,10 @@ export const IdCard: FC<{ identity: IdentityAlias; registration: boolean }> = ({
 
           <div style={qrStyle} className="w-64 h-64">
             <div className="w-32 h-32 ml-16 pt-16">
-              <QRCode 
+              <QRCode
                 value={window.location.href} // this is displayed on the page of the user it is for
-                size={115} 
-                qrStyle='dots' 
+                size={115}
+                qrStyle="dots"
                 eyeRadius={5}
               />
             </div>
