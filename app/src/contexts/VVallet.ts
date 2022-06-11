@@ -78,7 +78,7 @@ export const registerAccount = async (app: VVallet, alias: string) => {
 
   let aliasKeys = generateAliasKeypair(alias)
 
-  await app.program.rpc.register(alias, {
+  await app.program.methods.register(alias, {
     accounts: {
       identity: aliasKeys.publicKey,
       owner: app.connectedWallet.publicKey,
@@ -173,7 +173,7 @@ export const registerProof = async (
   // we don't need to regenerate this, so random is fine
   const keypair = web3.Keypair.generate()
 
-  await app.program.rpc.addProof(kind, proof, {
+  await app.program.methods.addProof(kind, proof, {
     accounts: {
       proof: keypair.publicKey,
       owner: app.connectedWallet.publicKey,
@@ -244,7 +244,7 @@ export const deleteProof = async (app: VVallet, ownerProof: OwnerProof) => {
     throw new Error('no wallet connected')
   }
 
-  await app.program.rpc.releaseProof({
+  await app.program.methods.releaseProof({
     accounts: {
       proof: ownerProof.id,
       owner: ownerProof.owner,

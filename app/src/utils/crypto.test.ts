@@ -16,3 +16,10 @@ test('alias key differs based on seed', async () => {
 
   expect(generated.publicKey).not.toEqual(regenerated.publicKey)
 })
+
+test('alias key is normalized to ignore casing', async () => {
+  const lower = await generateAliasKeypair('bruce')
+  const upper = await generateAliasKeypair('BRUCE')
+
+  expect(lower.publicKey).toEqual(upper.publicKey)
+})

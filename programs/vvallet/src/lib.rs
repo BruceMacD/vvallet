@@ -14,22 +14,22 @@ pub mod vvallet {
     use super::*;
 
     // register adds an alias for a specified owner
-    pub fn register(ctx: Context<RegisterIdentity>, alias: String) -> ProgramResult {
+    pub fn register(ctx: Context<RegisterIdentity>, alias: String) -> Result<()> {
         let id: &mut Account<Identity> = &mut ctx.accounts.identity;
 
         // check if alias was already registered
         if id.alias != "" {
-            return Err(ErrorCode::AliasNotAvailable.into())
+            return Err(error!(ErrorCode::AliasNotAvailable))
         }
 
         let alias = alias.trim().to_string();
 
         if alias.chars().count() == 0 {
-            return Err(ErrorCode::AliasRequired.into())
+            return Err(error!(ErrorCode::AliasRequired))
         }
 
         if alias.chars().count() > MAX_ALIAS_LENGTH {
-            return Err(ErrorCode::AliasTooLong.into())
+            return Err(error!(ErrorCode::AliasTooLong))
         }
 
         let owner: &Signer = &ctx.accounts.owner;
@@ -40,32 +40,32 @@ pub mod vvallet {
         Ok(())
     }
 
-    pub fn release_identity(_ctx: Context<ReleaseIdentity>) -> ProgramResult {
+    pub fn release_identity(_ctx: Context<ReleaseIdentity>) -> Result<()> {
         // handled by anchor close constraint
         Ok(())
     }
 
     // addProof creates a proof that can be validated by a client to show account ownership
-    pub fn add_proof(ctx: Context<RegisterProof>, kind: String, proof: String) -> ProgramResult {
+    pub fn add_proof(ctx: Context<RegisterProof>, kind: String, proof: String) -> Result<()> {
         let new_proof: &mut Account<Proof> = &mut ctx.accounts.proof;
 
         let kind = kind.trim().to_string();
         let proof = proof.trim().to_string();
 
         if kind.chars().count() == 0 {
-            return Err(ErrorCode::ProofKindRequired.into())
+            return Err(error!(ErrorCode::ProofKindRequired))
         }
 
         if kind.chars().count() > MAX_PROOF_KIND_LENGTH {
-            return Err(ErrorCode::ProofKindTooLong.into())
+            return Err(error!(ErrorCode::ProofKindTooLong))
         }
 
         if proof.chars().count() == 0 {
-            return Err(ErrorCode::ProofRequired.into())
+            return Err(error!(ErrorCode::ProofRequired))
         }
 
         if proof.chars().count() > MAX_PROOF_LENGTH {
-            return Err(ErrorCode::ProofTooLong.into())
+            return Err(error!(ErrorCode::ProofTooLong))
         }
 
         let owner: &Signer = &ctx.accounts.owner;
@@ -77,7 +77,7 @@ pub mod vvallet {
         Ok(())
     }
 
-    pub fn release_proof(_ctx: Context<ReleaseProof>) -> ProgramResult {
+    pub fn release_proof(_ctx: Context<ReleaseProof>) -> Result<()> {
         // handled by anchor close constraint
         Ok(())
     }
@@ -100,7 +100,7 @@ pub struct RegisterIdentity<'info> {
     #[account(mut)]
     pub owner: Signer<'info>, 
     #[account(address = system_program::ID)]
-    pub system_program: AccountInfo<'info>,
+    pub system_program: Program<'info, System>,
 }
 
 #[derive(Accounts)]
@@ -131,7 +131,7 @@ pub struct RegisterProof<'info> {
     #[account(mut)]
     pub owner: Signer<'info>,
     #[account(address = system_program::ID)]
-    pub system_program: AccountInfo<'info>,
+    pub system_program: Program<'info, System>,
 }
 
 #[derive(Accounts)]
@@ -155,7 +155,7 @@ impl Proof {
         + STRING_LENGTH_PREFIX + MAX_PROOF_SIZE; // proof
 }
 
-#[error]
+#[error_code]
 pub enum ErrorCode {
     #[msg("Alias already registered")]
     AliasNotAvailable,
