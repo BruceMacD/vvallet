@@ -26,7 +26,7 @@ export const Proofs: FC<{ identity: IdentityAlias }> = ({ identity }) => {
       <div className="hero min-h-screen">
         <div className="text-center hero-content">
           <div className="max-w-md">
-            <button className="btn btn-lg">{error}</button>
+            <button className="btn btn-lg">{error.message}</button>
           </div>
         </div>
       </div>
