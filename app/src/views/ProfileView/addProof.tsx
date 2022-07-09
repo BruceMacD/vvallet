@@ -112,8 +112,8 @@ export const AddProof: FC<{ app: VVallet; identity: IdentityAlias }> = ({
               + add a proof
             </label>
             <input type="checkbox" id="add-proof-modal" className="modal-toggle" />
-            <div className="modal">
-              <div className="modal-box">
+            <label htmlFor="add-proof-modal" className="modal">
+              <label className="modal-box">
                 <select
                   className="select select-bordered m-3"
                   defaultValue={'DEFAULT'}
@@ -173,8 +173,8 @@ export const AddProof: FC<{ app: VVallet; identity: IdentityAlias }> = ({
                     addProofCallback={addProof}
                   />
                 )}
-              </div>
-            </div>
+              </label>
+            </label>
           </div>
         )}
       </div>
