@@ -1,11 +1,11 @@
 import Head from 'next/head'
 import html from 'remark-html'
 
-import { Params } from 'next/dist/server/router'
 import { remark } from 'remark'
 import { DocPage, DocSectionMetadata } from 'types/docs'
 import { getDocPage, getDocPaths, getDocsMetadata } from 'utils/doc_reader'
 import { DocsView } from '../../../views'
+import { Params } from 'next/dist/shared/lib/router/utils/route-matcher'
 
 type Props = {
   content: string

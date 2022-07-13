@@ -188,14 +188,7 @@ code {
   height: 80px;
   margin: auto;
   border-radius: 50%;
-  box-shadow:
-      inset 0 0 5px #fff,
-      inset 20px 0 60px violet,
-      inset -20px 0 60px blue,
-      inset 20px 0 300px violet,
-      inset -20px 0 300px blue,
-        0 0 15px #fff,
-        -10px 0 60px violet,
-        10px 0 60px blue;
+  box-shadow: inset 0 0 5px #fff, inset 20px 0 60px violet, inset -20px 0 60px blue,
+    inset 20px 0 300px violet, inset -20px 0 300px blue, 0 0 15px #fff,
+    -10px 0 60px violet, 10px 0 60px blue;
 }
-
