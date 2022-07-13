@@ -99,7 +99,7 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
     )
   } else
     return (
-      <div className="container mx-auto max-w-6xl p-8 2xl:px-0">
+      <div className="container mx-auto max-w-6xl md:p-8 2xl:px-0">
         <div className={styles.container}>
           <div className="navbar mb-2 shadow-lg text-neutral-content rounded-box">
             <div className="flex-none">
@@ -154,7 +154,7 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
               </div>
             </div>
 
-            <div className="md:ml-24">
+            <div className="px-8">
               {app?.connectedWallet?.publicKey &&
                 identity.owner == app.connectedWallet.publicKey.toBase58() && (
                   <AddProof app={app} identity={identity} />

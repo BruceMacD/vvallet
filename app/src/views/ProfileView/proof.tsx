@@ -153,7 +153,7 @@ export const Proof: FC<{ proof: OwnerProof; identity: IdentityAlias }> = ({
   const profileLink = parseProfileLink(proof.kind, proof.proof)
 
   return (
-    <div className="mt-3 collapse md:w-96 border rounded-box border-base-300 collapse-arrow">
+    <div className="mt-3 collapse w-80 md:w-96 border rounded-box border-base-300 collapse-arrow">
       <input type="checkbox" />
       <div className="collapse-title text-sm font-medium">
         <div className="flex">
