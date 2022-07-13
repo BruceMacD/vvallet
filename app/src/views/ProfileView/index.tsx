@@ -18,8 +18,6 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
   const [isCopied, setIsCopied] = useState(false)
   const app = useVVallet()
 
-  console.log(!app?.connectedWallet)
-
   useMemo(() => {
     if (app?.connectedWallet?.publicKey) {
       fetchKeyIdentities(app.connectedWallet.publicKey).then(
@@ -100,7 +98,6 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
       </div>
     )
   } else
-    console.log(app?.connectedWallet)
   return (
     <div className="container mx-auto max-w-6xl p-8 2xl:px-0">
       <div className={styles.container}>
@@ -143,7 +140,7 @@ export const ProfileView: FC<{ alias: string }> = ({ alias }) => {
               </div>
               {app?.connectedWallet && identity.owner !== app.connectedWallet.publicKey.toBase58() ? (
                 /* a wallet is connected and a user is not looking at their own profile */
-                <Send sendToAddress={identity.owner} />
+                <Send identity={identity} />
               ) : (
                 <button className="btn btn-outline btn-accent border-base-300 w-80 mt-0" disabled={true}>
                   ↗ Send payment
