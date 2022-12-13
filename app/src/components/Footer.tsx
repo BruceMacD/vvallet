@@ -4,7 +4,7 @@ export const Footer: FC<{}> = () => {
   return (
     <footer className="footer px-10 py-4 border-t bg-base-200 text-base-content border-base-300 mt-6">
       <div className="items-center grid-flow-col">
-        <p>Panoptic Future © {new Date().getFullYear()} - &infin;</p>
+        <p>© {new Date().getFullYear()} - &infin;</p>
       </div>
       <div className="md:place-self-center md:justify-self-end">
         <div className="grid grid-flow-col gap-4">
@@ -22,7 +22,7 @@ export const Footer: FC<{}> = () => {
               />
             </svg>
           </a>
-          <a href="https://github.com/panoptic-future/vvallet">
+          <a href="https://github.com/BruceMacD/vvallet">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
